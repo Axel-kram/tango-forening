@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tango Norteño – Workshopsbyggare</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+:root {
+  --bg: #f5f0e8;
+  --card: #fdf9f3;
+  --border: #ddd5c4;
+  --brown: #5c3d2e;
+  --brown-light: #7a5444;
+  --brown-dark: #3a2318;
+  --text: #2e1f14;
+  --muted: #8a7060;
+  --danger: #9b2335;
+  --success: #3a6b45;
+  --off-white: #f9f5ef;
+  --ws-bg: #f0ebe0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4b49a' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+header { text-align: center; margin-bottom: 40px; }
+.logo { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; border-radius: 50%; border: 2px solid var(--border); }
+header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--brown-dark); }
+header p { color: var(--muted); margin-top: 6px; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.back-link { display: inline-block; color: var(--muted); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.06em; margin-bottom: 24px; transition: color 0.2s; }
+.back-link:hover { color: var(--brown); }
+.container { max-width: 720px; margin: 0 auto; }
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+.tab { flex: 1; padding: 10px; background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; border-radius: 7px; transition: all 0.2s; }
+.tab.active { background: var(--brown); color: var(--off-white); font-weight: 500; }
+.tab:hover:not(.active) { background: var(--bg); color: var(--brown); }
+.panel { display: none; }
+.panel.active { display: block; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(60,35,20,0.05); }
+.card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--brown); margin-bottom: 16px; }
+.card-desc { color: var(--muted); font-size: 0.86rem; margin-bottom: 18px; line-height: 1.6; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.field input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+}
+.field input:focus { border-color: var(--brown); }
+.ws-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.ws-item { background: var(--ws-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+.ws-item-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.ws-number { width: 28px; height: 28px; background: var(--brown); color: var(--off-white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 500; flex-shrink: 0; }
+.ws-name-input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
+.ws-name-input:focus { border-color: var(--brown); }
+.ws-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.3rem; padding: 2px 6px; border-radius: 4px; transition: color 0.2s; flex-shrink: 0; }
+.ws-del:hover { color: var(--danger); }
+.ws-max-row { display: flex; align-items: center; gap: 10px; }
+.ws-max-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+.ws-max-input { width: 80px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.ws-max-input:focus { border-color: var(--brown); }
+.ws-preview-tag { font-size: 0.72rem; color: var(--muted); background: var(--border); padding: 3px 8px; border-radius: 4px; margin-left: auto; }
+.auto-fields-note { font-size: 0.75rem; color: var(--muted); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
+.auto-tag { background: rgba(92,61,46,0.1); color: var(--brown-light); padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; }
+.empty-state { text-align: center; padding: 36px; color: var(--muted); font-size: 0.85rem; border: 1px dashed var(--border); border-radius: 10px; }
+.btn { padding: 11px 20px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; letter-spacing: 0.04em; transition: all 0.2s; }
+.btn-brown { background: var(--brown); color: var(--off-white); font-weight: 500; }
+.btn-brown:hover { background: var(--brown-dark); }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--brown); color: var(--brown); }
+.btn-danger { background: none; border: 1px solid rgba(155,35,53,0.3); color: var(--danger); }
+.btn-danger:hover { background: rgba(155,35,53,0.08); border-color: var(--danger); }
+.btn-ghost { background: none; border: 2px dashed var(--border); color: var(--muted); width: 100%; padding: 13px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-ghost:hover { border-color: var(--brown); color: var(--brown); }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.status { font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; margin-top: 12px; display: none; }
+.status.ok { background: rgba(58,107,69,0.1); border: 1px solid rgba(58,107,69,0.25); color: var(--success); display: block; }
+.status.err { background: rgba(155,35,53,0.1); border: 1px solid rgba(155,35,53,0.25); color: var(--danger); display: block; }
+.share-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 12px; display: flex; gap: 10px; align-items: center; }
+.share-box input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--text); font-family: 'DM Sans', monospace; font-size: 0.82rem; outline: none; }
+.share-note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
+.saved-list { display: flex; flex-direction: column; gap: 10px; }
+.saved-item { display: flex; align-items: center; gap: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; }
+.saved-name { flex: 1; font-size: 0.9rem; cursor: pointer; }
+.saved-name:hover { color: var(--brown); }
+.saved-meta { font-size: 0.75rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="https://www.tangonorteno.se/wp-content/uploads/2025/06/tn-logo.jpg" alt="" onerror="this.style.display='none'">
+  <h1>Tango Norteño</h1>
+  <p>Workshopsbyggare</p>
+</header>
+<div class="container">
+  <a class="back-link" href="index.html">← Tillbaka till admin</a>
+  <div class="tabs">
+    <button class="tab active" onclick="byttab('bygg')">Skapa</button>
+    <button class="tab" onclick="byttab('sparade')">Sparade</button>
+  </div>
+
+  <!-- BYGG -->
+  <div class="panel active" id="panel-bygg">
+    <div class="card">
+      <h2>Eventinformation</h2>
+      <div class="field"><label>Eventtitel</label><input type="text" id="evTitel" placeholder="t.ex. Tangofestival VT 2025" /></div>
+      <div class="field"><label>Beskrivning (valfritt)</label><input type="text" id="evDesc" placeholder="Kort beskrivning av eventet" /></div>
+      <div class="field"><label>Webhook URL (n8n)</label><input type="text" id="evWebhook" placeholder="https://..." /></div>
+    </div>
+    <div class="card">
+      <h2>Workshops</h2>
+      <p class="card-desc">Varje workshop får automatiskt fält för roll, danspartner och partnerns telefonnummer.</p>
+      <div class="ws-list" id="wsList">
+        <div class="empty-state">Inga workshops tillagda än</div>
+      </div>
+      <button class="btn-ghost" onclick="läggTillWorkshop()">
+        <span style="font-size:1.2rem">+</span> Lägg till workshop
+      </button>
+    </div>
+    <div class="card">
+      <div class="btn-row">
+        <button class="btn btn-brown" onclick="sparaOchVisaDela()">Spara & dela</button>
+        <button class="btn btn-outline" onclick="spara()">Spara</button>
+      </div>
+      <div id="byggStatus" class="status"></div>
+    </div>
+    <div id="delaCard" class="card" style="display:none">
+      <h2>Dela formulär</h2>
+      <p class="card-desc">Kopiera länken och skicka till deltagarna. Länken går direkt till anmälningssidan.</p>
+      <div class="share-box">
+        <input type="text" id="shareUrl" readonly />
+        <button class="btn btn-outline" onclick="kopiera()">Kopiera</button>
+      </div>
+      <div class="share-note">⚑ Deltagarna ser endast anmälningsformuläret — ingen koppling till admin.</div>
+      <div id="kopieraStatus" class="status"></div>
+    </div>
+  </div>
+
+  <!-- SPARADE -->
+  <div class="panel" id="panel-sparade">
+    <div class="card">
+      <h2>Sparade workshopformulär</h2>
+      <div id="sparadeLista" class="saved-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let workshops = [];
+let aktivtId = null;
+
+function läggTillWorkshop() {
+  workshops.push({ id: Date.now(), namn: '', max: 20 });
+  renderWorkshops();
+}
+
+function taBortWorkshop(id) {
+  workshops = workshops.filter(w => w.id !== id);
+  renderWorkshops();
+}
+
+function renderWorkshops() {
+  const list = document.getElementById('wsList');
+  if (workshops.length === 0) {
+    list.innerHTML = '<div class="empty-state">Inga workshops tillagda än</div>';
+    return;
+  }
+  list.innerHTML = workshops.map((w, i) => `
+    <div class="ws-item">
+      <div class="ws-item-header">
+        <div class="ws-number">${i + 1}</div>
+        <input class="ws-name-input" type="text" placeholder="Workshopnamn, t.ex. Grundkurs"
+          value="${escHtml(w.namn)}" oninput="workshops[${i}].namn = this.value" />
+        <button class="ws-del" onclick="taBortWorkshop(${w.id})" title="Ta bort">×</button>
+      </div>
+      <div class="ws-max-row">
+        <span class="ws-max-label">Max deltagare:</span>
+        <input class="ws-max-input" type="number" min="1" max="999" value="${w.max}"
+          oninput="workshops[${i}].max = parseInt(this.value)||0" />
+        <span class="ws-preview-tag">per workshop</span>
+      </div>
+      <div class="auto-fields-note">
+        Skapas automatiskt:
+        <span class="auto-tag">Förare / Följare / Dubbeldansare</span>
+        <span class="auto-tag">Har du danspartner?</span>
+        <span class="auto-tag">Partnerns telefonnummer</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function spara() {
+  const titel = document.getElementById('evTitel').value.trim();
+  if (!titel) return visa('byggStatus', 'err', 'Fyll i en eventtitel.');
+  if (workshops.length === 0) return visa('byggStatus', 'err', 'Lägg till minst en workshop.');
+  const ev = {
+    id: aktivtId || 'ws_' + Date.now(),
+    titel,
+    desc: document.getElementById('evDesc').value.trim(),
+    webhook: document.getElementById('evWebhook').value.trim(),
+    workshops: workshops.map(w => ({ ...w })),
+    skapad: new Date().toLocaleDateString('sv-SE')
+  };
+  aktivtId = ev.id;
+  const sparade = hämtaSparade();
+  const idx = sparade.findIndex(x => x.id === ev.id);
+  if (idx >= 0) sparade[idx] = ev; else sparade.push(ev);
+  localStorage.setItem('tnWorkshops', JSON.stringify(sparade));
+  visa('byggStatus', 'ok', '✓ Sparat!');
+  return ev;
+}
+
+function sparaOchVisaDela() {
+  const ev = spara();
+  if (!ev) return;
+  const url = location.origin + location.pathname.replace('workshopsbyggare.html','workshopsida.html') + '?ev=' + ev.id;
+  document.getElementById('shareUrl').value = url;
+  document.getElementById('delaCard').style.display = 'block';
+  document.getElementById('delaCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hämtaSparade() {
+  try { return JSON.parse(localStorage.getItem('tnWorkshops') || '[]'); } catch { return []; }
+}
+
+function raderaEv(id) {
+  if (!confirm('Radera detta workshopformulär? Åtgärden kan inte ångras.')) return;
+  const sparade = hämtaSparade().filter(e => e.id !== id);
+  localStorage.setItem('tnWorkshops', JSON.stringify(sparade));
+  if (aktivtId === id) {
+    aktivtId = null;
+    document.getElementById('evTitel').value = '';
+    document.getElementById('evDesc').value = '';
+    document.getElementById('evWebhook').value = '';
+    workshops = [];
+    renderWorkshops();
+    document.getElementById('delaCard').style.display = 'none';
+  }
+  renderSparade();
+}
+
+function renderSparade() {
+  const lista = document.getElementById('sparadeLista');
+  const sparade = hämtaSparade();
+  if (sparade.length === 0) {
+    lista.innerHTML = '<div class="empty-state">Inga sparade workshopformulär</div>';
+    return;
+  }
+  lista.innerHTML = sparade.map(ev => `
+    <div class="saved-item">
+      <span class="saved-name" onclick="laddaEv('${ev.id}')">${ev.titel}</span>
+      <span class="saved-meta">${ev.workshops.length} workshops · ${ev.skapad}</span>
+      <button class="btn btn-outline" style="padding:6px 14px;font-size:0.75rem;flex-shrink:0"
+        onclick="laddaOchDela('${ev.id}')">Dela</button>
+      <button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem;flex-shrink:0"
+        onclick="raderaEv('${ev.id}')">Radera</button>
+    </div>
+  `).join('');
+}
+
+function laddaEv(id) {
+  const ev = hämtaSparade().find(x => x.id === id);
+  if (!ev) return;
+  aktivtId = ev.id;
+  document.getElementById('evTitel').value = ev.titel;
+  document.getElementById('evDesc').value = ev.desc || '';
+  document.getElementById('evWebhook').value = ev.webhook || '';
+  workshops = ev.workshops.map(w => ({ ...w }));
+  renderWorkshops();
+  document.getElementById('delaCard').style.display = 'none';
+  byttab('bygg');
+}
+
+function laddaOchDela(id) {
+  const ev = hämtaSparade().find(x => x.id === id);
+  if (!ev) return;
+  const url = location.origin + location.pathname.replace('workshopsbyggare.html','workshopsida.html') + '?ev=' + ev.id;
+  document.getElementById('shareUrl').value = url;
+  document.getElementById('delaCard').style.display = 'block';
+  byttab('bygg');
+  setTimeout(() => document.getElementById('delaCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function kopiera() {
+  const url = document.getElementById('shareUrl').value;
+  navigator.clipboard.writeText(url)
+    .then(() => visa('kopieraStatus', 'ok', '✓ Kopierat!'))
+    .catch(() => { document.getElementById('shareUrl').select(); document.execCommand('copy'); visa('kopieraStatus','ok','✓ Kopierat!'); });
+}
+
+function byttab(tab) {
+  ['bygg','sparade'].forEach((t, i) => {
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t === tab);
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'sparade') renderSparade();
+}
+
+function visa(id, typ, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status ' + typ;
+  el.textContent = text;
+  setTimeout(() => { if (el) el.className = 'status'; }, 4000);
+}
+</script>
+</body>
+</html>
