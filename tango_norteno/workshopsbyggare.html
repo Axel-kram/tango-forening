@@ -8,22 +8,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brown: #3B2314; --brown-mid: #5C3720; --brown-light: #8B5E3C;
-      --beige: #C9A87C; --cream: #F5EFE6; --cream-dark: #EDE4D5;
-      --text: #2A1A0E; --text-muted: #7A5C44; --border: #D4B896; --white: #FDFAF6;
+      --brown:      #3B2314;
+      --brown-mid:  #5C3720;
+      --brown-light:#8B5E3C;
+      --beige:      #C9A87C;
+      --cream:      #F5EFE6;
+      --cream-dark: #EDE4D5;
+      --text:       #2A1A0E;
+      --text-muted: #7A5C44;
+      --border:     #D4B896;
+      --white:      #FDFAF6;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); min-height: 100vh; padding: 20px; }
-    .container { max-width: 800px; margin: 0 auto; }
-    .card { background: var(--white); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(59,35,20,0.05); }
+    body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    .nav { background: var(--white); padding: 1rem; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; justify-content: center; }
+    .nav a { color: var(--brown); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+
+    .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: var(--white); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(59,35,20,0.05); margin-bottom: 2rem; }
     h1, h3 { font-family: 'Cormorant Garamond', serif; color: var(--brown); margin-bottom: 1rem; }
+
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--brown-mid); }
-    input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); font-family: inherit; margin-bottom: 1rem; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); font-family: inherit; font-size: 1rem; margin-bottom: 1rem; }
+
+    .field-row { background: var(--cream-dark); padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border); }
     .btn { padding: 12px 24px; border-radius: 50px; border: none; cursor: pointer; font-weight: 500; transition: all 0.3s; font-family: 'Jost', sans-serif; }
     .btn-primary { background: var(--brown); color: var(--white); width: 100%; font-size: 1.1rem; }
-    .btn-secondary { background: var(--beige); color: var(--brown); margin-top: 10px; }
+    .btn-secondary { background: var(--beige); color: var(--brown); }
     .btn-danger { background: #ffeded; color: #cc0000; border: 1px solid #ffcccc; padding: 8px 15px; border-radius: 8px; }
-    .field-row { background: var(--cream-dark); padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border); }
+
     .options-area { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
     .status { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
     .status.ok { display: block; background: #e8f5e9; color: #2e7d32; }
@@ -31,30 +45,36 @@
   </style>
 </head>
 <body>
+
+  <div class="nav">
+    <a href="index.html">← Adminpanel</a>
+    <a href="formular.html">Formulärbyggare</a>
+  </div>
+
   <div class="container">
-    <h1>Skapa Workshop-event</h1>
+    <h1>Workshopbyggare</h1>
     
     <div class="card">
       <h3>Allmän information</h3>
-      <label>Eventets namn</label>
-      <input type="text" id="evTitel" placeholder="T.ex. Sommarworkshop 2024">
+      <label>Eventets titel</label>
+      <input type="text" id="evTitel" placeholder="T.ex. Sommarhelg med Tango">
       <label>Beskrivning</label>
-      <textarea id="evDesc" rows="3" placeholder="Kort info om helgen..."></textarea>
-      <label>Webhook URL (n8n/Make)</label>
-      <input type="url" id="webhookUrl" placeholder="https://din-webhook-url.com">
+      <textarea id="evDesc" rows="3" placeholder="Info som visas för deltagarna..."></textarea>
+      <label>Webhook URL (n8n)</label>
+      <input type="url" id="webhookUrl" placeholder="https://n8n.din-server.com/...">
     </div>
 
     <div class="card">
       <h3>Deltagarformulär</h3>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Lägg till de fält deltagaren ska fylla i vid anmälan.</p>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Vilka fält ska deltagaren fylla i?</p>
       <div id="faltLista"></div>
-      <button type="button" class="btn btn-secondary" onclick="laggTillFalt()">+ Lägg till fält</button>
+      <button class="btn btn-secondary" onclick="laggTillFalt()">+ Lägg till fält</button>
     </div>
 
     <div class="card">
       <h3>Workshops / Klasser</h3>
       <div id="workshopLista"></div>
-      <button type="button" class="btn btn-secondary" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
+      <button class="btn btn-secondary" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
     </div>
 
     <button class="btn btn-primary" onclick="sparaEvent()">Spara och generera länk</button>
@@ -68,29 +88,29 @@
   </div>
 
   <script>
-    let falt = [
+    let deltagarFalt = [
       { namn: 'Namn', typ: 'text', options: '' },
       { namn: 'E-post', typ: 'email', options: '' }
     ];
     let workshops = [];
 
     function laggTillFalt() {
-      falt.push({ namn: '', typ: 'text', options: '' });
+      deltagarFalt.push({ namn: '', typ: 'text', options: '' });
       renderaFalt();
     }
 
     function renderaFalt() {
       const container = document.getElementById('faltLista');
-      container.innerHTML = falt.map((f, i) => `
+      container.innerHTML = deltagarFalt.map((f, i) => `
         <div class="field-row">
           <div style="display:flex; gap:10px; align-items:flex-end;">
             <div style="flex:2;">
-              <label>Fråga/Fältnamn</label>
-              <input type="text" value="${f.namn}" onchange="uppdateraFalt(${i}, 'namn', this.value)" placeholder="T.ex. Matpreferenser" style="margin-bottom:0;">
+              <label>Fältnamn</label>
+              <input type="text" value="${f.namn}" onchange="uppdateraFalt(${i}, 'namn', this.value)" style="margin:0;">
             </div>
             <div style="flex:1;">
               <label>Typ</label>
-              <select onchange="uppdateraFalt(${i}, 'typ', this.value)" style="margin-bottom:0;">
+              <select onchange="uppdateraFalt(${i}, 'typ', this.value)" style="margin:0;">
                 <option value="text" ${f.typ==='text'?'selected':''}>Textfält</option>
                 <option value="email" ${f.typ==='email'?'selected':''}>E-post</option>
                 <option value="select" ${f.typ==='select'?'selected':''}>Rullista</option>
@@ -103,15 +123,22 @@
           ${(f.typ==='select' || f.typ==='radio') ? `
             <div class="options-area">
               <label>Alternativ (separera med kommatecken)</label>
-              <input type="text" value="${f.options}" onchange="uppdateraFalt(${i}, 'options', this.value)" placeholder="Alternativ 1, Alternativ 2, Alternativ 3" style="margin-bottom:0;">
+              <input type="text" placeholder="Val 1, Val 2, Val 3" value="${f.options}" onchange="uppdateraFalt(${i}, 'options', this.value)" style="margin:0;">
             </div>
           ` : ''}
         </div>
       `).join('');
     }
 
-    function uppdateraFalt(i, p, v) { falt[i][p] = v; renderaFalt(); }
-    function taBortFalt(i) { falt.splice(i, 1); renderaFalt(); }
+    function uppdateraFalt(i, prop, val) {
+      deltagarFalt[i][prop] = val;
+      renderaFalt();
+    }
+
+    function taBortFalt(i) {
+      deltagarFalt.splice(i, 1);
+      renderaFalt();
+    }
 
     function laggTillWorkshop() {
       workshops.push({ namn: '', max: 20 });
@@ -124,11 +151,11 @@
         <div class="field-row" style="display:flex; gap:10px; align-items:flex-end;">
           <div style="flex:3;">
             <label>Workshopens namn</label>
-            <input type="text" value="${w.namn}" onchange="workshops[${i}].namn=this.value" style="margin-bottom:0;">
+            <input type="text" value="${w.namn}" oninput="workshops[${i}].namn=this.value" style="margin:0;">
           </div>
           <div style="flex:1;">
             <label>Max antal</label>
-            <input type="number" value="${w.max}" onchange="workshops[${i}].max=this.value" style="margin-bottom:0;">
+            <input type="number" value="${w.max}" oninput="workshops[${i}].max=this.value" style="margin:0;">
           </div>
           <button class="btn-danger" onclick="workshops.splice(${i},1); renderaWorkshops()">X</button>
         </div>
@@ -138,18 +165,18 @@
     async function sparaEvent() {
       const titel = document.getElementById('evTitel').value.trim();
       const webhookUrl = document.getElementById('webhookUrl').value.trim();
-      if(!titel || !webhookUrl) { alert("Fyll i titel och webhook!"); return; }
+      if (!titel || !webhookUrl) { alert("Fyll i titel och webhook."); return; }
 
       const payload = {
         titel,
         desc: document.getElementById('evDesc').value.trim(),
         webhook_url: webhookUrl,
-        deltagarFalt: JSON.stringify(falt), // Sparas som JSON-sträng för att läsas av workshopsida.html
+        deltagarFalt: JSON.stringify(deltagarFalt),
         workshops_json: JSON.stringify(workshops)
       };
 
-      const adminSettings = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
-      const sparaUrl = adminSettings.urlSparaWorkshop;
+      const settings = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
+      const sparaUrl = settings.urlSparaWorkshop;
 
       try {
         const res = await fetch(sparaUrl, { method:'POST', body: JSON.stringify(payload) });
@@ -158,16 +185,17 @@
         document.getElementById('shareUrl').value = url;
         document.getElementById('delaCard').style.display = 'block';
         alert("Sparat!");
-      } catch(e) { alert("Fel: " + e.message); }
+      } catch(e) { alert("Något gick fel vid sparande."); }
     }
 
     function kopiera() {
       document.getElementById('shareUrl').select();
       document.execCommand('copy');
-      alert("Länken är kopierad!");
+      alert("Länk kopierad.");
     }
 
     renderaFalt();
+    renderaWorkshops();
   </script>
 </body>
 </html>
