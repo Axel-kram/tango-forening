@@ -14,15 +14,22 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); padding: 20px; }
+    
+    /* Navigering */
+    .nav-bar { max-width: 900px; margin: 0 auto 1rem; display: flex; align-items: center; }
+    .nav-link { color: var(--brown); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: 0.2s; }
+    .nav-link:hover { color: var(--brown-light); }
+
     .container { max-width: 900px; margin: 0 auto; }
     .card { background: var(--white); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(59,35,20,0.05); }
     h1, h3 { font-family: 'Cormorant Garamond', serif; color: var(--brown); margin-bottom: 1rem; }
+    
     label { display: block; margin-bottom: 0.4rem; font-weight: 500; color: var(--brown-mid); font-size: 0.9rem; }
     input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); font-family: inherit; margin-bottom: 1rem; }
     
     .btn { padding: 10px 20px; border-radius: 50px; border: none; cursor: pointer; font-weight: 500; transition: 0.3s; font-family: 'Jost', sans-serif; }
-    .btn-primary { background: var(--brown); color: var(--white); width: 100%; font-size: 1.1rem; margin-top: 10px; }
-    .btn-secondary { background: var(--beige); color: var(--brown); font-size: 0.85rem; margin-top: 5px; }
+    .btn-primary { background: var(--brown); color: var(--white); width: 100%; font-size: 1.1rem; }
+    .btn-secondary { background: var(--beige); color: var(--brown); font-size: 0.85rem; }
     .btn-danger { background: #ffeded; color: #cc0000; border: 1px solid #ffcccc; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
 
     .workshop-card { background: var(--white); border: 2px solid var(--beige); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
@@ -30,17 +37,26 @@
     
     .inner-field { background: var(--cream-dark); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border); }
     .options-area { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
+
+    .status { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; text-align: center; }
+    .status.ok { display: block; background: #e8f5e9; color: #2e7d32; }
+    .status.err { display: block; background: #ffebee; color: #c62828; }
   </style>
 </head>
 <body>
+
+  <div class="nav-bar">
+    <a href="index.html" class="nav-link">← Tillbaka till Adminpanelen</a>
+  </div>
+
   <div class="container">
     <h1>Workshopbyggare</h1>
     
     <div class="card">
       <h3>1. Allmän information</h3>
       <label>Eventets titel</label>
-      <input type="text" id="evTitel" placeholder="T.ex. Sommarworkshop">
-      <label>Beskrivning</label>
+      <input type="text" id="evTitel" placeholder="T.ex. Helgworkshop i Mars">
+      <label>Beskrivning (syns på anmälningssidan)</label>
       <textarea id="evDesc" rows="2"></textarea>
       <label>Webhook URL (n8n)</label>
       <input type="url" id="webhookUrl" placeholder="https://...">
@@ -48,44 +64,46 @@
 
     <div id="workshopContainer"></div>
     
-    <button class="btn btn-secondary" onclick="laggTillWorkshop()" style="margin-bottom: 2rem; background: var(--brown); color: white;">+ Lägg till Workshop</button>
+    <button class="btn btn-secondary" onclick="laggTillWorkshop()" style="margin-bottom: 2rem; background: var(--brown-mid); color: white;">+ Lägg till Workshop</button>
 
     <div class="card">
-      <button class="btn btn-primary" onclick="sparaEvent()">Spara och hämta länk</button>
-      <div id="sparaStatus" style="margin-top:10px; text-align:center;"></div>
+      <button class="btn btn-primary" onclick="sparaEvent()">Spara och generera länk</button>
+      <div id="sparaStatus" class="status"></div>
     </div>
 
     <div id="delaCard" class="card" style="display:none;">
-      <h3>Event skapat!</h3>
+      <h3>Eventet är skapat!</h3>
+      <p style="margin-bottom: 10px; font-size: 0.9rem;">Dela denna länk med deltagarna:</p>
       <input type="text" id="shareUrl" readonly>
-      <button class="btn btn-secondary" onclick="kopiera()">Kopiera länk</button>
+      <button class="btn btn-secondary" onclick="kopiera()" style="margin-top:10px;">Kopiera länk</button>
+      <div id="kopieraStatus" class="status"></div>
     </div>
   </div>
 
   <script>
     let workshops = [];
 
+    // Hämta inställningar från localStorage (Adminpanelen)
+    function getSparaWsUrl() {
+      const s = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
+      return s.urlSparaWorkshop || '';
+    }
+
     function laggTillWorkshop() {
-      const newWs = {
+      workshops.push({
         id: Date.now(),
         namn: '',
         max: 20,
         falt: [
           { namn: 'Roll', typ: 'radio', options: 'Förare, Följare, Dubbeldansare, Deltar ej' },
-          { namn: 'Partner', typ: 'radio', options: 'Ja, Nej' }
+          { namn: 'Anmäler med partner?', typ: 'radio', options: 'Ja, Nej' }
         ]
-      };
-      workshops.push(newWs);
+      });
       rendera();
     }
 
     function laggTillFalt(wsIdx) {
       workshops[wsIdx].falt.push({ namn: '', typ: 'text', options: '' });
-      rendera();
-    }
-
-    function taBortFalt(wsIdx, fIdx) {
-      workshops[wsIdx].falt.splice(fIdx, 1);
       rendera();
     }
 
@@ -97,7 +115,6 @@
         const wsDiv = document.createElement('div');
         wsDiv.className = 'workshop-card';
         
-        // Rendera fälten inuti workshopen
         const faltHtml = ws.falt.map((f, fIdx) => `
           <div class="inner-field">
             <div style="display:flex; gap:10px; align-items:flex-end;">
@@ -108,13 +125,13 @@
               <div style="flex:1;">
                 <label>Typ</label>
                 <select onchange="workshops[${wsIdx}].falt[${fIdx}].typ=this.value; rendera()" style="margin:0;">
-                  <option value="text" ${f.typ==='text'?'selected':''}>Text</option>
+                  <option value="text" ${f.typ==='text'?'selected':''}>Textfält</option>
                   <option value="select" ${f.typ==='select'?'selected':''}>Rullista</option>
                   <option value="radio" ${f.typ==='radio'?'selected':''}>Flerval</option>
                   <option value="checkbox" ${f.typ==='checkbox'?'selected':''}>Kryssruta</option>
                 </select>
               </div>
-              <button class="btn-danger" onclick="taBortFalt(${wsIdx}, ${fIdx})">X</button>
+              <button class="btn-danger" onclick="workshops[${wsIdx}].falt.splice(${fIdx},1); rendera()">X</button>
             </div>
             ${(f.typ==='select' || f.typ==='radio') ? `
               <div class="options-area">
@@ -137,9 +154,8 @@
             </div>
             <button class="btn-danger" onclick="workshops.splice(${wsIdx},1); rendera()">Ta bort workshop</button>
           </div>
-          
           <div id="faltLista_${wsIdx}">${faltHtml}</div>
-          <button class="btn btn-secondary" onclick="laggTillFalt(${wsIdx})">+ Lägg till val i denna WS</button>
+          <button class="btn btn-secondary" onclick="laggTillFalt(${wsIdx})">+ Lägg till val/fråga i denna WS</button>
         `;
         container.appendChild(wsDiv);
       });
@@ -148,37 +164,55 @@
     async function sparaEvent() {
       const titel = document.getElementById('evTitel').value.trim();
       const webhookUrl = document.getElementById('webhookUrl').value.trim();
-      if (!titel || !webhookUrl) { alert("Fyll i titel och webhook."); return; }
+      
+      if (!titel) { visa('sparaStatus','err','Fyll i en titel.'); return; }
+      if (workshops.length === 0) { visa('sparaStatus','err','Lägg till minst en workshop.'); return; }
+      
+      const sparaUrl = getSparaWsUrl();
+      if (!sparaUrl) { visa('sparaStatus','err','Ange spara_workshop-webhook i adminpanelen.'); return; }
 
-      const adminSettings = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
       const payload = {
         titel,
         desc: document.getElementById('evDesc').value.trim(),
         webhook_url: webhookUrl,
-        deltagarFalt: JSON.stringify([]), 
+        deltagarFalt: JSON.stringify([]), // Vi använder standardfält för personuppgifter
         workshops_json: JSON.stringify(workshops)
       };
 
+      visa('sparaStatus','','Sparar...');
       try {
-        const res = await fetch(adminSettings.urlSparaWorkshop, { 
+        const res = await fetch(sparaUrl, { 
           method:'POST', 
           headers:{'Content-Type':'text/plain;charset=UTF-8'}, 
           body: JSON.stringify(payload) 
         });
         const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
         const url = location.origin + location.pathname.replace('workshopsbyggare.html','') + 'workshopsida.html?event=' + data.id;
         document.getElementById('shareUrl').value = url;
         document.getElementById('delaCard').style.display = 'block';
-      } catch(e) { alert("Fel vid sparande."); }
+        visa('sparaStatus','ok','Workshop sparat!');
+      } catch(e) { 
+        visa('sparaStatus','err','Fel: ' + e.message); 
+      }
     }
 
     function kopiera() {
       document.getElementById('shareUrl').select();
       document.execCommand('copy');
-      alert("Länk kopierad.");
+      visa('kopieraStatus','ok','Länk kopierad!');
     }
 
-    laggTillWorkshop(); // Starta med en workshop
+    function visa(id, typ, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'status ' + typ;
+      el.style.display = msg ? 'block' : 'none';
+    }
+
+    // Starta med en tom workshop
+    laggTillWorkshop();
   </script>
 </body>
 </html>
