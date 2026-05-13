@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tango Norteño — Formulärbyggare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;
+    --brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;
+    --text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;
+    --shadow:0 2px 12px rgba(74,44,26,0.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;}
+  .topbar{background:var(--brown);color:var(--cream);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .topbar-logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.04em;}
+  .topbar-logo span{font-style:italic;color:var(--brown-lt);}
+  .topbar-nav{display:flex;gap:0.5rem;}
+  .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s;text-decoration:none;display:inline-block;}
+  .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
+
+  .layout{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 64px);}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+  /* LEFT PANEL */
+  .panel-left{background:var(--cream);border-right:1px solid var(--border);padding:2rem 1.8rem;overflow-y:auto;}
+  .panel-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:1.5rem;}
+
+  .field-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
+  .field-group label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);}
+  .field-group input,.field-group textarea,.field-group select{
+    background:var(--surface);border:1px solid var(--border);border-radius:5px;
+    padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;color:var(--text);
+    transition:border-color 0.2s;width:100%;
+  }
+  .field-group input:focus,.field-group textarea:focus,.field-group select:focus{outline:none;border-color:var(--brown-mid);}
+  .field-group textarea{resize:vertical;min-height:70px;}
+  .field-group.row{flex-direction:row;align-items:center;gap:0.8rem;}
+  .field-group.row label{white-space:nowrap;margin:0;}
+
+  .section-divider{border:none;border-top:1px solid var(--border);margin:1.3rem 0;}
+
+  .add-field-bar{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+  .add-field-btn{
+    background:var(--surface);border:1px dashed var(--border);border-radius:5px;
+    padding:0.4rem 0.8rem;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--brown-mid);cursor:pointer;transition:background 0.2s,border-color 0.2s;
+  }
+  .add-field-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
+
+  /* FIELDS LIST */
+  .fields-list{display:flex;flex-direction:column;gap:0.6rem;}
+  .field-row{
+    background:var(--surface);border:1px solid var(--border);border-radius:6px;
+    padding:0.7rem 1rem;display:flex;align-items:flex-start;gap:0.7rem;
+    animation:fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+  .field-row-drag{cursor:grab;color:var(--brown-lt);font-size:1.1rem;padding-top:2px;user-select:none;flex-shrink:0;}
+  .field-row-drag:active{cursor:grabbing;}
+  .field-row-body{flex:1;min-width:0;}
+  .field-row-top{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;}
+  .field-type-badge{background:var(--surface2);color:var(--text-lt);font-size:0.7rem;font-weight:700;text-transform:uppercase;padding:0.15rem 0.5rem;border-radius:3px;white-space:nowrap;}
+  .field-row-top input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.2rem 0.1rem;font-size:0.9rem;font-weight:700;color:var(--text);}
+  .field-row-top input:focus{outline:none;border-bottom-color:var(--brown-mid);}
+  .field-row-opts{display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap;}
+  .field-row-opts input{background:transparent;border:none;border-bottom:1px dashed var(--border);padding:0.15rem 0.1rem;font-size:0.8rem;color:var(--text-lt);width:140px;}
+  .field-row-opts input:focus{outline:none;border-bottom-color:var(--brown-mid);}
+  .field-checkbox-label{font-size:0.78rem;color:var(--text-lt);display:flex;align-items:center;gap:0.3rem;cursor:pointer;white-space:nowrap;}
+  .field-row-actions{flex-shrink:0;}
+  .icon-btn{background:none;border:none;cursor:pointer;padding:0.2rem;color:var(--brown-lt);font-size:1rem;transition:color 0.15s;}
+  .icon-btn:hover{color:var(--danger);}
+  .options-edit{margin-top:0.5rem;}
+  .options-edit textarea{width:100%;height:55px;font-size:0.78rem;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.35rem;resize:none;font-family:'Lato',sans-serif;color:var(--text-lt);}
+  .options-edit span{font-size:0.72rem;color:var(--text-lt);}
+
+  /* ACTIONS */
+  .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
+  .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;width:100%;justify-content:center;}
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:scale(0.98);}
+  .btn-brown{background:var(--brown);color:var(--cream);}
+  .btn-mid{background:var(--brown-mid);color:var(--cream);}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown-mid);}
+
+  .status-msg{margin-top:0.7rem;font-size:0.85rem;padding:0.5rem 0.8rem;border-radius:5px;display:none;}
+  .status-msg.ok{background:#e6f0ea;color:var(--success);display:block;}
+  .status-msg.err{background:#f5e6e6;color:var(--danger);display:block;}
+  .status-msg.info{background:var(--surface2);color:var(--text-lt);display:block;}
+
+  .share-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:1.1rem;margin-top:0.8rem;display:none;}
+  .share-card h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.6rem;}
+  .url-row{display:flex;gap:0.5rem;align-items:center;}
+  .url-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;font-family:monospace;color:var(--text-lt);}
+  .url-row .btn{width:auto;padding:0.45rem 0.9rem;font-size:0.8rem;}
+
+  /* RIGHT PANEL - PREVIEW */
+  .panel-right{background:var(--bg);padding:2rem 2.5rem;overflow-y:auto;}
+  .preview-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+  .preview-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-lt);}
+  .preview-badge{background:var(--brown-lt);color:var(--cream);font-size:0.72rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:20px;text-transform:uppercase;letter-spacing:0.05em;}
+
+  .preview-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:2.2rem;max-width:560px;box-shadow:var(--shadow);}
+  .preview-form-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--brown);margin-bottom:0.4rem;}
+  .preview-form-desc{color:var(--text-lt);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.5;}
+  .preview-field{margin-bottom:1.1rem;}
+  .preview-field label{display:block;font-size:0.82rem;font-weight:700;color:var(--brown-mid);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.04em;}
+  .preview-field .req{color:var(--accent);}
+  .preview-field input[type=text],.preview-field input[type=email],.preview-field input[type=tel],.preview-field textarea,.preview-field select{
+    width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;
+    padding:0.6rem 0.85rem;font-family:'Lato',sans-serif;font-size:0.92rem;color:var(--text);
+  }
+  .preview-field textarea{resize:vertical;min-height:80px;}
+  .preview-radio-group,.preview-check-group{display:flex;flex-direction:column;gap:0.4rem;}
+  .preview-radio-group label,.preview-check-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+  .preview-submit{background:var(--brown);color:var(--cream);border:none;border-radius:5px;padding:0.75rem 2rem;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:0.5rem;letter-spacing:0.05em;}
+  .preview-empty{color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:2rem 0;}
+  .preview-max-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.78rem;color:var(--text-lt);padding:0.2rem 0.8rem;margin-bottom:1.2rem;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Tango <span>Norteño</span></div>
+  <nav class="topbar-nav">
+    <a class="nav-btn" href="index.html">Admin</a>
+    <a class="nav-btn active" href="formular.html">Formulärbyggare</a>
+    <a class="nav-btn" href="workshopsbyggare.html">Workshopsbyggare</a>
+  </nav>
+</div>
+
+<div class="layout">
+  <!-- LEFT: BUILDER -->
+  <div class="panel-left">
+    <h2 class="panel-title">Nytt formulär</h2>
+
+    <div class="field-group">
+      <label>Formulärtitel *</label>
+      <input type="text" id="fTitel" placeholder="T.ex. Kursanmälan HT 2025" oninput="uppdateraFörhandsgranskning()">
+    </div>
+    <div class="field-group">
+      <label>Beskrivning</label>
+      <textarea id="fDesc" placeholder="Kort beskrivning av kursen..." oninput="uppdateraFörhandsgranskning()"></textarea>
+    </div>
+    <div class="field-group row">
+      <label>Max anmälningar</label>
+      <input type="number" id="fMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdateraFörhandsgranskning()">
+    </div>
+
+    <hr class="section-divider">
+    <div class="field-group"><label>Lägg till fält</label></div>
+    <div class="add-field-bar">
+      <button class="add-field-btn" onclick="laggTillFalt('text')">+ Text</button>
+      <button class="add-field-btn" onclick="laggTillFalt('email')">+ E-post</button>
+      <button class="add-field-btn" onclick="laggTillFalt('tel')">+ Telefon</button>
+      <button class="add-field-btn" onclick="laggTillFalt('textarea')">+ Fritext</button>
+      <button class="add-field-btn" onclick="laggTillFalt('radio')">+ Flerval</button>
+      <button class="add-field-btn" onclick="laggTillFalt('select')">+ Dropdown</button>
+      <button class="add-field-btn" onclick="laggTillFalt('checkbox')">+ Kryssruta</button>
+    </div>
+
+    <div class="fields-list" id="faltLista"></div>
+
+    <div class="panel-actions">
+      <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara & generera länk</button>
+      <button class="btn btn-outline" onclick="uppdateraFörhandsgranskning()">↻ Uppdatera förhandsgranskning</button>
+    </div>
+    <div class="status-msg" id="byggStatus"></div>
+    <div class="share-card" id="delaCard">
+      <h4>Formuläret är sparat!</h4>
+      <div class="url-row">
+        <input type="text" id="shareUrl" readonly>
+        <button class="btn btn-mid" onclick="kopieraUrl()">Kopiera</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="panel-right">
+    <div class="preview-header">
+      <span class="preview-label">Förhandsgranskning</span>
+      <span class="preview-badge">Live</span>
+    </div>
+    <div class="preview-card" id="previewCard">
+      <div class="preview-empty">Fyll i titeln och lägg till fält för att se en förhandsgranskning.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Default fields
+let falt = [
+  { id: Date.now()+'1', typ: 'text',  namn: 'Namn',          placeholder: 'För- och efternamn', obligatorisk: true },
+  { id: Date.now()+'2', typ: 'email', namn: 'E-post',         placeholder: 'din@email.se',       obligatorisk: true },
+  { id: Date.now()+'3', typ: 'tel',   namn: 'Telefonnummer',  placeholder: '070-000 00 00',       obligatorisk: true },
+];
+
+const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta' };
+
+function laggTillFalt(typ) {
+  const defaults = {
+    radio:    'Välj ett alternativ',
+    select:   'Välj',
+    checkbox: 'Jag godkänner',
+    text:     'Nytt textfält',
+    email:    'E-postadress',
+    tel:      'Telefonnummer',
+    textarea: 'Fritext',
+  };
+  falt.push({ id: Date.now()+'', typ, namn: defaults[typ] || 'Nytt fält', placeholder: '', obligatorisk: false, alternativ: typ==='radio'||typ==='select' ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '' });
+  renderaFaltlista();
+  uppdateraFörhandsgranskning();
+}
+
+function taBortFalt(id) {
+  falt = falt.filter(f => f.id !== id);
+  renderaFaltlista();
+  uppdateraFörhandsgranskning();
+}
+
+function uppdFalt(id, key, val) {
+  const f = falt.find(x => x.id === id);
+  if (f) f[key] = key === 'obligatorisk' ? val : val;
+  uppdateraFörhandsgranskning();
+}
+
+function renderaFaltlista() {
+  const lista = document.getElementById('faltLista');
+  if (!falt.length) { lista.innerHTML = '<p style="color:var(--text-lt);font-size:0.85rem;text-align:center;padding:1rem 0;">Inga fält tillagda.</p>'; return; }
+  lista.innerHTML = falt.map((f, i) => `
+    <div class="field-row" draggable="true" data-id="${f.id}" ondragstart="dragStart(event,${i})" ondragover="dragOver(event)" ondrop="drop(event,${i})">
+      <div class="field-row-drag" title="Dra för att ändra ordning">⠿</div>
+      <div class="field-row-body">
+        <div class="field-row-top">
+          <span class="field-type-badge">${TYPLABELS[f.typ]}</span>
+          <input type="text" value="${escHtml(f.namn)}" onchange="uppdFalt('${f.id}','namn',this.value)" oninput="uppdFalt('${f.id}','namn',this.value)" placeholder="Fältetikett">
+        </div>
+        <div class="field-row-opts">
+          ${f.typ !== 'radio' && f.typ !== 'select' && f.typ !== 'checkbox' ? `<input type="text" value="${escHtml(f.placeholder||'')}" onchange="uppdFalt('${f.id}','placeholder',this.value)" placeholder="Platshållartext">` : ''}
+          <label class="field-checkbox-label">
+            <input type="checkbox" ${f.obligatorisk?'checked':''} onchange="uppdFalt('${f.id}','obligatorisk',this.checked)"> Obligatorisk
+          </label>
+        </div>
+        ${f.typ==='radio'||f.typ==='select' ? `
+        <div class="options-edit">
+          <textarea onchange="uppdFalt('${f.id}','alternativ',this.value)" oninput="uppdFalt('${f.id}','alternativ',this.value)" placeholder="Ett alternativ per rad">${escHtml(f.alternativ||'')}</textarea>
+          <span>Ett alternativ per rad</span>
+        </div>` : ''}
+      </div>
+      <div class="field-row-actions">
+        <button class="icon-btn" onclick="taBortFalt('${f.id}')" title="Ta bort">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Drag-and-drop
+let dragIdx = null;
+function dragStart(e, i) { dragIdx = i; e.dataTransfer.effectAllowed = 'move'; }
+function dragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function drop(e, i) {
+  e.preventDefault();
+  if (dragIdx === null || dragIdx === i) return;
+  const item = falt.splice(dragIdx, 1)[0];
+  falt.splice(i, 0, item);
+  dragIdx = null;
+  renderaFaltlista();
+  uppdateraFörhandsgranskning();
+}
+
+function uppdateraFörhandsgranskning() {
+  const titel = document.getElementById('fTitel').value.trim();
+  const desc  = document.getElementById('fDesc').value.trim();
+  const max   = document.getElementById('fMax').value;
+  const card  = document.getElementById('previewCard');
+
+  if (!titel && !falt.length) {
+    card.innerHTML = '<div class="preview-empty">Fyll i titeln och lägg till fält för att se en förhandsgranskning.</div>';
+    return;
+  }
+
+  let html = '';
+  if (titel) html += `<div class="preview-form-title">${escHtml(titel)}</div>`;
+  if (desc)  html += `<div class="preview-form-desc">${escHtml(desc)}</div>`;
+  if (max)   html += `<div class="preview-max-badge">Max ${max} anmälningar</div>`;
+
+  falt.forEach(f => {
+    const req = f.obligatorisk ? '<span class="req">*</span>' : '';
+    html += `<div class="preview-field"><label>${escHtml(f.namn)} ${req}</label>`;
+    if (f.typ === 'text')     html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
+    else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
+    else if (f.typ === 'tel')   html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
+    else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
+    else if (f.typ === 'checkbox') html += `<div class="preview-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
+    else if (f.typ === 'radio') {
+      const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+      html += `<div class="preview-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${f.id}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
+    } else if (f.typ === 'select') {
+      const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+      html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a.trim())}</option>`).join('')}</select>`;
+    }
+    html += `</div>`;
+  });
+
+  if (falt.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
+  card.innerHTML = html;
+}
+
+async function sparaOchVisaDela() {
+  const titel = document.getElementById('fTitel').value.trim();
+  if (!titel) { visa('byggStatus','err','Fyll i en formulärtitel.'); return; }
+  if (!falt.length) { visa('byggStatus','err','Lägg till minst ett fält.'); return; }
+  const url = localStorage.getItem('urlSparaFormular');
+  if (!url) { visa('byggStatus','err','Ange webhook-URL för "Spara formulär" i adminpanelen.'); return; }
+  visa('byggStatus','info','Sparar...');
+  try {
+    const payload = {
+      titel,
+      desc: document.getElementById('fDesc').value.trim(),
+      max: document.getElementById('fMax').value || null,
+      falt: falt.map(f => ({ id: f.id, typ: f.typ, namn: f.namn, placeholder: f.placeholder||'', obligatorisk: f.obligatorisk||false, alternativ: f.alternativ||'' }))
+    };
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!data.id) throw new Error('Ogiltigt svar från servern');
+    const base = location.origin + location.pathname.replace('formular.html','');
+    const shareUrl = base + 'formularsida.html?form=' + data.id;
+    document.getElementById('shareUrl').value = shareUrl;
+    document.getElementById('delaCard').style.display = 'block';
+    visa('byggStatus','ok','Formuläret är sparat!');
+  } catch(e) {
+    visa('byggStatus','err','Fel: ' + e.message);
+  }
+}
+
+function kopieraUrl() {
+  const input = document.getElementById('shareUrl');
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.querySelector('#delaCard .btn-mid');
+    btn.textContent = '✓ Kopierat';
+    setTimeout(() => btn.textContent = 'Kopiera', 2000);
+  });
+}
+
+function visa(id, typ, text) {
+  const el = document.getElementById(id);
+  el.className = 'status-msg ' + typ;
+  el.textContent = text;
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderaFaltlista();
+  uppdateraFörhandsgranskning();
+});
+</script>
+</body>
+</html>

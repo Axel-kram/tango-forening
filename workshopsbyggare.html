@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tango Norteño — Workshopsbyggare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--shadow:0 2px 12px rgba(74,44,26,0.13);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;}
+  .topbar{background:var(--brown);color:var(--cream);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .topbar-logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.04em;}
+  .topbar-logo span{font-style:italic;color:var(--brown-lt);}
+  .topbar-nav{display:flex;gap:0.5rem;}
+  .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s;text-decoration:none;display:inline-block;}
+  .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
+
+  .layout{display:grid;grid-template-columns:440px 1fr;min-height:calc(100vh - 64px);}
+  @media(max-width:950px){.layout{grid-template-columns:1fr;}}
+
+  .panel-left{background:var(--cream);border-right:1px solid var(--border);padding:2rem 1.8rem;overflow-y:auto;}
+  .panel-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:1.5rem;}
+
+  .field-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
+  .field-group label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);}
+  .field-group input,.field-group textarea{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;color:var(--text);transition:border-color 0.2s;width:100%;}
+  .field-group input:focus,.field-group textarea:focus{outline:none;border-color:var(--brown-mid);}
+  .field-group.row{flex-direction:row;align-items:center;gap:0.8rem;}
+  .field-group.row label{white-space:nowrap;margin:0;}
+  .field-group textarea{resize:vertical;min-height:70px;}
+
+  .section-divider{border:none;border-top:1px solid var(--border);margin:1.3rem 0;}
+  .section-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-lt);margin-bottom:0.8rem;}
+
+  /* WORKSHOPS LIST */
+  .ws-list{display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem;}
+  .ws-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.85rem 1rem;animation:fadeIn 0.2s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
+  .ws-item-header{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.6rem;}
+  .ws-number{background:var(--brown-mid);color:var(--cream);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;}
+  .ws-item-header input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.2rem 0.1rem;font-size:0.92rem;font-weight:700;color:var(--text);}
+  .ws-item-header input:focus{outline:none;border-bottom-color:var(--brown-mid);}
+  .ws-item-footer{display:flex;align-items:center;gap:1rem;}
+  .ws-item-footer label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);}
+  .ws-item-footer input[type=number]{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.5rem;font-size:0.85rem;width:90px;color:var(--text);}
+  .ws-item-footer input[type=number]:focus{outline:none;border-color:var(--brown-mid);}
+  .icon-btn{background:none;border:none;cursor:pointer;padding:0.2rem;color:var(--brown-lt);font-size:1rem;transition:color 0.15s;flex-shrink:0;}
+  .icon-btn:hover{color:var(--danger);}
+  .add-ws-btn{background:var(--surface);border:2px dashed var(--border);border-radius:7px;padding:0.7rem;width:100%;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:700;color:var(--brown-mid);text-transform:uppercase;letter-spacing:0.05em;transition:background 0.2s,border-color 0.2s;}
+  .add-ws-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
+
+  /* INFO BOX */
+  .info-box{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;margin-bottom:1.2rem;font-size:0.82rem;color:var(--text-lt);line-height:1.5;}
+  .info-box strong{color:var(--brown-mid);}
+
+  .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;width:100%;}
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:scale(0.98);}
+  .btn-brown{background:var(--brown);color:var(--cream);}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown-mid);}
+
+  .status-msg{margin-top:0.7rem;font-size:0.85rem;padding:0.5rem 0.8rem;border-radius:5px;display:none;}
+  .status-msg.ok{background:#e6f0ea;color:var(--success);display:block;}
+  .status-msg.err{background:#f5e6e6;color:var(--danger);display:block;}
+  .status-msg.info{background:var(--surface2);color:var(--text-lt);display:block;}
+
+  .share-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:1.1rem;margin-top:0.8rem;display:none;}
+  .share-card h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.6rem;}
+  .url-row{display:flex;gap:0.5rem;align-items:center;}
+  .url-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;font-family:monospace;color:var(--text-lt);}
+  .url-row .btn{width:auto;padding:0.45rem 0.9rem;font-size:0.8rem;}
+
+  /* PREVIEW */
+  .panel-right{background:var(--bg);padding:2rem 2.5rem;overflow-y:auto;}
+  .preview-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+  .preview-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-lt);}
+  .preview-badge{background:var(--brown-lt);color:var(--cream);font-size:0.72rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:20px;text-transform:uppercase;letter-spacing:0.05em;}
+  .preview-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:2.2rem;max-width:600px;box-shadow:var(--shadow);}
+  .preview-event-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--brown);margin-bottom:0.4rem;}
+  .preview-event-desc{color:var(--text-lt);font-size:0.92rem;margin-bottom:1.5rem;line-height:1.5;}
+
+  /* Workshop sections in preview */
+  .prev-ws-block{border:1px solid var(--border);border-radius:8px;margin-bottom:1.2rem;overflow:hidden;}
+  .prev-ws-header{background:var(--brown);color:var(--cream);padding:0.75rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
+  .prev-ws-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
+  .prev-ws-header .slots{font-size:0.78rem;opacity:0.75;}
+  .prev-ws-body{padding:1rem 1.1rem;}
+  .prev-field{margin-bottom:0.9rem;}
+  .prev-field label{display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
+  .prev-radio-group{display:flex;flex-direction:column;gap:0.35rem;}
+  .prev-radio-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+  .prev-partner-field{margin-top:0.7rem;padding:0.75rem;background:var(--surface2);border-radius:6px;}
+  .prev-partner-field input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;}
+  .preview-submit{background:var(--brown);color:var(--cream);border:none;border-radius:5px;padding:0.75rem 2rem;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:0.5rem;letter-spacing:0.05em;width:100%;}
+  .preview-empty{color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:2rem 0;}
+  .prev-personal{background:var(--surface2);border-radius:7px;padding:1rem 1.1rem;margin-bottom:1.3rem;}
+  .prev-personal h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.8rem;}
+  .prev-personal input[type=text],.prev-personal input[type=email],.prev-personal input[type=tel]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;margin-bottom:0.6rem;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Tango <span>Norteño</span></div>
+  <nav class="topbar-nav">
+    <a class="nav-btn" href="index.html">Admin</a>
+    <a class="nav-btn" href="formular.html">Formulärbyggare</a>
+    <a class="nav-btn active" href="workshopsbyggare.html">Workshopsbyggare</a>
+  </nav>
+</div>
+
+<div class="layout">
+  <!-- LEFT: BUILDER -->
+  <div class="panel-left">
+    <h2 class="panel-title">Nytt workshopevent</h2>
+
+    <div class="field-group">
+      <label>Eventnamn *</label>
+      <input type="text" id="wTitel" placeholder="T.ex. Milonga-helg November 2025" oninput="uppdateraFörhandsgranskning()">
+    </div>
+    <div class="field-group">
+      <label>Beskrivning</label>
+      <textarea id="wDesc" placeholder="Kort beskrivning av eventet..." oninput="uppdateraFörhandsgranskning()"></textarea>
+    </div>
+    <div class="field-group row">
+      <label>Global max (hela eventet)</label>
+      <input type="number" id="wMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdateraFörhandsgranskning()">
+    </div>
+
+    <hr class="section-divider">
+    <div class="info-box">
+      <strong>Fast fältstruktur per workshop:</strong> Roll (Förare / Följare / Dubbeldansare), har du en namngiven partner (Ja / Nej), och om ja: partnerns telefonnummer för automatisk ihopkoppling.
+    </div>
+
+    <div class="section-label">Workshops i detta event</div>
+    <div class="ws-list" id="wsLista"></div>
+    <button class="add-ws-btn" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
+
+    <div class="panel-actions">
+      <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara & generera länk</button>
+      <button class="btn btn-outline" onclick="uppdateraFörhandsgranskning()">↻ Uppdatera förhandsgranskning</button>
+    </div>
+    <div class="status-msg" id="byggStatus"></div>
+    <div class="share-card" id="delaCard">
+      <h4>Eventet är sparat!</h4>
+      <div class="url-row">
+        <input type="text" id="shareUrl" readonly>
+        <button class="btn btn-brown" style="width:auto;" onclick="kopieraUrl()">Kopiera</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="panel-right">
+    <div class="preview-header">
+      <span class="preview-label">Förhandsgranskning</span>
+      <span class="preview-badge">Live</span>
+    </div>
+    <div class="preview-card" id="previewCard">
+      <div class="preview-empty">Fyll i eventnamn och lägg till workshops för att se förhandsgranskning.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let workshops = [];
+
+function laggTillWorkshop() {
+  workshops.push({ id: Date.now()+'', namn: 'Workshop ' + (workshops.length + 1), max: '' });
+  renderaWsLista();
+  uppdateraFörhandsgranskning();
+}
+
+function taBortWs(id) {
+  workshops = workshops.filter(w => w.id !== id);
+  renderaWsLista();
+  uppdateraFörhandsgranskning();
+}
+
+function uppdWs(id, key, val) {
+  const w = workshops.find(x => x.id === id);
+  if (w) w[key] = val;
+  uppdateraFörhandsgranskning();
+}
+
+function renderaWsLista() {
+  const lista = document.getElementById('wsLista');
+  if (!workshops.length) { lista.innerHTML = ''; return; }
+  lista.innerHTML = workshops.map((w, i) => `
+    <div class="ws-item">
+      <div class="ws-item-header">
+        <div class="ws-number">${i+1}</div>
+        <input type="text" value="${escHtml(w.namn)}" onchange="uppdWs('${w.id}','namn',this.value)" oninput="uppdWs('${w.id}','namn',this.value)" placeholder="Workshopnamn">
+        <button class="icon-btn" onclick="taBortWs('${w.id}')" title="Ta bort">✕</button>
+      </div>
+      <div class="ws-item-footer">
+        <label>Max deltagare</label>
+        <input type="number" min="1" max="999" value="${escHtml(w.max||'')}" onchange="uppdWs('${w.id}','max',this.value)" oninput="uppdWs('${w.id}','max',this.value)" placeholder="Ej begränsat">
+      </div>
+    </div>
+  `).join('');
+}
+
+function uppdateraFörhandsgranskning() {
+  const titel = document.getElementById('wTitel').value.trim();
+  const desc  = document.getElementById('wDesc').value.trim();
+  const max   = document.getElementById('wMax').value;
+  const card  = document.getElementById('previewCard');
+
+  if (!titel && !workshops.length) {
+    card.innerHTML = '<div class="preview-empty">Fyll i eventnamn och lägg till workshops för att se förhandsgranskning.</div>';
+    return;
+  }
+
+  let html = '';
+  if (titel) html += `<div class="preview-event-title">${escHtml(titel)}</div>`;
+  if (desc)  html += `<div class="preview-event-desc">${escHtml(desc)}</div>`;
+
+  // Personal info section
+  html += `<div class="prev-personal">
+    <h4>Dina uppgifter</h4>
+    <div class="prev-field"><label>Namn *</label><input type="text" placeholder="För- och efternamn"></div>
+    <div class="prev-field"><label>E-post *</label><input type="email" placeholder="din@email.se"></div>
+    <div class="prev-field"><label>Telefonnummer *</label><input type="tel" placeholder="070-000 00 00"></div>
+  </div>`;
+
+  if (workshops.length === 0) {
+    html += `<div style="color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:1.5rem 0;">Lägg till workshops i byggaren.</div>`;
+  } else {
+    workshops.forEach((ws, i) => {
+      html += `<div class="prev-ws-block">
+        <div class="prev-ws-header">
+          <h3>${escHtml(ws.namn || 'Workshop ' + (i+1))}</h3>
+          ${ws.max ? `<span class="slots">Max ${ws.max} platser</span>` : ''}
+        </div>
+        <div class="prev-ws-body">
+          <div class="prev-field">
+            <label>Roll</label>
+            <div class="prev-radio-group">
+              <label><input type="radio" name="prev_roll_${i}"> Förare</label>
+              <label><input type="radio" name="prev_roll_${i}"> Följare</label>
+              <label><input type="radio" name="prev_roll_${i}"> Dubbeldansare</label>
+              <label><input type="radio" name="prev_roll_${i}"> Hoppa över denna workshop</label>
+            </div>
+          </div>
+          <div class="prev-field">
+            <label>Har du en namngiven partner?</label>
+            <div class="prev-radio-group">
+              <label><input type="radio" name="prev_partner_${i}"> Ja, jag har en partner</label>
+              <label><input type="radio" name="prev_partner_${i}"> Nej, jag vill bli ihopkopplad</label>
+            </div>
+          </div>
+          <div class="prev-partner-field">
+            <div class="prev-field"><label>Partnerns telefonnummer</label><input type="tel" placeholder="070-000 00 00"></div>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if (workshops.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
+  card.innerHTML = html;
+}
+
+async function sparaOchVisaDela() {
+  const titel = document.getElementById('wTitel').value.trim();
+  if (!titel) { visa('byggStatus','err','Fyll i ett eventnamn.'); return; }
+  if (!workshops.length) { visa('byggStatus','err','Lägg till minst en workshop.'); return; }
+  const url = localStorage.getItem('urlSparaWorkshop');
+  if (!url) { visa('byggStatus','err','Ange webhook-URL för "Spara workshop" i adminpanelen.'); return; }
+  visa('byggStatus','info','Sparar...');
+  try {
+    const payload = {
+      titel,
+      desc: document.getElementById('wDesc').value.trim(),
+      max: document.getElementById('wMax').value || null,
+      workshops_json: JSON.stringify(workshops.map(w => ({ namn: w.namn, max: w.max || null })))
+    };
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!data.id) throw new Error('Ogiltigt svar från servern');
+    const base = location.origin + location.pathname.replace('workshopsbyggare.html','');
+    const shareUrl = base + 'workshopsida.html?event=' + data.id;
+    document.getElementById('shareUrl').value = shareUrl;
+    document.getElementById('delaCard').style.display = 'block';
+    visa('byggStatus','ok','Eventet är sparat!');
+  } catch(e) {
+    visa('byggStatus','err','Fel: ' + e.message);
+  }
+}
+
+function kopieraUrl() {
+  const input = document.getElementById('shareUrl');
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.querySelector('#delaCard .btn-brown');
+    btn.textContent = '✓ Kopierat';
+    setTimeout(() => btn.textContent = 'Kopiera', 2000);
+  });
+}
+
+function visa(id, typ, text) {
+  const el = document.getElementById(id);
+  el.className = 'status-msg ' + typ;
+  el.textContent = text;
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+window.addEventListener('DOMContentLoaded', () => {
+  uppdateraFörhandsgranskning();
+});
+</script>
+</body>
+</html>

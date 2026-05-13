@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tango Norteño — Workshop-anmälan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem;}
+  .brand{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown-lt);letter-spacing:0.06em;margin-bottom:2rem;text-align:center;}
+  .brand span{font-style:italic;}
+  .card{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:2.2rem 2.5rem;width:100%;max-width:640px;box-shadow:0 4px 24px rgba(74,44,26,0.12);}
+  .event-title{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);margin-bottom:0.4rem;line-height:1.2;}
+  .event-desc{color:var(--text-lt);font-size:0.95rem;margin-bottom:1.5rem;line-height:1.6;}
+  .section-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+  .section-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown);margin-bottom:1rem;}
+
+  /* PERSONAL FIELDS */
+  .field{margin-bottom:1rem;}
+  .field label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
+  .field .req{color:var(--accent);}
+  .field input[type=text],.field input[type=email],.field input[type=tel]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
+  .field input:focus{outline:none;border-color:var(--brown-mid);}
+  .field-error{color:var(--danger);font-size:0.8rem;margin-top:0.3rem;display:none;}
+  .field.invalid input{border-color:var(--danger);}
+  .field.invalid .field-error{display:block;}
+
+  /* WORKSHOP BLOCKS */
+  .ws-block{border:1px solid var(--border);border-radius:9px;margin-bottom:1.3rem;overflow:hidden;}
+  .ws-block-header{background:var(--brown);color:var(--cream);padding:0.8rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .ws-block-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
+  .ws-slots{font-size:0.78rem;opacity:0.75;}
+  .ws-full-badge{background:var(--accent);color:#fff;font-size:0.7rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:3px;text-transform:uppercase;}
+  .ws-block-body{padding:1.1rem 1.2rem;}
+
+  .radio-field{margin-bottom:1rem;}
+  .radio-field > label{display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.4rem;}
+  .radio-group{display:flex;flex-direction:column;gap:0.4rem;}
+  .radio-group label{font-size:0.92rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.6rem;cursor:pointer;}
+  .radio-group input[type=radio]{accent-color:var(--brown-mid);}
+
+  .partner-section{margin-top:0.8rem;background:var(--surface2);border-radius:7px;padding:0.9rem 1rem;}
+  .partner-section .partner-label{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.5rem;}
+  .partner-tel-row{margin-top:0.7rem;display:none;}
+  .partner-tel-row label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);display:block;margin-bottom:0.3rem;}
+  .partner-tel-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;}
+  .partner-tel-row input:focus{outline:none;border-color:var(--brown-mid);}
+
+  .full-notice{background:#f5e0d0;border:1px solid #d4956e;border-radius:6px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--accent);font-weight:700;}
+
+  .submit-btn{background:var(--brown);color:var(--cream);border:none;border-radius:6px;padding:0.9rem 2.5rem;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em;transition:filter 0.2s;width:100%;margin-top:0.5rem;}
+  .submit-btn:hover{filter:brightness(1.1);}
+  .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+  .msg{text-align:center;padding:2rem 1rem;}
+  .msg .icon{font-size:2.5rem;margin-bottom:0.7rem;}
+  .msg h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:0.5rem;}
+  .msg p{color:var(--text-lt);font-size:0.95rem;}
+  .spinner{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:3rem 0;}
+  .spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brown-mid);border-radius:50%;animation:spin 0.7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="brand">Tango <span>Norteño</span></div>
+<div class="card" id="mainCard">
+  <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar event...</p></div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const evId = params.get('event');
+let eventData = null;
+let wsData = [];
+
+async function laddaEvent() {
+  if (!evId) { visaFel('Inget event-ID angivet.'); return; }
+  const hamtaUrl = localStorage.getItem('urlHamtaWorkshop');
+  if (!hamtaUrl) { visaFel('Systemkonfiguration saknas. Kontakta administratören.'); return; }
+  try {
+    const res = await fetch(hamtaUrl + '?id=' + evId);
+    const data = await res.json();
+    if (data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
+    eventData = data;
+    eventData.workshops = typeof data.workshops_json === 'string' ? JSON.parse(data.workshops_json) : (data.workshops || []);
+    visaEvent(eventData);
+  } catch(e) {
+    visaFel('Kunde inte ladda eventet. Försök igen.');
+  }
+}
+
+function visaEvent(ev) {
+  const card = document.getElementById('mainCard');
+  let html = `<div class="event-title">${escHtml(ev.titel)}</div>`;
+  if (ev.desc) html += `<div class="event-desc">${escHtml(ev.desc)}</div>`;
+
+  // Personal info
+  html += `<div class="section-title">Dina uppgifter</div>
+  <div class="field" id="f_namn">
+    <label>Namn <span class="req">*</span></label>
+    <input type="text" id="inp_namn" placeholder="För- och efternamn">
+    <div class="field-error">Namn är obligatoriskt.</div>
+  </div>
+  <div class="field" id="f_email">
+    <label>E-post <span class="req">*</span></label>
+    <input type="email" id="inp_email" placeholder="din@email.se">
+    <div class="field-error">E-post är obligatorisk.</div>
+  </div>
+  <div class="field" id="f_tel">
+    <label>Telefonnummer <span class="req">*</span></label>
+    <input type="tel" id="inp_tel" placeholder="070-000 00 00">
+    <div class="field-error">Telefonnummer är obligatoriskt.</div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="section-title">Välj roll per workshop</div>`;
+
+  // Workshop blocks
+  ev.workshops.forEach((ws, i) => {
+    const max = ws.max ? parseInt(ws.max) : null;
+    const anmalda = parseInt(ws.anmalda) || 0;
+    const full = max && anmalda >= max;
+    html += `<div class="ws-block">
+      <div class="ws-block-header">
+        <h3>${escHtml(ws.namn || 'Workshop ' + (i+1))}</h3>
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          ${max ? `<span class="ws-slots">Platser: ${Math.max(0,max-anmalda)}/${max}</span>` : ''}
+          ${full ? '<span class="ws-full-badge">Fullt</span>' : ''}
+        </div>
+      </div>
+      <div class="ws-block-body">
+        ${full ? `<div class="full-notice">Denna workshop är fullbokad.</div>` : `
+        <div class="radio-field">
+          <label>Roll</label>
+          <div class="radio-group">
+            <label><input type="radio" name="roll_${i}" value="Förare"> Förare</label>
+            <label><input type="radio" name="roll_${i}" value="Följare"> Följare</label>
+            <label><input type="radio" name="roll_${i}" value="Dubbeldansare"> Dubbeldansare</label>
+            <label><input type="radio" name="roll_${i}" value="Hoppa över"> Hoppa över denna workshop</label>
+          </div>
+        </div>
+        <div class="partner-section">
+          <div class="partner-label">Har du en namngiven partner?</div>
+          <div class="radio-group">
+            <label><input type="radio" name="partner_${i}" value="ja" onchange="togglePartnerTel(${i},true)"> Ja, jag har en partner jag vill dansa med</label>
+            <label><input type="radio" name="partner_${i}" value="nej" onchange="togglePartnerTel(${i},false)" checked> Nej, koppla ihop mig med någon</label>
+          </div>
+          <div class="partner-tel-row" id="ptel_row_${i}">
+            <label>Partnerns telefonnummer</label>
+            <input type="tel" id="ptel_${i}" placeholder="070-000 00 00">
+          </div>
+        </div>`}
+      </div>
+    </div>`;
+  });
+
+  html += `<button class="submit-btn" onclick="skickaAnmalan()">Skicka anmälan</button>`;
+  card.innerHTML = html;
+}
+
+function togglePartnerTel(i, visa) {
+  const row = document.getElementById('ptel_row_' + i);
+  if (row) row.style.display = visa ? 'block' : 'none';
+}
+
+async function skickaAnmalan() {
+  let valid = true;
+
+  // Validate personal fields
+  const namn = document.getElementById('inp_namn')?.value.trim() || '';
+  const email = document.getElementById('inp_email')?.value.trim() || '';
+  const tel = document.getElementById('inp_tel')?.value.trim() || '';
+
+  ['f_namn','f_email','f_tel'].forEach((id, i) => {
+    const vals = [namn, email, tel];
+    const el = document.getElementById(id);
+    if (!vals[i]) { el?.classList.add('invalid'); valid = false; }
+    else el?.classList.remove('invalid');
+  });
+
+  if (!valid) return;
+
+  const webhookUrl = eventData.webhook_url;
+  if (!webhookUrl) { alert('Systemfel: webhook-URL saknas.'); return; }
+
+  // Build data payload
+  const wsDataArr = eventData.workshops.map((ws, i) => {
+    const wsKey = 'w' + (i + 1);
+    const rollEl = document.querySelector(`input[name="roll_${i}"]:checked`);
+    const partnerEl = document.querySelector(`input[name="partner_${i}"]:checked`);
+    const roll = rollEl ? rollEl.value : 'Hoppa över';
+    const harPartner = partnerEl ? partnerEl.value : 'nej';
+    const partnerTel = harPartner === 'ja' ? (document.getElementById('ptel_' + i)?.value.trim() || '') : '';
+    return { workshop: wsKey, workshopNamn: ws.namn, max: ws.max, roll, harPartner, partnerTel };
+  });
+
+  const data = [
+    { label: 'Namn', value: namn },
+    { label: 'E-post', value: email },
+    { label: 'Telefonnummer', value: tel },
+    ...wsDataArr.flatMap(ws => [
+      { label: `${ws.workshop} - roll`, value: ws.roll },
+      { label: `${ws.workshop} - har partner`, value: ws.harPartner },
+      { label: `${ws.workshop} - partners telefon`, value: ws.partnerTel },
+      { label: `${ws.workshop} - namn`, value: ws.workshopNamn },
+    ])
+  ];
+
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Skickar...';
+
+  try {
+    const payload = { event_id: evId, data };
+    await fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    document.getElementById('mainCard').innerHTML = `
+      <div class="msg">
+        <div class="icon">✦</div>
+        <h2>Tack för din anmälan!</h2>
+        <p>Vi återkommer med bekräftelse och partnermatchning.</p>
+      </div>`;
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Skicka anmälan';
+    alert('Fel vid skickning. Försök igen.');
+  }
+}
+
+function visaFel(msg) {
+  document.getElementById('mainCard').innerHTML = `<div class="msg"><div class="icon">✦</div><h2>Eventet hittades inte</h2><p>${msg}</p></div>`;
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+laddaEvent();
+</script>
+</body>
+</html>
