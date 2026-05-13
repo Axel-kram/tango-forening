@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshopanmälan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brown:      #3B2314;
+      --brown-mid:  #5C3720;
+      --brown-light:#8B5E3C;
+      --beige:      #C9A87C;
+      --cream:      #F5EFE6;
+      --cream-dark: #EDE4D5;
+      --text:       #2A1A0E;
+      --text-muted: #7A5C44;
+      --border:     #D4B896;
+      --white:      #FDFAF6;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    .hero {
+      background: var(--brown);
+      padding: 3.5rem 1.5rem 4rem;
+      text-align: center;
+      border-bottom: 3px solid var(--beige);
+    }
+    .hero-logo { font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--beige); margin-bottom: 1.5rem; opacity: 0.7; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 700; color: var(--cream); line-height: 1.15; margin-bottom: 0.9rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+    .hero .desc { color: var(--beige); font-size: 0.95rem; max-width: 460px; margin: 0 auto; line-height: 1.6; opacity: 0.88; }
+
+    .form-wrap { max-width: 580px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* Section heading for participant info */
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--brown);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Participant fields */
+    .falt-block { margin-bottom: 1.4rem; animation: fadeUp 0.3s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    .falt-block label { display: block; font-size: 1rem; font-weight: 500; color: var(--brown); margin-bottom: 0.5rem; }
+    .required-star { color: var(--brown-light); margin-left: 0.15rem; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea {
+      width: 100%; padding: 0.75rem 0.9rem; border: 1.5px solid var(--border); border-radius: 5px;
+      background: var(--white); color: var(--text); font-family: 'Jost', sans-serif; font-size: 0.95rem; font-weight: 300;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--brown-light); box-shadow: 0 0 0 3px rgba(139,94,60,0.12); }
+
+    /* Workshop card – Tally style */
+    .ws-block {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-left: 4px solid var(--brown-light);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.3s ease both;
+    }
+    .ws-block h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--brown);
+      margin-bottom: 0.25rem;
+    }
+    .ws-max { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.1rem; }
+    .ws-block .falt-label { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--brown-mid); margin-bottom: 0.5rem; display: block; }
+
+    .choice-list { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1rem; }
+    .choice-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      background: var(--cream); border: 1.5px solid var(--border); border-radius: 5px;
+      padding: 0.65rem 1rem; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .choice-item:hover { border-color: var(--brown-light); background: var(--cream-dark); }
+    .choice-item input[type="radio"] { width: auto; accent-color: var(--brown); }
+    .choice-item span { font-size: 0.92rem; }
+
+    .partner-falt { display: none; margin-top: 0.2rem; margin-bottom: 0; }
+    .partner-falt input { margin-bottom: 0; }
+
+    .submit-btn {
+      width: 100%; background: var(--brown); color: var(--cream); border: none;
+      padding: 0.9rem 1.5rem; border-radius: 5px; cursor: pointer; font-family: 'Jost', sans-serif;
+      font-size: 0.9rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-top: 0.5rem; transition: background 0.2s;
+    }
+    .submit-btn:hover { background: var(--brown-mid); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .status-msg { margin-top: 1.2rem; text-align: center; font-size: 0.9rem; padding: 1rem; border-radius: 6px; }
+    .ok-msg  { background: #e8f3ec; color: #2d6b3e; border: 1px solid #b8ddc5; }
+    .err-msg { background: #fdecea; color: #a0302a; border: 1px solid #f0b8b3; }
+
+    #laddning { text-align: center; padding: 5rem 1rem; color: var(--text-muted); }
+    #ejHittat { text-align: center; padding: 5rem 1rem; }
+    #ejHittat h2 { font-family:'Cormorant Garamond',serif; color: var(--brown); margin-bottom:0.8rem; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0; }
+  </style>
+</head>
+<body>
+
+  <div id="laddning"><p style="font-size:0.9rem;">Laddar event...</p></div>
+
+  <div id="innehall" style="display:none">
+    <div class="hero">
+      <div class="hero-logo">Tango Norteño</div>
+      <h1 id="evTitel">Workshopanmälan</h1>
+      <p id="evDesc" class="desc"></p>
+    </div>
+    <div class="form-wrap">
+      <div class="section-heading">Dina uppgifter</div>
+      <div id="deltagarContainer"></div>
+
+      <hr class="divider" />
+      <div class="section-heading">Välj workshops</div>
+      <div id="wsContainer"></div>
+
+      <button class="submit-btn" id="skickaBtn" onclick="skickaAnmalan()">Skicka anmälan</button>
+      <div id="formStatus" style="display:none"></div>
+    </div>
+  </div>
+
+  <div id="ejHittat" style="display:none">
+    <h2>Eventet hittades inte</h2>
+    <p>Kontrollera att länken är korrekt.</p>
+  </div>
+
+  <!-- ÄNDRA DENNA URL till din hamta_workshop-webhook i n8n -->
+  <script>
+    const HAMTA_WORKSHOP_URL = 'HAMTA_WORKSHOP_WEBHOOK_URL';
+
+    let evData = null, evId = null;
+
+    async function init() {
+      const params = new URLSearchParams(location.search);
+      evId = params.get('event');
+      if (!evId) { visaEjHittat(); return; }
+      try {
+        const res = await fetch(HAMTA_WORKSHOP_URL + '?id=' + evId);
+        const data = await res.json();
+        if (data.error || !data.titel) { visaEjHittat(); return; }
+        const workshops = JSON.parse(data.workshops_json || '[]');
+        // Support both new deltagarFalt and legacy namnFalt/telFalt
+        let deltagarFalt;
+        if (data.deltagarFalt) {
+          deltagarFalt = typeof data.deltagarFalt === 'string' ? JSON.parse(data.deltagarFalt) : data.deltagarFalt;
+        } else {
+          // Legacy fallback
+          deltagarFalt = [
+            { namn: data.namnFalt || 'Namn',    typ: 'text',  krav: true },
+            { namn: data.telFalt  || 'Telefon', typ: 'tel',   krav: false },
+          ];
+        }
+        evData = { ...data, workshops, deltagarFalt };
+        visaFormular(evData);
+      } catch(e) { visaEjHittat(); }
+    }
+
+    function visaEjHittat() {
+      document.getElementById('laddning').style.display = 'none';
+      document.getElementById('ejHittat').style.display = 'block';
+    }
+
+    function visaFormular(ev) {
+      document.getElementById('laddning').style.display = 'none';
+      document.getElementById('innehall').style.display = 'block';
+      document.getElementById('evTitel').textContent = ev.titel;
+      const descEl = document.getElementById('evDesc');
+      if (ev.desc) { descEl.textContent = ev.desc; } else { descEl.style.display = 'none'; }
+
+      // Render participant fields
+      const dContainer = document.getElementById('deltagarContainer');
+      dContainer.innerHTML = '';
+      ev.deltagarFalt.forEach((f, i) => {
+        const block = document.createElement('div');
+        block.className = 'falt-block';
+        block.style.animationDelay = (i * 0.04) + 's';
+        const kravSpan = f.krav ? '<span class="required-star">*</span>' : '';
+        block.innerHTML = `
+          <label for="deltFalt_${i}">${f.namn}${kravSpan}</label>
+          <input type="${f.typ || 'text'}" id="deltFalt_${i}" placeholder="${f.namn}" ${f.krav ? 'required' : ''} />
+        `;
+        dContainer.appendChild(block);
+      });
+
+      // Render workshop blocks
+      const wsContainer = document.getElementById('wsContainer');
+      wsContainer.innerHTML = '';
+      ev.workshops.forEach((ws, i) => {
+        const div = document.createElement('div');
+        div.className = 'ws-block';
+        div.style.animationDelay = ((ev.deltagarFalt.length + i) * 0.04) + 's';
+        div.innerHTML = `
+          <h2>${ws.namn}</h2>
+          <p class="ws-max">Max ${ws.max} deltagare</p>
+
+          <span class="falt-label">Roll *</span>
+          <div class="choice-list">
+            <label class="choice-item">
+              <input type="radio" name="ws_roll_${i}" value="Forare" required />
+              <span>Förare</span>
+            </label>
+            <label class="choice-item">
+              <input type="radio" name="ws_roll_${i}" value="Foljare" />
+              <span>Följare</span>
+            </label>
+            <label class="choice-item">
+              <input type="radio" name="ws_roll_${i}" value="Hoppa over" />
+              <span>Hoppa över</span>
+            </label>
+          </div>
+
+          <span class="falt-label">Namngiven partner?</span>
+          <div class="choice-list" style="margin-bottom:0.5rem;">
+            <label class="choice-item">
+              <input type="radio" name="ws_partner_${i}" value="nej" checked onchange="visaPartnerFalt(${i}, false)" />
+              <span>Nej</span>
+            </label>
+            <label class="choice-item">
+              <input type="radio" name="ws_partner_${i}" value="ja" onchange="visaPartnerFalt(${i}, true)" />
+              <span>Ja</span>
+            </label>
+          </div>
+          <div id="partner_falt_${i}" class="partner-falt">
+            <label for="ws_ptel_${i}" style="font-size:0.82rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--brown-mid);margin-bottom:0.4rem;display:block;">Partnerns telefonnummer</label>
+            <input type="tel" id="ws_ptel_${i}" placeholder="Partnerns telefon" />
+          </div>
+        `;
+        wsContainer.appendChild(div);
+      });
+    }
+
+    function visaPartnerFalt(i, show) {
+      document.getElementById('partner_falt_' + i).style.display = show ? 'block' : 'none';
+    }
+
+    async function skickaAnmalan() {
+      // Validate participant fields
+      const deltagarFalt = evData.deltagarFalt;
+      for (let i = 0; i < deltagarFalt.length; i++) {
+        const el = document.getElementById('deltFalt_' + i);
+        if (deltagarFalt[i].krav && el && !el.value.trim()) {
+          visaStatus('err-msg', 'Fyll i: ' + deltagarFalt[i].namn); return;
+        }
+      }
+
+      const btn = document.getElementById('skickaBtn');
+      btn.disabled = true; btn.textContent = 'Skickar...';
+
+      const deltagarData = deltagarFalt.map((f, i) => {
+        const el = document.getElementById('deltFalt_' + i);
+        return { label: f.namn, value: el ? el.value.trim() : '' };
+      });
+
+      const wsData = evData.workshops.map((ws, i) => {
+        const wsKey = 'w' + (i + 1);
+        const rollEl = document.querySelector(`input[name="ws_roll_${i}"]:checked`);
+        const partnerEl = document.querySelector(`input[name="ws_partner_${i}"]:checked`);
+        const roll = rollEl ? rollEl.value : 'Hoppa over';
+        const harPartner = partnerEl ? partnerEl.value : 'nej';
+        const partnerTel = document.getElementById('ws_ptel_' + i)?.value || '';
+        return {
+          workshop: wsKey, workshopNamn: ws.namn, max: ws.max,
+          roll, harPartner, partnerTel: harPartner === 'ja' ? partnerTel : ''
+        };
+      });
+
+      const payload = {
+        event_id: evId,
+        data: [
+          ...deltagarData,
+          ...wsData.flatMap(ws => [
+            { label: `${ws.workshop} - roll`,             value: ws.roll },
+            { label: `${ws.workshop} - har partner`,      value: ws.harPartner },
+            { label: `${ws.workshop} - partners telefon`, value: ws.partnerTel },
+            { label: `${ws.workshop} - namn`,             value: ws.workshopNamn }
+          ])
+        ]
+      };
+
+      try {
+        await fetch(evData.webhook_url, {
+          method: 'POST',
+          headers: {'Content-Type':'text/plain;charset=UTF-8'},
+          body: JSON.stringify(payload)
+        });
+        visaStatus('ok-msg', 'Tack for din anmalan! Vi hor av oss.');
+        // Reset participant fields
+        deltagarFalt.forEach((_, i) => { const el = document.getElementById('deltFalt_' + i); if (el) el.value = ''; });
+        btn.textContent = 'Skickat';
+      } catch(e) {
+        visaStatus('err-msg', 'Nagot gick fel. Forsok igen eller kontakta oss.');
+        btn.disabled = false; btn.textContent = 'Skicka anmälan';
+      }
+    }
+
+    function visaStatus(cls, msg) {
+      const el = document.getElementById('formStatus');
+      el.textContent = msg; el.className = 'status-msg ' + cls; el.style.display = 'block';
+    }
+
+    init();
+  </script>
+</body>
+</html>

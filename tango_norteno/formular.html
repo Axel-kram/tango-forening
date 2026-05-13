@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tango Norteño – Formulärbyggare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brown:      #3B2314;
+      --brown-mid:  #5C3720;
+      --brown-light:#8B5E3C;
+      --beige:      #C9A87C;
+      --cream:      #F5EFE6;
+      --cream-dark: #EDE4D5;
+      --text:       #2A1A0E;
+      --text-muted: #7A5C44;
+      --border:     #D4B896;
+      --white:      #FDFAF6;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); min-height: 100vh; }
+    .top-bar { background: var(--brown); color: var(--cream); padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--beige); }
+    .top-bar .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--beige); letter-spacing: 0.04em; }
+    nav a { color: var(--cream); text-decoration: none; margin-left: 1.5rem; font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; transition: opacity 0.2s; }
+    nav a:hover { opacity: 1; color: var(--beige); }
+    nav a.active { color: var(--beige); opacity: 1; }
+    .container { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; font-weight: 700; color: var(--brown); margin-bottom: 0.3rem; }
+    .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--brown-mid); margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    label { display: block; margin-bottom: 0.3rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brown-mid); }
+    input, select, textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 4px; background: var(--cream); color: var(--text); font-family: 'Jost', sans-serif; font-size: 0.9rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brown-light); background: var(--white); }
+    .check-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; font-weight: 300; text-transform: none; letter-spacing: 0; cursor: pointer; margin-bottom: 0.8rem; color: var(--text); }
+    .check-label input[type="checkbox"] { width: auto; margin: 0; }
+    button { background: var(--brown); color: var(--cream); border: none; padding: 0.6rem 1.4rem; border-radius: 4px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; margin-right: 0.5rem; margin-bottom: 0.5rem; transition: background 0.2s; }
+    button:hover { background: var(--brown-mid); }
+    button.del { background: #8a2a2a; padding: 0.25rem 0.6rem; font-size: 0.78rem; border-radius: 3px; letter-spacing: 0; }
+    button.del:hover { background: #6a1a1a; }
+    .status { margin-top: 0.6rem; font-size: 0.88rem; }
+    .ok { color: #3a7a48; } .err { color: #a0302a; }
+    .falt-rad { display: flex; align-items: center; gap: 0.5rem; background: var(--cream); border: 1px solid var(--border); border-radius: 5px; padding: 0.6rem 0.9rem; margin-bottom: 0.5rem; }
+    .falt-rad span { flex: 1; font-size: 0.9rem; }
+    .falt-rad .typ-tag { font-size: 0.72rem; color: var(--text-muted); background: var(--cream-dark); padding: 0.2rem 0.5rem; border-radius: 3px; border: 1px solid var(--border); }
+    .falt-rad .lock-tag { font-size: 0.72rem; color: var(--beige); background: var(--brown-mid); padding: 0.2rem 0.5rem; border-radius: 3px; }
+    #delaCard { display: none; }
+    #shareUrl { background: var(--cream-dark); }
+    .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: -0.6rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span class="logo">Tango Norteño</span>
+    <nav>
+      <a href="index.html">Admin</a>
+      <a href="formular.html" class="active">Formulärbyggare</a>
+      <a href="workshopsbyggare.html">Workshopbyggare</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <h1>Formulärbyggare</h1>
+    <p class="subtitle">Skapa anmälningsformulär för kurser</p>
+
+    <div class="card">
+      <h2>Formulärinformation</h2>
+      <label>Titel *</label>
+      <input id="fTitel" placeholder="t.ex. Grundkurs vår 2025" />
+      <label>Beskrivning</label>
+      <textarea id="fDesc" rows="3" placeholder="Valfri beskrivning till deltagarna..."></textarea>
+      <label>Webhook-URL (POST, dit anmälningar skickas)</label>
+      <input id="fWebhook" placeholder="https://n8n.../webhook/anmalan-kurs" />
+    </div>
+
+    <div class="card">
+      <h2>Lägg till fält</h2>
+      <label>Fältnamn</label>
+      <input id="nyttFaltNamn" placeholder="t.ex. Stad, Erfarenhet..." />
+      <label>Typ</label>
+      <select id="nyttFaltTyp">
+        <option value="text">Text</option>
+        <option value="email">E-post</option>
+        <option value="tel">Telefon</option>
+        <option value="number">Nummer</option>
+        <option value="textarea">Lång text</option>
+        <option value="select">Dropdown</option>
+        <option value="radio">Alternativ (radio)</option>
+        <option value="checkbox">Kryssruta</option>
+      </select>
+      <label>Alternativ (kommaseparerade, för dropdown/radio)</label>
+      <input id="nyttFaltAlternativ" placeholder="t.ex. Förare, Följare, Båda" />
+      <label class="check-label">
+        <input type="checkbox" id="nyttFaltKrav" />
+        Obligatoriskt fält
+      </label>
+      <button onclick="laggTillFalt()">Lägg till fält</button>
+      <div id="byggStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <h2>Formulärets fält</h2>
+      <p class="hint">Namn, e-post och telefon är förvalda. Du kan ta bort dem om du vill.</p>
+      <div id="faltLista"></div>
+      <br />
+      <button onclick="sparaOchVisaDela()">Spara och dela formulär</button>
+      <div id="sparaStatus" class="status"></div>
+    </div>
+
+    <div class="card" id="delaCard">
+      <h2>Formulär sparat</h2>
+      <p style="margin-bottom:0.8rem; font-size:0.9rem;">Dela denna länk med deltagarna:</p>
+      <input id="shareUrl" readonly />
+      <button onclick="kopiera()">Kopiera länk</button>
+      <div id="kopieraStatus" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    function getSparaUrl() {
+      try { return JSON.parse(localStorage.getItem('tn_admin_urls') || '{}').urlSparaFormular || ''; } catch(e) { return ''; }
+    }
+
+    // Default fields – always shown first, removable
+    const DEFAULT_FALT = [
+      { namn: 'Namn',       typ: 'text',  alternativ: [], krav: true,  isDefault: true },
+      { namn: 'E-post',     typ: 'email', alternativ: [], krav: true,  isDefault: true },
+      { namn: 'Telefon',    typ: 'tel',   alternativ: [], krav: false, isDefault: true },
+    ];
+
+    let falt = DEFAULT_FALT.map(f => ({ ...f }));
+
+    function laggTillFalt() {
+      const namn = document.getElementById('nyttFaltNamn').value.trim();
+      const typ = document.getElementById('nyttFaltTyp').value;
+      const alternativRaw = document.getElementById('nyttFaltAlternativ').value.trim();
+      const krav = document.getElementById('nyttFaltKrav').checked;
+      if (!namn) { visa('byggStatus','err','Fyll i ett fältnamn.'); return; }
+      const alternativ = (typ === 'select' || typ === 'radio')
+        ? alternativRaw.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+      falt.push({ namn, typ, alternativ, krav, isDefault: false });
+      document.getElementById('nyttFaltNamn').value = '';
+      document.getElementById('nyttFaltAlternativ').value = '';
+      document.getElementById('nyttFaltKrav').checked = false;
+      visa('byggStatus','ok','Fält tillagt.');
+      renderaFalt();
+    }
+
+    function taBortFalt(i) { falt.splice(i, 1); renderaFalt(); }
+
+    function renderaFalt() {
+      const el = document.getElementById('faltLista');
+      if (falt.length === 0) { el.innerHTML = '<em style="color:var(--text-muted);font-size:0.88rem;">Inga fält tillagda.</em>'; return; }
+      el.innerHTML = falt.map((f, i) => `
+        <div class="falt-rad">
+          <span>${f.namn}${f.krav ? ' *' : ''}</span>
+          <span class="typ-tag">${f.typ}</span>
+          ${f.isDefault ? '<span class="lock-tag">standard</span>' : ''}
+          ${f.alternativ.length ? `<span class="typ-tag">${f.alternativ.join(', ')}</span>` : ''}
+          <button class="del" onclick="taBortFalt(${i})">Ta bort</button>
+        </div>
+      `).join('');
+    }
+
+    async function sparaOchVisaDela() {
+      const titel = document.getElementById('fTitel').value.trim();
+      const webhookUrl = document.getElementById('fWebhook').value.trim();
+      if (!titel)       { visa('sparaStatus','err','Fyll i en titel.'); return; }
+      if (!falt.length) { visa('sparaStatus','err','Lägg till minst ett fält.'); return; }
+      if (!webhookUrl)  { visa('sparaStatus','err','Fyll i webhook-URL:en dit anmälningar skickas.'); return; }
+      const sparaUrl = getSparaUrl();
+      if (!sparaUrl)    { visa('sparaStatus','err','Ange spara_formular-webhook i adminpanelen (index.html).'); return; }
+
+      const payload = { titel, desc: document.getElementById('fDesc').value.trim(), webhook_url: webhookUrl, falt };
+      visa('sparaStatus','','Sparar...');
+      try {
+        const res = await fetch(sparaUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        const url = location.origin + location.pathname.replace('formular.html','') + 'formularsida.html?form=' + data.id;
+        document.getElementById('shareUrl').value = url;
+        document.getElementById('delaCard').style.display = 'block';
+        visa('sparaStatus','ok','Formulär sparat.');
+      } catch(e) { visa('sparaStatus','err','Fel: ' + e.message); }
+    }
+
+    function kopiera() {
+      document.getElementById('shareUrl').select();
+      document.execCommand('copy');
+      visa('kopieraStatus','ok','Kopierat.');
+    }
+
+    function visa(id, typ, msg) {
+      const el = document.getElementById(id); if (!el) return;
+      el.textContent = msg; el.className = 'status ' + typ;
+    }
+
+    renderaFalt();
+  </script>
+</body>
+</html>

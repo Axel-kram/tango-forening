@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tango Norteño – Adminpanel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brown:      #3B2314;
+      --brown-mid:  #5C3720;
+      --brown-light:#8B5E3C;
+      --beige:      #C9A87C;
+      --cream:      #F5EFE6;
+      --cream-dark: #EDE4D5;
+      --text:       #2A1A0E;
+      --text-muted: #7A5C44;
+      --border:     #D4B896;
+      --white:      #FDFAF6;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .top-bar {
+      background: var(--brown);
+      color: var(--cream);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid var(--beige);
+    }
+    .top-bar .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--beige);
+    }
+    nav a {
+      color: var(--cream);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    nav a:hover { opacity: 1; color: var(--beige); }
+    nav a.active { color: var(--beige); opacity: 1; border-bottom: 1px solid var(--beige); }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.02em;
+    }
+    .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--brown-mid);
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--brown-mid);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brown-light);
+      background: var(--white);
+    }
+    button {
+      background: var(--brown);
+      color: var(--cream);
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--brown-mid); }
+    button.secondary { background: var(--brown-light); }
+    button.secondary:hover { background: var(--brown-mid); }
+    .status { margin-top: 0.6rem; font-size: 0.88rem; }
+    .ok  { color: #3a7a48; }
+    .err { color: #a0302a; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.55rem 0.6rem; background: var(--cream-dark); color: var(--brown-mid); font-weight: 500; letter-spacing: 0.04em; font-size: 0.78rem; text-transform: uppercase; }
+    td { padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--border); }
+    a { color: var(--brown-light); }
+    .url-row { display: flex; gap: 0.5rem; align-items: center; }
+    .url-row input { flex: 1; margin-bottom: 0; }
+    .url-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
+    @media (max-width: 600px) { .url-grid { grid-template-columns: 1fr; } nav a { margin-left: 0.8rem; font-size: 0.75rem; } }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span class="logo">Tango Norteño</span>
+    <nav>
+      <a href="index.html" class="active">Admin</a>
+      <a href="formular.html">Formulärbyggare</a>
+      <a href="workshopsbyggare.html">Workshopbyggare</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <h1>Adminpanel</h1>
+    <p class="subtitle">Hantera webhook-URL:er, formulär och workshops</p>
+
+    <div class="card">
+      <h2>Webhook-URL:er</h2>
+      <p style="color:var(--text-muted);font-size:0.82rem;margin-bottom:1.2rem;">Sparas i din webbläsare och används av verktygens sidor.</p>
+      <div class="url-grid">
+        <div>
+          <label>hamta_formular (GET)</label>
+          <input id="urlHamtaFormular" placeholder="https://n8n.../webhook/hamta-formular" />
+        </div>
+        <div>
+          <label>hamta_workshop (GET)</label>
+          <input id="urlHamtaWorkshop" placeholder="https://n8n.../webhook/hamta-workshop" />
+        </div>
+        <div>
+          <label>spara_formular (POST)</label>
+          <input id="urlSparaFormular" placeholder="https://n8n.../webhook/spara-formular" />
+        </div>
+        <div>
+          <label>spara_workshop (POST)</label>
+          <input id="urlSparaWorkshop" placeholder="https://n8n.../webhook/spara-workshop" />
+        </div>
+        <div>
+          <label>lista_formular (GET)</label>
+          <input id="urlListaFormular" placeholder="https://n8n.../webhook/lista-formular" />
+        </div>
+        <div>
+          <label>rensa_kalkylark (POST)</label>
+          <input id="urlRensa" placeholder="https://n8n.../webhook/rensa-kalkylark" />
+        </div>
+        <div>
+          <label>matchning_formular (POST)</label>
+          <input id="urlMatchningFormular" placeholder="https://n8n.../webhook/matchning-formular" />
+        </div>
+        <div>
+          <label>matchning_workshops (POST)</label>
+          <input id="urlMatchningWorkshops" placeholder="https://n8n.../webhook/matchning-workshops" />
+        </div>
+      </div>
+      <button onclick="sparaUrls()">Spara URL:er</button>
+      <div id="urlStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <h2>Rensa kalkylark</h2>
+      <label>Välj formulär att rensa</label>
+      <select id="valtFormular"><option value="">– Laddar formulär... –</option></select>
+      <label>Välj workshopevent att rensa</label>
+      <select id="valtWorkshop"><option value="">– Laddar workshops... –</option></select>
+      <button onclick="rensaValt()">Rensa valt kalkylark</button>
+      <div id="rensaStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <h2>Kor matchning</h2>
+      <label>Välj formulär för matchning</label>
+      <select id="matchFormular"><option value="">– Välj formulär –</option></select>
+      <label>Välj workshop för matchning</label>
+      <select id="matchWorkshop"><option value="">– Välj workshop –</option></select>
+      <button onclick="korMatchningFormular()">Kor kursmatchning</button>
+      <button onclick="korMatchningWorkshop()">Kor workshopmatchning</button>
+      <div id="matchStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <h2>Aktiva formular</h2>
+      <button class="secondary" onclick="hamtaAktiva()">Uppdatera lista</button>
+      <div id="formularTabell" style="margin-top:1.2rem; color:var(--text-muted); font-size:0.88rem;">Klicka Uppdatera lista for att hamta.</div>
+    </div>
+  </div>
+
+  <script>
+    const URLS_KEY = 'tn_admin_urls';
+    const urlFalt = ['urlHamtaFormular','urlHamtaWorkshop','urlSparaFormular','urlSparaWorkshop','urlListaFormular','urlRensa','urlMatchningFormular','urlMatchningWorkshops'];
+
+    function laddaUrls() {
+      try {
+        const sparad = JSON.parse(localStorage.getItem(URLS_KEY) || '{}');
+        urlFalt.forEach(id => { const el = document.getElementById(id); if (el && sparad[id]) el.value = sparad[id]; });
+      } catch(e) {}
+    }
+    function sparaUrls() {
+      const obj = {};
+      urlFalt.forEach(id => { const el = document.getElementById(id); if (el) obj[id] = el.value.trim(); });
+      localStorage.setItem(URLS_KEY, JSON.stringify(obj));
+      visa('urlStatus','ok','URL:er sparade.');
+    }
+    function getUrl(id) {
+      try { return JSON.parse(localStorage.getItem(URLS_KEY) || '{}')[id] || ''; } catch(e) { return ''; }
+    }
+    function visa(id, typ, msg) {
+      const el = document.getElementById(id); if (!el) return;
+      el.textContent = msg; el.className = 'status ' + typ;
+    }
+    async function hamtaAktiva() {
+      const url = getUrl('urlListaFormular');
+      if (!url) { document.getElementById('formularTabell').textContent = 'Ange URL for lista_formular.'; return; }
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        fyllDropdowns(data); visaTabell(data);
+      } catch(e) { document.getElementById('formularTabell').textContent = 'Kunde inte hamta: ' + e.message; }
+    }
+    function fyllDropdowns(data) {
+      const formularer = data.formular || [], workshops = data.workshops || [];
+      ['valtFormular','matchFormular'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">– Välj –</option>';
+        formularer.forEach(f => { sel.innerHTML += `<option value="${f.sheet_id}">${f.titel}</option>`; });
+      });
+      ['valtWorkshop','matchWorkshop'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">– Välj –</option>';
+        workshops.forEach(w => { sel.innerHTML += `<option value="${w.sheet_id}">${w.titel}</option>`; });
+      });
+    }
+    function visaTabell(data) {
+      const formularer = data.formular || [], workshops = data.workshops || [];
+      let html = '';
+      if (formularer.length > 0) {
+        html += '<h3 style="font-family:\'Cormorant Garamond\',serif;color:var(--brown-mid);margin:1rem 0 0.5rem;font-size:1rem;">Kursformulär</h3><table><tr><th>Titel</th><th>Skapad</th><th>Länk</th></tr>';
+        formularer.forEach(f => {
+          const url = location.origin + location.pathname.replace('index.html','') + 'formularsida.html?form=' + f.id;
+          html += `<tr><td>${f.titel}</td><td>${f.skapad}</td><td><a href="${url}" target="_blank">Öppna</a></td></tr>`;
+        });
+        html += '</table>';
+      }
+      if (workshops.length > 0) {
+        html += '<h3 style="font-family:\'Cormorant Garamond\',serif;color:var(--brown-mid);margin:1.5rem 0 0.5rem;font-size:1rem;">Workshopevents</h3><table><tr><th>Titel</th><th>Skapad</th><th>Länk</th></tr>';
+        workshops.forEach(w => {
+          const url = location.origin + location.pathname.replace('index.html','') + 'workshopsida.html?event=' + w.id;
+          html += `<tr><td>${w.titel}</td><td>${w.skapad}</td><td><a href="${url}" target="_blank">Öppna</a></td></tr>`;
+        });
+        html += '</table>';
+      }
+      if (!html) html = '<span style="color:var(--text-muted)">Inga aktiva formulär hittades.</span>';
+      document.getElementById('formularTabell').innerHTML = html;
+    }
+    async function rensaValt() {
+      const formSel = document.getElementById('valtFormular'), wsSel = document.getElementById('valtWorkshop');
+      const sheetId = formSel.value || wsSel.value;
+      const namn = formSel.value ? formSel.options[formSel.selectedIndex].text : wsSel.options[wsSel.selectedIndex].text;
+      if (!sheetId) { visa('rensaStatus','err','Välj ett formulär eller workshop att rensa.'); return; }
+      if (!confirm(`Rensa kalkylarket för "${namn}"? All data tas bort.`)) return;
+      const url = getUrl('urlRensa');
+      if (!url) { visa('rensaStatus','err','Ange URL för rensa_kalkylark.'); return; }
+      try {
+        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: sheetId }) });
+        visa('rensaStatus','ok','Kalkylarket rensat.');
+      } catch(e) { visa('rensaStatus','err','Fel: ' + e.message); }
+    }
+    async function korMatchningFormular() {
+      const sheetId = document.getElementById('matchFormular').value;
+      if (!sheetId) { visa('matchStatus','err','Välj ett formulär.'); return; }
+      const url = getUrl('urlMatchningFormular');
+      if (!url) { visa('matchStatus','err','Ange URL för matchning_formular.'); return; }
+      try {
+        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: sheetId }) });
+        visa('matchStatus','ok','Kursmatchning körd.');
+      } catch(e) { visa('matchStatus','err','Fel: ' + e.message); }
+    }
+    async function korMatchningWorkshop() {
+      const sheetId = document.getElementById('matchWorkshop').value;
+      if (!sheetId) { visa('matchStatus','err','Välj ett workshopevent.'); return; }
+      const url = getUrl('urlMatchningWorkshops');
+      if (!url) { visa('matchStatus','err','Ange URL för matchning_workshops.'); return; }
+      try {
+        await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: sheetId }) });
+        visa('matchStatus','ok','Workshopmatchning körd.');
+      } catch(e) { visa('matchStatus','err','Fel: ' + e.message); }
+    }
+    laddaUrls(); hamtaAktiva();
+  </script>
+</body>
+</html>
