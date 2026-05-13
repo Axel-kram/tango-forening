@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tango Norteño – Adminpanel</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; background: #f5f5f5; }
+    h1 { color: #8B0000; }
+    h2 { color: #333; margin-top: 2rem; }
+    .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    label { display: block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.9rem; }
+    input, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 0.8rem; }
+    button { background: #8B0000; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+    button:hover { background: #6a0000; }
+    button.secondary { background: #555; }
+    button.secondary:hover { background: #333; }
+    .status { margin-top: 0.5rem; font-size: 0.9rem; }
+    .ok { color: green; }
+    .err { color: red; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee; }
+    th { background: #f0f0f0; }
+    .url-row { display: flex; gap: 0.5rem; align-items: center; }
+    .url-row input { flex: 1; margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <h1>🌹 Tango Norteño – Adminpanel</h1>
+ 
+  <!-- Webhook-URL:er -->
+  <div class="card">
+    <h2>⚙️ Webhook-URL:er</h2>
+    <p style="color:#888;font-size:0.85rem;">Dessa sparas i din webbläsare och används av adminpanelen.</p>
+ 
+    <label>hamta_formular (GET)</label>
+    <div class="url-row">
+      <input id="urlHamtaFormular" placeholder="https://n8n.../webhook/hamta-formular" />
+    </div>
+ 
+    <label>hamta_workshop (GET)</label>
+    <div class="url-row">
+      <input id="urlHamtaWorkshop" placeholder="https://n8n.../webhook/hamta-workshop" />
+    </div>
+ 
+    <label>spara_formular (POST)</label>
+    <div class="url-row">
+      <input id="urlSparaFormular" placeholder="https://n8n.../webhook/spara-formular" />
+    </div>
+ 
+    <label>spara_workshop (POST)</label>
+    <div class="url-row">
+      <input id="urlSparaWorkshop" placeholder="https://n8n.../webhook/spara-workshop" />
+    </div>
+ 
+    <label>lista_formular (GET)</label>
+    <div class="url-row">
+      <input id="urlListaFormular" placeholder="https://n8n.../webhook/lista-formular" />
+    </div>
+ 
+    <label>rensa_kalkylark (POST)</label>
+    <div class="url-row">
+      <input id="urlRensa" placeholder="https://n8n.../webhook/rensa-kalkylark" />
+    </div>
+ 
+    <label>matchning_formular (POST)</label>
+    <div class="url-row">
+      <input id="urlMatchningFormular" placeholder="https://n8n.../webhook/matchning-formular" />
+    </div>
+ 
+    <label>matchning_workshops (POST)</label>
+    <div class="url-row">
+      <input id="urlMatchningWorkshops" placeholder="https://n8n.../webhook/matchning-workshops" />
+    </div>
+ 
+    <button onclick="sparaUrls()">💾 Spara URL:er</button>
+    <div id="urlStatus" class="status"></div>
+  </div>
+ 
+  <!-- Rensa kalkylark -->
+  <div class="card">
+    <h2>🗑️ Rensa kalkylark</h2>
+ 
+    <label>Välj formulär att rensa</label>
+    <select id="valtFormular">
+      <option value="">– Laddar formulär... –</option>
+    </select>
+ 
+    <label>Välj workshopevent att rensa</label>
+    <select id="valtWorkshop">
+      <option value="">– Laddar workshops... –</option>
+    </select>
+ 
+    <button onclick="rensaValt()">🗑️ Rensa valt kalkylark</button>
+    <div id="rensaStatus" class="status"></div>
+  </div>
+ 
+  <!-- Matchning -->
+  <div class="card">
+    <h2>🔀 Kör matchning</h2>
+ 
+    <label>Välj formulär för matchning</label>
+    <select id="matchFormular">
+      <option value="">– Välj formulär –</option>
+    </select>
+ 
+    <label>Välj workshop för matchning</label>
+    <select id="matchWorkshop">
+      <option value="">– Välj workshop –</option>
+    </select>
+ 
+    <button onclick="korMatchningFormular()">▶ Kör kursmatchning</button>
+    <button onclick="korMatchningWorkshop()">▶ Kör workshopmatchning</button>
+    <div id="matchStatus" class="status"></div>
+  </div>
+ 
+  <!-- Aktiva formulär (tabell) -->
+  <div class="card">
+    <h2>📋 Aktiva formulär</h2>
+    <button class="secondary" onclick="hamtaAktiva()">🔄 Uppdatera lista</button>
+    <div id="formularTabell" style="margin-top:1rem;">Klicka Uppdatera lista för att hämta.</div>
+  </div>
+ 
+  <script>
+    const URLS_KEY = 'tn_admin_urls';
+ 
+    // ---------- URL-hantering ----------
+    const urlFalt = [
+      'urlHamtaFormular','urlHamtaWorkshop','urlSparaFormular','urlSparaWorkshop',
+      'urlListaFormular','urlRensa','urlMatchningFormular','urlMatchningWorkshops'
+    ];
+ 
+    function laddaUrls() {
+      try {
+        const sparad = JSON.parse(localStorage.getItem(URLS_KEY) || '{}');
+        urlFalt.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && sparad[id]) el.value = sparad[id];
+        });
+      } catch(e) {}
+    }
+ 
+    function sparaUrls() {
+      const obj = {};
+      urlFalt.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obj[id] = el.value.trim();
+      });
+      localStorage.setItem(URLS_KEY, JSON.stringify(obj));
+      visa('urlStatus', 'ok', '✅ URL:er sparade.');
+    }
+ 
+    function getUrl(id) {
+      try {
+        return JSON.parse(localStorage.getItem(URLS_KEY) || '{}')[id] || '';
+      } catch(e) { return ''; }
+    }
+ 
+    // ---------- Visa status ----------
+    function visa(id, typ, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'status ' + typ;
+    }
+ 
+    // ---------- Hämta aktiva formulär/workshops ----------
+    async function hamtaAktiva() {
+      const url = getUrl('urlListaFormular');
+      if (!url) { visa('formularTabell','','⚠️ Ange URL för lista_formular.'); return; }
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        fyllDropdowns(data);
+        visaTabell(data);
+      } catch(e) {
+        document.getElementById('formularTabell').textContent = '❌ Kunde inte hämta: ' + e.message;
+      }
+    }
+ 
+    function fyllDropdowns(data) {
+      const formulár = data.formular || [];
+      const workshops = data.workshops || [];
+ 
+      ['valtFormular','matchFormular'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">– Välj –</option>';
+        formulár.forEach(f => {
+          sel.innerHTML += `<option value="${f.sheet_id}" data-id="${f.id}">${f.titel}</option>`;
+        });
+      });
+ 
+      ['valtWorkshop','matchWorkshop'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">– Välj –</option>';
+        workshops.forEach(w => {
+          sel.innerHTML += `<option value="${w.sheet_id}" data-id="${w.id}">${w.titel}</option>`;
+        });
+      });
+    }
+ 
+    function visaTabell(data) {
+      const formulár = data.formular || [];
+      const workshops = data.workshops || [];
+      let html = '';
+ 
+      if (formulár.length > 0) {
+        html += '<h3>Kursformulär</h3><table><tr><th>Titel</th><th>Skapad</th><th>Länk</th></tr>';
+        formulár.forEach(f => {
+          const url = location.origin + location.pathname.replace('index.html','') + 'formularsida.html?form=' + f.id;
+          html += `<tr><td>${f.titel}</td><td>${f.skapad}</td><td><a href="${url}" target="_blank">Öppna</a></td></tr>`;
+        });
+        html += '</table>';
+      }
+ 
+      if (workshops.length > 0) {
+        html += '<h3 style="margin-top:1.5rem">Workshopevents</h3><table><tr><th>Titel</th><th>Skapad</th><th>Länk</th></tr>';
+        workshops.forEach(w => {
+          const url = location.origin + location.pathname.replace('index.html','') + 'workshopsida.html?event=' + w.id;
+          html += `<tr><td>${w.titel}</td><td>${w.skapad}</td><td><a href="${url}" target="_blank">Öppna</a></td></tr>`;
+        });
+        html += '</table>';
+      }
+ 
+      if (!html) html = 'Inga aktiva formulär hittades.';
+      document.getElementById('formularTabell').innerHTML = html;
+    }
+ 
+    // ---------- Rensa ----------
+    async function rensaValt() {
+      const formSel = document.getElementById('valtFormular');
+      const wsSel = document.getElementById('valtWorkshop');
+      const sheetId = formSel.value || wsSel.value;
+      const namn = formSel.value ? formSel.options[formSel.selectedIndex].text
+                                 : wsSel.options[wsSel.selectedIndex].text;
+ 
+      if (!sheetId) { visa('rensaStatus','err','Välj ett formulär eller workshop att rensa.'); return; }
+      if (!confirm(`Rensa kalkylarket för "${namn}"? All data tas bort.`)) return;
+ 
+      const url = getUrl('urlRensa');
+      if (!url) { visa('rensaStatus','err','Ange URL för rensa_kalkylark.'); return; }
+ 
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({ sheet_id: sheetId })
+        });
+        visa('rensaStatus','ok','✅ Kalkylarket rensat.');
+      } catch(e) {
+        visa('rensaStatus','err','❌ Fel: ' + e.message);
+      }
+    }
+ 
+    // ---------- Matchning ----------
+    async function korMatchningFormular() {
+      const sel = document.getElementById('matchFormular');
+      const sheetId = sel.value;
+      if (!sheetId) { visa('matchStatus','err','Välj ett formulär.'); return; }
+      const url = getUrl('urlMatchningFormular');
+      if (!url) { visa('matchStatus','err','Ange URL för matchning_formular.'); return; }
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({ sheet_id: sheetId })
+        });
+        visa('matchStatus','ok','✅ Kursmatchning körd.');
+      } catch(e) {
+        visa('matchStatus','err','❌ Fel: ' + e.message);
+      }
+    }
+ 
+    async function korMatchningWorkshop() {
+      const sel = document.getElementById('matchWorkshop');
+      const sheetId = sel.value;
+      if (!sheetId) { visa('matchStatus','err','Välj ett workshopevent.'); return; }
+      const url = getUrl('urlMatchningWorkshops');
+      if (!url) { visa('matchStatus','err','Ange URL för matchning_workshops.'); return; }
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({ sheet_id: sheetId })
+        });
+        visa('matchStatus','ok','✅ Workshopmatchning körd.');
+      } catch(e) {
+        visa('matchStatus','err','❌ Fel: ' + e.message);
+      }
+    }
+ 
+    // ---------- Init ----------
+    laddaUrls();
+    hamtaAktiva();
+  </script>
+</body>
+</html>

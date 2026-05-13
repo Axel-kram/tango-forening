@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshopanmälan</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; background: #f5f5f5; }
+    h1 { color: #8B0000; }
+    h2 { color: #333; margin-top: 0.5rem; font-size: 1.1rem; }
+    .desc { color: #555; margin-bottom: 1.5rem; }
+    .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .ws-kort { background: white; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); border-left: 4px solid #8B0000; }
+    label { display: block; margin-bottom: 0.3rem; font-weight: bold; font-size: 0.9rem; }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 1rem;
+    }
+    .radio-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .radio-group label { font-weight: normal; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+    .radio-group input { width: auto; }
+    .partner-falt { display: none; margin-top: 0.3rem; }
+    button { background: #8B0000; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 4px; cursor: pointer; width: 100%; font-size: 1rem; }
+    button:hover { background: #6a0000; }
+    .status { margin-top: 1rem; text-align: center; font-size: 0.9rem; padding: 0.8rem; border-radius: 6px; }
+    .ok { background: #e6f4ea; color: #2d7a3a; }
+    .err { background: #fdecea; color: #c0392b; }
+    #laddning { text-align: center; padding: 3rem; color: #888; }
+    .max-info { font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div id="laddning">⏳ Laddar event...</div>
+  <div id="innehall" style="display:none">
+    <h1 id="evTitel">Workshopanmälan</h1>
+    <p id="evDesc" class="desc"></p>
+
+    <div class="card">
+      <label>Namn *</label>
+      <input type="text" id="deltNamn" required placeholder="Ditt namn" />
+      <label>Telefon *</label>
+      <input type="tel" id="deltTel" required placeholder="Ditt telefonnummer" />
+    </div>
+
+    <div id="wsContainer"></div>
+
+    <button onclick="skickaAnmalan()">Skicka anmälan</button>
+    <div id="formStatus" class="status" style="display:none"></div>
+  </div>
+  <div id="ejHittat" style="display:none; text-align:center; padding:3rem;">
+    <h2>😕 Eventet hittades inte</h2>
+    <p>Kontrollera att länken är korrekt.</p>
+  </div>
+
+  <!-- ÄNDRA DENNA URL till din hamta_workshop-webhook i n8n -->
+  <script>
+    const HAMTA_WORKSHOP_URL = 'HAMTA_WORKSHOP_WEBHOOK_URL';
+
+    let evData = null;
+    let evId = null;
+
+    async function init() {
+      const params = new URLSearchParams(location.search);
+      evId = params.get('event');
+      if (!evId) { visaEjHittat(); return; }
+
+      try {
+        const res = await fetch(HAMTA_WORKSHOP_URL + '?id=' + evId);
+        const data = await res.json();
+        if (data.error || !data.titel) { visaEjHittat(); return; }
+        evData = { ...data, workshops: JSON.parse(data.workshops_json || '[]') };
+        visaFormular(evData);
+      } catch(e) {
+        visaEjHittat();
+      }
+    }
+
+    function visaEjHittat() {
+      document.getElementById('laddning').style.display = 'none';
+      document.getElementById('ejHittat').style.display = 'block';
+    }
+
+    function visaFormular(ev) {
+      document.getElementById('laddning').style.display = 'none';
+      document.getElementById('innehall').style.display = 'block';
+      document.getElementById('evTitel').textContent = ev.titel;
+      if (ev.desc) document.getElementById('evDesc').textContent = ev.desc;
+
+      const container = document.getElementById('wsContainer');
+      container.innerHTML = '';
+
+      ev.workshops.forEach((ws, i) => {
+        const div = document.createElement('div');
+        div.className = 'ws-kort';
+        div.innerHTML = `
+          <h2>${ws.namn}</h2>
+          <p class="max-info">Max ${ws.max} deltagare</p>
+
+          <label>Roll *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="ws_roll_${i}" value="Förare" required /> Förare</label>
+            <label><input type="radio" name="ws_roll_${i}" value="Följare" /> Följare</label>
+            <label><input type="radio" name="ws_roll_${i}" value="Hoppa över" /> Hoppa över</label>
+          </div>
+
+          <label>Har du en namngiven partner?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="ws_partner_${i}" value="nej" checked onchange="visaPartnerFalt(${i}, false)" /> Nej</label>
+            <label><input type="radio" name="ws_partner_${i}" value="ja" onchange="visaPartnerFalt(${i}, true)" /> Ja</label>
+          </div>
+
+          <div id="partner_falt_${i}" class="partner-falt">
+            <label>Partnerns telefonnummer</label>
+            <input type="tel" id="ws_ptel_${i}" placeholder="Partnerns telefon" />
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function visaPartnerFalt(i, visa) {
+      document.getElementById('partner_falt_' + i).style.display = visa ? 'block' : 'none';
+    }
+
+    async function skickaAnmalan() {
+      const namn = document.getElementById('deltNamn').value.trim();
+      const tel = document.getElementById('deltTel').value.trim();
+      if (!namn || !tel) { visaStatus('err','Fyll i namn och telefonnummer.'); return; }
+
+      const wsData = evData.workshops.map((ws, i) => {
+        const wsKey = 'w' + (i + 1);
+        const rollEl = document.querySelector(`input[name="ws_roll_${i}"]:checked`);
+        const partnerEl = document.querySelector(`input[name="ws_partner_${i}"]:checked`);
+        const roll = rollEl ? rollEl.value : 'Hoppa över';
+        const harPartner = partnerEl ? partnerEl.value : 'nej';
+        const partnerTel = document.getElementById('ws_ptel_' + i)?.value || '';
+
+        return {
+          workshop: wsKey,
+          workshopNamn: ws.namn,
+          max: ws.max,
+          roll,
+          harPartner,
+          partnerTel: harPartner === 'ja' ? partnerTel : ''
+        };
+      });
+
+      const payload = {
+        event_id: evId,
+        data: [
+          { label: evData.namnFalt || 'Namn', value: namn },
+          { label: evData.telFalt || 'Telefon', value: tel },
+          ...wsData.flatMap(ws => [
+            { label: `${ws.workshop} - roll`,              value: ws.roll },
+            { label: `${ws.workshop} - har partner`,       value: ws.harPartner },
+            { label: `${ws.workshop} - partners telefon`,  value: ws.partnerTel },
+            { label: `${ws.workshop} - namn`,              value: ws.workshopNamn }
+          ])
+        ]
+      };
+
+      const btn = document.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = '⏳ Skickar...';
+
+      try {
+        await fetch(evData.webhook_url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify(payload)
+        });
+        visaStatus('ok', '✅ Tack för din anmälan! Vi hör av oss.');
+        document.getElementById('deltNamn').value = '';
+        document.getElementById('deltTel').value = '';
+      } catch(e) {
+        visaStatus('err', '❌ Något gick fel. Försök igen eller kontakta oss.');
+        btn.disabled = false;
+        btn.textContent = 'Skicka anmälan';
+      }
+    }
+
+    function visaStatus(typ, msg) {
+      const el = document.getElementById('formStatus');
+      el.textContent = msg;
+      el.className = 'status ' + typ;
+      el.style.display = 'block';
+    }
+
+    init();
+  </script>
+</body>
+</html>
