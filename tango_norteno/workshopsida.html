@@ -35,18 +35,17 @@
     input[type="text"], input[type="email"], input[type="tel"], select {
       width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); font-family: inherit; font-size: 1rem; transition: border-color 0.3s;
     }
-    input:focus, select:focus { outline: none; border-color: var(--brown-light); }
 
     .workshop-row { background: var(--cream-dark); padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border); }
     .workshop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     .workshop-header h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--brown); }
 
-    .radio-group { display: flex; gap: 15px; margin-bottom: 1rem; }
-    .radio-option { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .radio-group { display: flex; gap: 15px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .radio-option { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 400; }
     .radio-option input { cursor: pointer; accent-color: var(--brown); }
 
     .btn { display: inline-block; width: 100%; padding: 14px; background: var(--brown); color: var(--white); border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: all 0.3s; text-align: center; font-family: 'Jost', sans-serif; }
-    .btn:hover { background: var(--brown-mid); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,35,20,0.15); }
+    .btn:hover { background: var(--brown-mid); transform: translateY(-1px); }
     .btn:disabled { background: var(--border); cursor: not-allowed; }
 
     .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; text-align: center; }
@@ -66,12 +65,10 @@
       
       <form id="anmalanForm">
         <h3>Deltagaruppgifter</h3>
-        <div id="deltagarFaltContainer">
-          </div>
+        <div id="deltagarFaltContainer"></div>
 
         <h3 style="margin-top: 2rem;">Välj dina workshops</h3>
-        <div id="workshopContainer">
-          </div>
+        <div id="workshopContainer"></div>
 
         <button type="submit" id="submitBtn" class="btn">Skicka anmälan</button>
         <div id="status" class="status-msg"></div>
@@ -94,13 +91,11 @@
         evData = await res.json();
         if (evData.error) throw new Error(evData.error);
 
-        document.title = evData.titel;
         document.getElementById('evTitel').textContent = evData.titel;
         document.getElementById('evDesc').textContent = evData.desc;
 
         renderaFormular(evData);
         renderaWorkshops(evData.workshops);
-
       } catch(e) { visaStatus('err-msg', 'Kunde inte hämta eventet.'); }
     });
 
@@ -111,58 +106,43 @@
       
       container.innerHTML = faltLista.map((f, i) => {
         let inputHtml = '';
-        const label = `<label>${f.namn}</label>`;
-        
         if (f.typ === 'select') {
           const opts = f.options.split(',').map(o => o.trim());
-          inputHtml = `<select id="deltFalt_${i}" required>${opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+          inputHtml = `<select id="deltFalt_${i}" required><option value="">Välj...</option>${opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
         } else if (f.typ === 'radio') {
           const opts = f.options.split(',').map(o => o.trim());
           inputHtml = `<div class="radio-group">` + opts.map(o => `
-            <label class="radio-option">
-              <input type="radio" name="deltFalt_${i}" value="${o}" required> ${o}
-            </label>
+            <label class="radio-option"><input type="radio" name="deltFalt_${i}" value="${o}" required> ${o}</label>
           `).join('') + `</div>`;
         } else if (f.typ === 'checkbox') {
           return `<div class="input-group">
-            <label style="display:flex; align-items:center; gap:10px; font-weight:400; cursor:pointer;">
-              <input type="checkbox" id="deltFalt_${i}" style="width:auto; margin:0;"> ${f.namn}
-            </label>
+            <label class="radio-option"><input type="checkbox" id="deltFalt_${i}"> ${f.namn}</label>
           </div>`;
         } else {
           inputHtml = `<input type="${f.typ}" id="deltFalt_${i}" required>`;
         }
-        
-        return `<div class="input-group">${label}${inputHtml}</div>`;
+        return `<div class="input-group"><label>${f.namn}</label>${inputHtml}</div>`;
       }).join('');
     }
 
     function renderaWorkshops(workshops) {
       const container = document.getElementById('workshopContainer');
-      if (!workshops || workshops.length === 0) {
-        container.innerHTML = '<p>Inga klasser valbara.</p>';
-        return;
-      }
+      if (!workshops || workshops.length === 0) return;
       
       container.innerHTML = workshops.map((ws, i) => `
         <div class="workshop-row">
-          <div class="workshop-header">
-            <h4>${ws.namn}</h4>
-          </div>
-          
+          <div class="workshop-header"><h4>${ws.namn}</h4></div>
           <label>Din roll</label>
           <div class="radio-group">
             <label class="radio-option"><input type="radio" name="roll_${i}" value="Förare" required> Förare</label>
             <label class="radio-option"><input type="radio" name="roll_${i}" value="Följare" required> Följare</label>
             <label class="radio-option"><input type="radio" name="roll_${i}" value="Båda" required> Båda</label>
           </div>
-
           <label>Har du partner?</label>
           <div class="radio-group">
             <label class="radio-option"><input type="radio" name="partner_${i}" value="nej" checked onchange="togglePartner(${i}, false)"> Nej</label>
             <label class="radio-option"><input type="radio" name="partner_${i}" value="ja" onchange="togglePartner(${i}, true)"> Ja</label>
           </div>
-
           <div id="partnerInfo_${i}" style="display:none; margin-top:10px;">
             <label>Partners telefonnummer</label>
             <input type="tel" id="partnerTel_${i}" placeholder="För matchning">
@@ -181,12 +161,11 @@
       btn.disabled = true;
       btn.textContent = 'Skickar...';
 
-      // 1. Hämta deltagardata från de dynamiska fälten
       const deltagarData = window._deltagarFaltLayout.map((f, i) => {
         let val = '';
         if (f.typ === 'radio') {
-          const selected = document.querySelector(`input[name="deltFalt_${i}"]:checked`);
-          val = selected ? selected.value : '';
+          const sel = document.querySelector(`input[name="deltFalt_${i}"]:checked`);
+          val = sel ? sel.value : '';
         } else if (f.typ === 'checkbox') {
           val = document.getElementById('deltFalt_' + i).checked ? 'Ja' : 'Nej';
         } else {
@@ -195,42 +174,28 @@
         return { label: f.namn, value: val };
       });
 
-      // 2. Hämta workshopval
       const wsData = evData.workshops.map((ws, i) => {
         const roll = document.querySelector(`input[name="roll_${i}"]:checked`).value;
         const harPartner = document.querySelector(`input[name="partner_${i}"]:checked`).value;
         const partnerTel = document.getElementById('partnerTel_' + i).value;
-        return {
-          workshop: ws.namn,
-          roll: roll,
-          partner: harPartner === 'ja' ? partnerTel : 'Ingen'
-        };
-      });
-
-      const payload = {
-        event_id: evId,
-        event_titel: evData.titel,
-        data: [
-          ...deltagarData,
-          ...wsData.flatMap(w => [
-            { label: w.workshop + " (Roll)", value: w.roll },
-            { label: w.workshop + " (Partner)", value: w.partner }
-          ])
-        ]
-      };
+        return [
+          { label: ws.namn + " (Roll)", value: roll },
+          { label: ws.namn + " (Partner)", value: harPartner === 'ja' ? partnerTel : 'Nej' }
+        ];
+      }).flat();
 
       try {
         await fetch(evData.webhook_url, {
           method: 'POST',
           mode: 'no-cors',
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ event_id: evId, data: [...deltagarData, ...wsData] })
         });
-        visaStatus('ok-msg', 'Tack för din anmälan!');
-        btn.textContent = 'Skickat';
+        visaStatus('ok-msg', 'Anmälan skickad!');
+        btn.textContent = 'Klart';
       } catch(e) {
-        visaStatus('err-msg', 'Ett fel uppstod. Försök igen.');
+        visaStatus('err-msg', 'Något gick fel.');
         btn.disabled = false;
-        btn.textContent = 'Skicka anmälan';
+        btn.textContent = 'Skicka igen';
       }
     };
 
