@@ -15,16 +15,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--cream); color: var(--text); padding: 20px; }
     .container { max-width: 800px; margin: 0 auto; }
-    .card { background: var(--white); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; }
+    .card { background: var(--white); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(59,35,20,0.05); }
     h1, h3 { font-family: 'Cormorant Garamond', serif; color: var(--brown); margin-bottom: 1rem; }
     label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--brown-mid); }
     input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); font-family: inherit; margin-bottom: 1rem; }
-    .btn { padding: 12px 24px; border-radius: 50px; border: none; cursor: pointer; font-weight: 500; transition: 0.3s; }
+    .btn { padding: 12px 24px; border-radius: 50px; border: none; cursor: pointer; font-weight: 500; transition: 0.3s; font-family: 'Jost', sans-serif; }
     .btn-primary { background: var(--brown); color: var(--white); width: 100%; font-size: 1.1rem; }
     .btn-secondary { background: var(--beige); color: var(--brown); }
     .btn-danger { background: #ffeded; color: #cc0000; border: 1px solid #ffcccc; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
     .field-row { background: var(--cream-dark); padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border); }
-    .options-area { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
+    .info-box { background: #e3f2fd; padding: 10px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; color: #0d47a1; border: 1px solid #bbdefb; }
   </style>
 </head>
 <body>
@@ -32,77 +32,35 @@
     <h1>Workshopbyggare</h1>
     
     <div class="card">
-      <h3>Allmän information</h3>
-      <label>Titel</label>
-      <input type="text" id="evTitel" placeholder="T.ex. Sommarworkshop">
+      <h3>1. Allmän information</h3>
+      <label>Eventets titel</label>
+      <input type="text" id="evTitel" placeholder="T.ex. Sommarworkshop 2024">
       <label>Beskrivning</label>
-      <textarea id="evDesc" rows="3"></textarea>
-      <label>Webhook URL</label>
-      <input type="url" id="webhookUrl" placeholder="https://...">
+      <textarea id="evDesc" rows="3" placeholder="Info om lärare, schema..."></textarea>
+      <label>Webhook URL (n8n)</label>
+      <input type="url" id="webhookUrl" placeholder="https://n8n.din-server.com/...">
     </div>
 
     <div class="card">
-      <h3>Deltagarformulär</h3>
-      <div id="faltLista"></div>
-      <button class="btn btn-secondary" onclick="laggTillFalt()">+ Lägg till fält</button>
-    </div>
-
-    <div class="card">
-      <h3>Workshops / Klasser</h3>
+      <h3>2. Workshops</h3>
+      <div class="info-box">
+        Varje workshop får automatiskt valen: <b>Förare, Följare, Dubbeldansare</b> eller <b>Deltar ej</b>, samt partnerfråga.
+      </div>
       <div id="workshopLista"></div>
       <button class="btn btn-secondary" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
     </div>
 
     <button class="btn btn-primary" onclick="sparaEvent()">Spara och generera länk</button>
+
     <div id="delaCard" class="card" style="display:none; margin-top:20px;">
       <h3>Eventet är skapat!</h3>
-      <input type="text" id="shareUrl" readonly>
-      <button class="btn btn-secondary" onclick="kopiera()" style="margin-top:10px;">Kopiera länk</button>
+      <input type="text" id="shareUrl" readonly style="margin-bottom: 10px;">
+      <button class="btn btn-secondary" onclick="kopiera()">Kopiera länk</button>
     </div>
   </div>
 
   <script>
-    let deltagarFalt = [
-      { namn: 'Namn', typ: 'text', options: '' },
-      { namn: 'E-post', typ: 'email', options: '' }
-    ];
     let workshops = [];
-
-    function laggTillFalt() {
-      deltagarFalt.push({ namn: '', typ: 'text', options: '' });
-      renderaFalt();
-    }
-
-    function renderaFalt() {
-      const container = document.getElementById('faltLista');
-      container.innerHTML = deltagarFalt.map((f, i) => `
-        <div class="field-row">
-          <div style="display:flex; gap:10px; align-items:flex-end;">
-            <div style="flex:2;">
-              <label>Fältnamn</label>
-              <input type="text" value="${f.namn}" oninput="deltagarFalt[${i}].namn=this.value" style="margin:0;">
-            </div>
-            <div style="flex:1;">
-              <label>Typ</label>
-              <select onchange="deltagarFalt[${i}].typ=this.value; renderaFalt()" style="margin:0;">
-                <option value="text" ${f.typ==='text'?'selected':''}>Textfält</option>
-                <option value="email" ${f.typ==='email'?'selected':''}>E-post</option>
-                <option value="select" ${f.typ==='select'?'selected':''}>Rullista</option>
-                <option value="radio" ${f.typ==='radio'?'selected':''}>Flerval</option>
-                <option value="checkbox" ${f.typ==='checkbox'?'selected':''}>Kryssruta</option>
-              </select>
-            </div>
-            <button class="btn-danger" onclick="deltagarFalt.splice(${i},1); renderaFalt()">Ta bort</button>
-          </div>
-          ${(f.typ==='select' || f.typ==='radio') ? `
-            <div class="options-area">
-              <label>Alternativ (separera med kommatecken)</label>
-              <input type="text" placeholder="Val 1, Val 2, Val 3" value="${f.options}" oninput="deltagarFalt[${i}].options=this.value" style="margin:0;">
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-    }
 
     function laggTillWorkshop() {
       workshops.push({ namn: '', max: 20 });
@@ -115,32 +73,42 @@
         <div class="field-row" style="display:flex; gap:10px; align-items:flex-end;">
           <div style="flex:3;">
             <label>Workshopens namn</label>
-            <input type="text" value="${w.namn}" oninput="workshops[${i}].namn=this.value" style="margin:0;">
+            <input type="text" value="${w.namn}" oninput="workshops[${i}].namn=this.value" placeholder="T.ex. Workshop 1: Teknik" style="margin:0;">
           </div>
           <div style="flex:1;">
             <label>Max antal</label>
             <input type="number" value="${w.max}" oninput="workshops[${i}].max=this.value" style="margin:0;">
           </div>
-          <button class="btn-danger" onclick="workshops.splice(${i},1); renderaWorkshops()">X</button>
+          <button class="btn-danger" onclick="workshops.splice(${i},1); renderaWorkshops()">Ta bort</button>
         </div>
       `).join('');
     }
 
     async function sparaEvent() {
-      const settings = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
+      const titel = document.getElementById('evTitel').value.trim();
+      const webhookUrl = document.getElementById('webhookUrl').value.trim();
+      if (!titel || !webhookUrl) { alert("Fyll i titel och webhook."); return; }
+
+      const adminSettings = JSON.parse(localStorage.getItem('tango_admin_settings') || '{}');
       const payload = {
-        titel: document.getElementById('evTitel').value,
-        desc: document.getElementById('evDesc').value,
-        webhook_url: document.getElementById('webhookUrl').value,
-        deltagarFalt: JSON.stringify(deltagarFalt),
+        titel,
+        desc: document.getElementById('evDesc').value.trim(),
+        webhook_url: webhookUrl,
+        deltagarFalt: JSON.stringify([]), // Vi använder standardfält (Namn, Email, Tel)
         workshops_json: JSON.stringify(workshops)
       };
+
       try {
-        const res = await fetch(settings.urlSparaWorkshop, { method:'POST', body: JSON.stringify(payload) });
+        const res = await fetch(adminSettings.urlSparaWorkshop, { 
+          method:'POST', 
+          headers:{'Content-Type':'text/plain;charset=UTF-8'}, 
+          body: JSON.stringify(payload) 
+        });
         const data = await res.json();
-        document.getElementById('shareUrl').value = location.origin + location.pathname.replace('workshopsbyggare.html','') + 'workshopsida.html?event=' + data.id;
+        const url = location.origin + location.pathname.replace('workshopsbyggare.html','') + 'workshopsida.html?event=' + data.id;
+        document.getElementById('shareUrl').value = url;
         document.getElementById('delaCard').style.display = 'block';
-        alert("Event sparat!");
+        alert("Sparat!");
       } catch(e) { alert("Fel vid sparande."); }
     }
 
@@ -150,8 +118,7 @@
       alert("Länk kopierad.");
     }
 
-    renderaFalt();
-    renderaWorkshops();
+    laggTillWorkshop();
   </script>
 </body>
 </html>
