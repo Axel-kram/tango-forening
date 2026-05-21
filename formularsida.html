@@ -34,7 +34,7 @@
   .submit-btn:hover{filter:brightness(1.1);}
   .submit-btn:active{transform:scale(0.99);}
   .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
-  const hamtaUrl = 'https://DIN-N8N-URL/webhook/hamta_formular';
+  .msg{text-align:center;padding:2rem 1rem;}
   .msg .icon{font-size:2.5rem;margin-bottom:0.7rem;}
   .msg h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:0.5rem;}
   .msg p{color:var(--text-lt);font-size:0.95rem;}
@@ -54,18 +54,17 @@
 </div>
 
 <script>
+const HAMTA_URL = 'https://axelkram.app.n8n.cloud/webhook/hamta_formular';
+
 const params = new URLSearchParams(location.search);
 const formId = params.get('form');
 let formularData = null;
 let antalAnmalda = 0;
 
 async function laddaFormular() {
-  const card = document.getElementById('mainCard');
   if (!formId) { visaFel('Inget formulär-ID angivet.'); return; }
-  const hamtaUrl = localStorage.getItem('urlHamtaFormular');
-  if (!hamtaUrl) { visaFel('Systemkonfiguration saknas. Kontakta administratören.'); return; }
   try {
-    const res = await fetch(hamtaUrl + '?id=' + formId);
+    const res = await fetch(HAMTA_URL + '?id=' + formId);
     const data = await res.json();
     if (data.error || !data.titel) { visaFel('Formuläret hittades inte.'); return; }
     formularData = data;
