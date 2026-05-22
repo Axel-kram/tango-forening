@@ -54,8 +54,6 @@
 </div>
 
 <script>
-const HAMTA_URL = 'https://axelkram.app.n8n.cloud/webhook/hamta_formular';
-
 const params = new URLSearchParams(location.search);
 const formId = params.get('form');
 let formularData = null;
@@ -63,11 +61,20 @@ let antalAnmalda = 0;
 
 async function laddaFormular() {
   if (!formId) { visaFel('Inget formulär-ID angivet.'); return; }
+
+  // Läs URL från localStorage istället för hårdkodad URL
+  const hamtaUrl = localStorage.getItem('urlHamtaFormular');
+  if (!hamtaUrl) {
+    visaFel('Systemkonfiguration saknas. Kontakta administratören.');
+    return;
+  }
+
   try {
-    const res = await fetch(HAMTA_URL + '?id=' + formId);
+    const res = await fetch(hamtaUrl + '?id=' + encodeURIComponent(formId));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
     const data = Array.isArray(raw) ? raw[0] : raw;
-    if (data.error || !data.titel) { visaFel('Formuläret hittades inte.'); return; }
+    if (!data || data.error || !data.titel) { visaFel('Formuläret hittades inte.'); return; }
     formularData = data;
     antalAnmalda = parseInt(data.anmalningar) || 0;
     visaFormular(data);
@@ -111,7 +118,9 @@ function visaFormular(f) {
 
 async function skickaAnmalan() {
   const falt = typeof formularData.falt_json === 'string' ? JSON.parse(formularData.falt_json) : (formularData.falt || []);
-  const webhookUrl = formularData.webhook_url;
+
+  // Hämta webhook-URL från formulärdata eller localStorage
+  const webhookUrl = formularData.webhook_url || localStorage.getItem('urlSparaFormular');
   if (!webhookUrl) { alert('Systemfel: webhook-URL saknas.'); return; }
 
   let valid = true;
@@ -140,7 +149,8 @@ async function skickaAnmalan() {
   btn.textContent = 'Skickar...';
   try {
     const payload = { form_id: formId, data };
-    await fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    const res = await fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     document.getElementById('mainCard').innerHTML = `
       <div class="msg">
         <div class="icon">✦</div>
