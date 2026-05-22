@@ -7,201 +7,68 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:        #f5f0e8;
-    --surface:   #ede6d6;
-    --surface2:  #e0d5c0;
-    --border:    #c4b49a;
-    --brown:     #4a2c1a;
-    --brown-mid: #7a4a2e;
-    --brown-lt:  #a67c5b;
-    --cream:     #faf6ee;
-    --text:      #2e1a0e;
-    --text-lt:   #6b4c35;
-    --accent:    #8b3a1f;
-    --success:   #4a7c59;
-    --danger:    #8b1f1f;
-    --shadow:    0 2px 12px rgba(74,44,26,0.13);
+    --bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;
+    --brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;
+    --text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;
+    --shadow:0 2px 12px rgba(74,44,26,0.13);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Lato', sans-serif; min-height: 100vh; }
-
-  /* TOP BAR */
-  .topbar {
-    background: var(--brown);
-    color: var(--cream);
-    padding: 0 2rem;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  }
-  .topbar-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; letter-spacing: 0.04em; }
-  .topbar-logo span { font-style: italic; color: var(--brown-lt); }
-  .topbar-nav { display: flex; gap: 0.5rem; }
-  .nav-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.25);
-    color: var(--cream);
-    padding: 0.45rem 1.1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Lato', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: background 0.2s, border-color 0.2s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .nav-btn:hover, .nav-btn.active { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.6); }
-
-  /* LAYOUT */
-  .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
-  .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 0.4rem; color: var(--brown); }
-  .page-sub { color: var(--text-lt); font-size: 0.95rem; margin-bottom: 2rem; }
-
-  /* WEBHOOK SETTINGS */
-  .card {
-    background: var(--cream);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.6rem 1.8rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-  }
-  .card-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--brown); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
-  .card-title svg { opacity: 0.7; }
-
-  .webhook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media(max-width:700px){ .webhook-grid { grid-template-columns: 1fr; } }
-
-  .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
-  .field-group label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-lt); }
-  .field-group input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 0.55rem 0.8rem;
-    font-family: 'Lato', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text);
-    transition: border-color 0.2s;
-  }
-  .field-group input:focus { outline: none; border-color: var(--brown-mid); }
-
-  .btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.6rem 1.4rem;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Lato', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: filter 0.2s, transform 0.1s;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(0.98); }
-  .btn-brown { background: var(--brown); color: var(--cream); }
-  .btn-mid { background: var(--brown-mid); color: var(--cream); }
-  .btn-danger { background: var(--danger); color: #fff; }
-  .btn-success { background: var(--success); color: #fff; }
-  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--brown-mid); }
-
-  /* TABS */
-  .tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
-  .tab {
-    padding: 0.7rem 1.4rem;
-    cursor: pointer;
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text-lt);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .tab.active { color: var(--brown); border-bottom-color: var(--accent); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* LIST */
-  .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .list-header h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--brown); }
-
-  .form-list { display: flex; flex-direction: column; gap: 0.75rem; }
-  .form-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  .form-item-info { flex: 1; min-width: 0; }
-  .form-item-title { font-weight: 700; font-size: 0.95rem; color: var(--brown); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .form-item-meta { font-size: 0.78rem; color: var(--text-lt); margin-top: 0.2rem; }
-  .badge {
-    display: inline-block;
-    padding: 0.15rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    background: var(--surface2);
-    color: var(--brown-mid);
-  }
-  .badge-full { background: #f5e0d0; color: var(--accent); }
-  .form-item-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-
-  .copy-url-input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 0.45rem 0.7rem;
-    font-size: 0.78rem;
-    color: var(--text-lt);
-    width: 260px;
-    font-family: monospace;
-  }
-
-  /* STATUS */
-  .status-msg { margin-top: 0.8rem; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 5px; display: none; }
-  .status-msg.ok { background: #e6f0ea; color: var(--success); display: block; }
-  .status-msg.err { background: #f5e6e6; color: var(--danger); display: block; }
-  .status-msg.info { background: var(--surface2); color: var(--text-lt); display: block; }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(46,26,14,0.55); z-index: 100;
-    align-items: center; justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--cream);
-    border-radius: 10px;
-    padding: 2rem;
-    max-width: 480px;
-    width: 90%;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-  }
-  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--brown); margin-bottom: 0.8rem; }
-  .modal p { color: var(--text-lt); font-size: 0.9rem; margin-bottom: 1.2rem; }
-  .modal-actions { display: flex; gap: 0.8rem; justify-content: flex-end; }
-
-  /* DIVIDER */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-
-  .empty-state { text-align: center; padding: 2.5rem; color: var(--text-lt); font-size: 0.9rem; }
-  .empty-state .big { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem; opacity: 0.3; }
-
-  .url-row { display: flex; gap: 0.5rem; align-items: center; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;}
+  .topbar{background:var(--brown);color:var(--cream);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .topbar-logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.04em;}
+  .topbar-logo span{font-style:italic;color:var(--brown-lt);}
+  .topbar-nav{display:flex;gap:0.5rem;}
+  .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s,border-color 0.2s;text-decoration:none;display:inline-block;}
+  .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
+  .container{max-width:1100px;margin:0 auto;padding:2.5rem 2rem;}
+  .page-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:0.4rem;color:var(--brown);}
+  .page-sub{color:var(--text-lt);font-size:0.95rem;margin-bottom:2rem;}
+  .card{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:1.6rem 1.8rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
+  .card-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--brown);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.6rem;}
+  .webhook-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:700px){.webhook-grid{grid-template-columns:1fr;}}
+  .field-group{display:flex;flex-direction:column;gap:0.35rem;}
+  .field-group label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);}
+  .field-group input{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.85rem;color:var(--text);transition:border-color 0.2s;}
+  .field-group input:focus{outline:none;border-color:var(--brown-mid);}
+  .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;}
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:scale(0.98);}
+  .btn-brown{background:var(--brown);color:var(--cream);}
+  .btn-mid{background:var(--brown-mid);color:var(--cream);}
+  .btn-danger{background:var(--danger);color:#fff;}
+  .btn-success{background:var(--success);color:#fff;}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown-mid);}
+  .tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;}
+  .tab{padding:0.7rem 1.4rem;cursor:pointer;font-size:0.88rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-lt);border-bottom:2px solid transparent;margin-bottom:-2px;transition:color 0.2s,border-color 0.2s;}
+  .tab.active{color:var(--brown);border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .list-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--brown);}
+  .form-list{display:flex;flex-direction:column;gap:0.75rem;}
+  .form-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  .form-item-info{flex:1;min-width:0;}
+  .form-item-title{font-weight:700;font-size:0.95rem;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .form-item-meta{font-size:0.78rem;color:var(--text-lt);margin-top:0.2rem;}
+  .badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;background:var(--surface2);color:var(--brown-mid);}
+  .badge-full{background:#f5e0d0;color:var(--accent);}
+  .form-item-actions{display:flex;gap:0.5rem;flex-shrink:0;flex-wrap:wrap;align-items:center;}
+  .copy-url-input{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;color:var(--text-lt);width:260px;font-family:monospace;}
+  .status-msg{margin-top:0.8rem;font-size:0.85rem;padding:0.5rem 0.8rem;border-radius:5px;display:none;}
+  .status-msg.ok{background:#e6f0ea;color:var(--success);display:block;}
+  .status-msg.err{background:#f5e6e6;color:var(--danger);display:block;}
+  .status-msg.info{background:var(--surface2);color:var(--text-lt);display:block;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(46,26,14,0.55);z-index:100;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--cream);border-radius:10px;padding:2rem;max-width:480px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.25);}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown);margin-bottom:0.8rem;}
+  .modal p{color:var(--text-lt);font-size:0.9rem;margin-bottom:1.2rem;}
+  .modal-actions{display:flex;gap:0.8rem;justify-content:flex-end;}
+  .divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+  .empty-state{text-align:center;padding:2.5rem;color:var(--text-lt);font-size:0.9rem;}
+  .empty-state .big{font-family:'Playfair Display',serif;font-size:2.5rem;margin-bottom:0.5rem;opacity:0.3;}
+  .url-row{display:flex;gap:0.5rem;align-items:center;}
 </style>
 </head>
 <body>
@@ -219,7 +86,6 @@
   <h1 class="page-title">Adminpanel</h1>
   <p class="page-sub">Hantera formulär, workshops och webhookadresser</p>
 
-  <!-- WEBHOOK SETTINGS -->
   <div class="card">
     <div class="card-title">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -228,35 +94,35 @@
     <div class="webhook-grid">
       <div class="field-group">
         <label>Spara formulär (POST)</label>
-        <input type="url" id="urlSparaFormular" placeholder="https://n8n.../spara_formular">
+        <input type="url" id="urlSparaFormular" placeholder="https://n8n.../spara-formular">
       </div>
       <div class="field-group">
         <label>Spara workshop (POST)</label>
-        <input type="url" id="urlSparaWorkshop" placeholder="https://n8n.../spara_workshop">
+        <input type="url" id="urlSparaWorkshop" placeholder="https://n8n.../spara-workshop">
       </div>
       <div class="field-group">
         <label>Hämta formulär (GET)</label>
-        <input type="url" id="urlHamtaFormular" placeholder="https://n8n.../hamta_formular">
+        <input type="url" id="urlHamtaFormular" placeholder="https://n8n.../hamta-formular">
       </div>
       <div class="field-group">
         <label>Hämta workshop (GET)</label>
-        <input type="url" id="urlHamtaWorkshop" placeholder="https://n8n.../hamta_workshop">
+        <input type="url" id="urlHamtaWorkshop" placeholder="https://n8n.../hamta-workshop">
       </div>
       <div class="field-group">
         <label>Lista formulär (GET)</label>
-        <input type="url" id="urlListaFormular" placeholder="https://n8n.../lista_formular">
+        <input type="url" id="urlListaFormular" placeholder="https://n8n.../lista-formular">
       </div>
       <div class="field-group">
         <label>Rensa kalkylark (POST)</label>
-        <input type="url" id="urlRensa" placeholder="https://n8n.../rensa_kalkylark">
+        <input type="url" id="urlRensa" placeholder="https://n8n.../rensa-kalkylark">
       </div>
       <div class="field-group">
         <label>Matchning kurser (POST)</label>
-        <input type="url" id="urlMatchningFormular" placeholder="https://n8n.../matchning_formular">
+        <input type="url" id="urlMatchningFormular" placeholder="https://n8n.../matchning-formular">
       </div>
       <div class="field-group">
         <label>Matchning workshops (POST)</label>
-        <input type="url" id="urlMatchningWorkshop" placeholder="https://n8n.../matchning_workshops">
+        <input type="url" id="urlMatchningWorkshop" placeholder="https://n8n.../matchning-workshops">
       </div>
     </div>
     <hr class="divider">
@@ -264,14 +130,12 @@
     <div class="status-msg" id="webhookStatus"></div>
   </div>
 
-  <!-- TABS: Formulär / Workshops -->
   <div class="card" style="padding-top:1.2rem">
     <div class="tab-bar">
       <div class="tab active" onclick="byttTab('formular',this)">Formulär</div>
       <div class="tab" onclick="byttTab('workshops',this)">Workshops</div>
     </div>
 
-    <!-- FORMULÄR TAB -->
     <div class="tab-panel active" id="tab-formular">
       <div class="list-header">
         <h3>Aktiva formulär</h3>
@@ -282,7 +146,6 @@
       </div>
     </div>
 
-    <!-- WORKSHOPS TAB -->
     <div class="tab-panel" id="tab-workshops">
       <div class="list-header">
         <h3>Aktiva workshopevents</h3>
@@ -295,7 +158,6 @@
   </div>
 </div>
 
-<!-- BEKRÄFTELSE MODAL -->
 <div class="modal-overlay" id="rensaModal">
   <div class="modal">
     <h3>Rensa kalkylark?</h3>
@@ -343,16 +205,32 @@ function byttTab(tab, el) {
   document.getElementById('tab-' + tab).classList.add('active');
 }
 
+// Normalisera svar från n8n — hanterar array, objekt med nyckel, eller direkt array
+function normaliseraItems(data, nycklar) {
+  if (Array.isArray(data)) return data;
+  for (const k of nycklar) {
+    if (data[k] && Array.isArray(data[k])) return data[k];
+  }
+  return [];
+}
+
 async function laddaFormular() {
   const url = localStorage.getItem('urlListaFormular');
   const lista = document.getElementById('formularLista');
-  if (!url) { lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Ange URL för "Lista formulär" i inställningarna.</div>'; return; }
+  if (!url) {
+    lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Ange URL för "Lista formulär" i inställningarna ovan.</div>';
+    return;
+  }
   lista.innerHTML = '<div class="empty-state">Laddar...</div>';
   try {
     const res = await fetch(url + '?typ=formular');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const items = data.formular || data.items || data || [];
-    if (!items.length) { lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva formulär.</div>'; return; }
+    const items = normaliseraItems(data, ['formular','items','data']);
+    if (!items.length) {
+      lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva formulär.</div>';
+      return;
+    }
     lista.innerHTML = items.map(f => renderFormItem(f, 'formular')).join('');
   } catch(e) {
     lista.innerHTML = '<div class="empty-state" style="color:var(--danger)">Fel vid hämtning: ' + e.message + '</div>';
@@ -362,13 +240,20 @@ async function laddaFormular() {
 async function laddaWorkshops() {
   const url = localStorage.getItem('urlListaFormular');
   const lista = document.getElementById('workshopsLista');
-  if (!url) { lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Ange URL för "Lista formulär" i inställningarna.</div>'; return; }
+  if (!url) {
+    lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Ange URL för "Lista formulär" i inställningarna ovan.</div>';
+    return;
+  }
   lista.innerHTML = '<div class="empty-state">Laddar...</div>';
   try {
     const res = await fetch(url + '?typ=workshop');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const items = data.workshops || data.items || data || [];
-    if (!items.length) { lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva workshops.</div>'; return; }
+    const items = normaliseraItems(data, ['workshops','items','data']);
+    if (!items.length) {
+      lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva workshops.</div>';
+      return;
+    }
     lista.innerHTML = items.map(f => renderFormItem(f, 'workshop')).join('');
   } catch(e) {
     lista.innerHTML = '<div class="empty-state" style="color:var(--danger)">Fel vid hämtning: ' + e.message + '</div>';
@@ -376,9 +261,10 @@ async function laddaWorkshops() {
 }
 
 function renderFormItem(f, typ) {
+  const base = location.origin + location.pathname.replace('index.html','');
   const pageUrl = typ === 'formular'
-    ? location.origin + location.pathname.replace('index.html','') + 'formularsida.html?form=' + f.id
-    : location.origin + location.pathname.replace('index.html','') + 'workshopsida.html?event=' + f.id;
+    ? base + 'formularsida.html?form=' + encodeURIComponent(f.id)
+    : base + 'workshopsida.html?event=' + encodeURIComponent(f.id);
   const antal = f.anmalningar ?? '?';
   const max = f.max ? ' / ' + f.max : '';
   const full = f.max && antal >= f.max;
@@ -386,18 +272,18 @@ function renderFormItem(f, typ) {
     <div class="form-item-info">
       <div class="form-item-title">${escHtml(f.titel || 'Namnlöst')}</div>
       <div class="form-item-meta">
-        ${f.skapad ? 'Skapad: ' + f.skapad + ' &nbsp;·&nbsp; ' : ''}
+        ${f.skapad ? 'Skapad: ' + escHtml(f.skapad) + ' &nbsp;·&nbsp; ' : ''}
         Anmälningar: <b>${antal}${max}</b>
         ${full ? ' <span class="badge badge-full">FULLT</span>' : ''}
       </div>
     </div>
     <div class="form-item-actions">
       <div class="url-row">
-        <input class="copy-url-input" value="${pageUrl}" readonly>
-        <button class="btn btn-outline" onclick="kopieraUrl('${pageUrl}',this)">Kopiera</button>
+        <input class="copy-url-input" value="${escHtml(pageUrl)}" readonly>
+        <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
-      <button class="btn btn-success" onclick="kora${typ==='formular'?'Matchning':'MatchningWs'}('${f.id}')">Matchning</button>
-      <button class="btn btn-danger" onclick="bekraftaRensaModal('${f.sheet_id}','${escHtml(f.titel||'')}')">Rensa</button>
+      <button class="btn btn-success" onclick="${typ==='formular'?'koraMatchning':'koraMatchningWs'}('${escHtml(f.id)}')">Matchning</button>
+      <button class="btn btn-danger" onclick="bekraftaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}')">Rensa</button>
     </div>
   </div>`;
 }
@@ -426,9 +312,10 @@ async function bekraftaRensa() {
   const url = localStorage.getItem('urlRensa');
   if (!url) { alert('Ange URL för "Rensa kalkylark" i inställningarna.'); return; }
   try {
-    await fetch(url, { method: 'POST', headers: {'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: rensaSheetId }) });
+    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: rensaSheetId }) });
     alert('Kalkylark rensat.');
-    laddaFormular(); laddaWorkshops();
+    laddaFormular();
+    laddaWorkshops();
   } catch(e) { alert('Fel: ' + e.message); }
 }
 
@@ -450,7 +337,7 @@ async function koraMatchningWs(eventId) {
   } catch(e) { alert('Fel: ' + e.message); }
 }
 
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 window.addEventListener('DOMContentLoaded', () => {
   laddaWebhooks();
