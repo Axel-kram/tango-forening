@@ -142,7 +142,7 @@
         <button class="btn btn-mid" onclick="laddaFormular()">↻ Ladda om</button>
       </div>
       <div class="form-list" id="formularLista">
-        <div class="empty-state"><div class="big">✦</div>Inga formulär ännu. Klicka på Formulärbyggare i menyn.</div>
+        <div class="empty-state"><div class="big">✦</div>Inga formulär ännu.</div>
       </div>
     </div>
 
@@ -152,7 +152,7 @@
         <button class="btn btn-mid" onclick="laddaWorkshops()">↻ Ladda om</button>
       </div>
       <div class="form-list" id="workshopsLista">
-        <div class="empty-state"><div class="big">✦</div>Inga workshops ännu. Klicka på Workshopsbyggare i menyn.</div>
+        <div class="empty-state"><div class="big">✦</div>Inga workshops ännu.</div>
       </div>
     </div>
   </div>
@@ -205,7 +205,6 @@ function byttTab(tab, el) {
   document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// Normalisera svar från n8n — hanterar array, objekt med nyckel, eller direkt array
 function normaliseraItems(data, nycklar) {
   if (Array.isArray(data)) return data;
   for (const k of nycklar) {
@@ -283,7 +282,7 @@ function renderFormItem(f, typ) {
         <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
       <button class="btn btn-success" onclick="${typ==='formular'?'koraMatchning':'koraMatchningWs'}('${escHtml(f.id)}')">Matchning</button>
-      <button class="btn btn-danger" onclick="bekraftaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}')">Rensa</button>
+      <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}')">Rensa</button>
     </div>
   </div>`;
 }
@@ -295,35 +294,48 @@ function kopieraUrl(url, btn) {
   });
 }
 
-function bekraftaRensaModal(sheetId, titel) {
+function oppnaRensaModal(sheetId, titel) {
   rensaSheetId = sheetId;
-  document.getElementById('rensaModalText').textContent = `Är du säker på att du vill rensa kalkylarket för "${titel}"? Alla anmälningar tas bort permanent.`;
+  document.getElementById('rensaModalText').textContent =
+    `Är du säker på att du vill rensa kalkylarket för "${titel}"? Alla anmälningar tas bort permanent.`;
   document.getElementById('rensaModal').classList.add('open');
 }
 
 function stangModal() {
   document.getElementById('rensaModal').classList.remove('open');
-  rensaSheetId = null;
+  // OBS: nollställ INTE rensaSheetId här
 }
 
 async function bekraftaRensa() {
+  const sheetId = rensaSheetId; // spara värdet innan modal stängs
   stangModal();
-  if (!rensaSheetId) return;
+  rensaSheetId = null;          // nollställ efter vi sparat det
+  if (!sheetId) { alert('Inget kalkylark valt.'); return; }
   const url = localStorage.getItem('urlRensa');
   if (!url) { alert('Ange URL för "Rensa kalkylark" i inställningarna.'); return; }
   try {
-    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ sheet_id: rensaSheetId }) });
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheet_id: sheetId })
+    });
     alert('Kalkylark rensat.');
     laddaFormular();
     laddaWorkshops();
-  } catch(e) { alert('Fel: ' + e.message); }
+  } catch(e) {
+    alert('Fel: ' + e.message);
+  }
 }
 
 async function koraMatchning(formId) {
   const url = localStorage.getItem('urlMatchningFormular');
   if (!url) { alert('Ange URL för matchning i inställningarna.'); return; }
   try {
-    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ form_id: formId }) });
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ form_id: formId })
+    });
     alert('Matchning körd!');
   } catch(e) { alert('Fel: ' + e.message); }
 }
@@ -332,12 +344,18 @@ async function koraMatchningWs(eventId) {
   const url = localStorage.getItem('urlMatchningWorkshop');
   if (!url) { alert('Ange URL för workshopmatchning i inställningarna.'); return; }
   try {
-    await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify({ event_id: eventId }) });
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event_id: eventId })
+    });
     alert('Matchning körd!');
   } catch(e) { alert('Fel: ' + e.message); }
 }
 
-function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 window.addEventListener('DOMContentLoaded', () => {
   laddaWebhooks();
