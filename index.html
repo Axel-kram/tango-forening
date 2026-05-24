@@ -174,6 +174,7 @@ const LS_KEYS = ['urlSparaFormular','urlSparaWorkshop','urlHamtaFormular','urlHa
                  'urlListaFormular','urlRensa','urlMatchningFormular','urlMatchningWorkshop'];
 
 let rensaSheetId = null;
+let rensaTyp = null;
 
 function sparaWebhooks() {
   LS_KEYS.forEach(k => {
@@ -282,7 +283,7 @@ function renderFormItem(f, typ) {
         <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
       <button class="btn btn-success" onclick="${typ==='formular'?'koraMatchning':'koraMatchningWs'}('${escHtml(f.id)}')">Matchning</button>
-      <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}')">Rensa</button>
+      <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}','${typ}')">Rensa</button>
     </div>
   </div>`;
 }
@@ -294,8 +295,9 @@ function kopieraUrl(url, btn) {
   });
 }
 
-function oppnaRensaModal(sheetId, titel) {
+function oppnaRensaModal(sheetId, titel, typ) {
   rensaSheetId = sheetId;
+  rensaTyp = typ;
   document.getElementById('rensaModalText').textContent =
     `Är du säker på att du vill rensa kalkylarket för "${titel}"? Alla anmälningar tas bort permanent.`;
   document.getElementById('rensaModal').classList.add('open');
@@ -303,13 +305,14 @@ function oppnaRensaModal(sheetId, titel) {
 
 function stangModal() {
   document.getElementById('rensaModal').classList.remove('open');
-  // OBS: nollställ INTE rensaSheetId här
 }
 
 async function bekraftaRensa() {
-  const sheetId = rensaSheetId; // spara värdet innan modal stängs
+  const sheetId = rensaSheetId;
+  const typ = rensaTyp;
   stangModal();
-  rensaSheetId = null;          // nollställ efter vi sparat det
+  rensaSheetId = null;
+  rensaTyp = null;
   if (!sheetId) { alert('Inget kalkylark valt.'); return; }
   const url = localStorage.getItem('urlRensa');
   if (!url) { alert('Ange URL för "Rensa kalkylark" i inställningarna.'); return; }
@@ -317,7 +320,7 @@ async function bekraftaRensa() {
     await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sheet_id: sheetId })
+      body: JSON.stringify({ sheet_id: sheetId, typ: typ })
     });
     alert('Kalkylark rensat.');
     laddaFormular();
