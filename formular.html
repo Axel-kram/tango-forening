@@ -24,7 +24,6 @@
   .layout{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 64px);}
   @media(max-width:900px){.layout{grid-template-columns:1fr;}}
 
-  /* LEFT PANEL */
   .panel-left{background:var(--cream);border-right:1px solid var(--border);padding:2rem 1.8rem;overflow-y:auto;}
   .panel-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:1.5rem;}
 
@@ -50,7 +49,6 @@
   }
   .add-field-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
 
-  /* FIELDS LIST */
   .fields-list{display:flex;flex-direction:column;gap:0.6rem;}
   .field-row{
     background:var(--surface);border:1px solid var(--border);border-radius:6px;
@@ -76,11 +74,9 @@
   .options-edit{margin-top:0.5rem;}
   .options-edit textarea{width:100%;height:55px;font-size:0.78rem;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.35rem;resize:none;font-family:'Lato',sans-serif;color:var(--text-lt);}
   .options-edit span{font-size:0.72rem;color:var(--text-lt);}
-  /* Info field */
   .info-edit{margin-top:0.5rem;}
   .info-edit textarea{width:100%;height:60px;font-size:0.82rem;background:#f0f5f0;border:1px solid #c8dcc8;border-radius:4px;padding:0.4rem 0.6rem;resize:vertical;font-family:'Lato',sans-serif;color:var(--text);}
 
-  /* ACTIONS */
   .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
   .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;width:100%;justify-content:center;}
   .btn:hover{filter:brightness(1.08);}
@@ -100,7 +96,6 @@
   .url-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;font-family:monospace;color:var(--text-lt);}
   .url-row .btn{width:auto;padding:0.45rem 0.9rem;font-size:0.8rem;}
 
-  /* RIGHT PANEL - PREVIEW */
   .panel-right{background:var(--bg);padding:2rem 2.5rem;overflow-y:auto;}
   .preview-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
   .preview-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-lt);}
@@ -137,7 +132,6 @@
 </div>
 
 <div class="layout">
-  <!-- LEFT: BUILDER -->
   <div class="panel-left">
     <h2 class="panel-title">Nytt formulär</h2>
 
@@ -182,7 +176,6 @@
     </div>
   </div>
 
-  <!-- RIGHT: PREVIEW -->
   <div class="panel-right">
     <div class="preview-header">
       <span class="preview-label">Förhandsgranskning</span>
@@ -195,7 +188,11 @@
 </div>
 
 <script>
-// Default fields
+// ── Hårdkodade webhook-URLer ──────────────────────────────
+const WEBHOOKS = {
+  sparaFormular: 'https://axelkram.app.n8n.cloud/webhook/spara-formular',
+};
+
 let falt = [
   { id: Date.now()+'1', typ: 'text',  namn: 'Namn',          placeholder: 'För- och efternamn', obligatorisk: true },
   { id: Date.now()+'2', typ: 'email', namn: 'E-post',         placeholder: 'din@email.se',       obligatorisk: true },
@@ -206,14 +203,8 @@ const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritex
 
 function laggTillFalt(typ) {
   const defaults = {
-    radio:    'Välj ett alternativ',
-    select:   'Välj',
-    checkbox: 'Jag godkänner',
-    text:     'Nytt textfält',
-    email:    'E-postadress',
-    tel:      'Telefonnummer',
-    textarea: 'Fritext',
-    info:     'Informationstext',
+    radio:'Välj ett alternativ', select:'Välj', checkbox:'Jag godkänner',
+    text:'Nytt textfält', email:'E-postadress', tel:'Telefonnummer', textarea:'Fritext', info:'Informationstext',
   };
   falt.push({
     id: Date.now()+'',
@@ -278,7 +269,6 @@ function renderaFaltlista() {
   `).join('');
 }
 
-// Drag-and-drop
 let dragIdx = null;
 function dragStart(e, i) { dragIdx = i; e.dataTransfer.effectAllowed = 'move'; }
 function dragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
@@ -338,8 +328,6 @@ async function sparaOchVisaDela() {
   const titel = document.getElementById('fTitel').value.trim();
   if (!titel) { visa('byggStatus','err','Fyll i en formulärtitel.'); return; }
   if (!falt.length) { visa('byggStatus','err','Lägg till minst ett fält.'); return; }
-  const url = localStorage.getItem('urlSparaFormular');
-  if (!url) { visa('byggStatus','err','Ange webhook-URL för "Spara formulär" i adminpanelen.'); return; }
   visa('byggStatus','info','Sparar...');
   try {
     const payload = {
@@ -354,7 +342,7 @@ async function sparaOchVisaDela() {
         infoText: f.infoText||''
       }))
     };
-    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    const res = await fetch(WEBHOOKS.sparaFormular, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const data = await res.json();
     if (!data.id) throw new Error('Ogiltigt svar från servern');
     const base = location.origin + location.pathname.replace('formular.html','');
