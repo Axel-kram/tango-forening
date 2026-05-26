@@ -78,7 +78,7 @@ let wsData = [];
 
 async function laddaEvent() {
   if (!evId) { visaFel('Inget event-ID angivet.'); return; }
-  const hamtaUrl = localStorage.getItem('urlHamtaWorkshop');
+  const hamtaUrl = 'https://axelkram.app.n8n.cloud/webhook/hamta-workshop';
   if (!hamtaUrl) { visaFel('Systemkonfiguration saknas. Kontakta administratören.'); return; }
   try {
     const res = await fetch(hamtaUrl + '?id=' + evId);
