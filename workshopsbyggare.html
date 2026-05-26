@@ -16,7 +16,7 @@
   .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s;text-decoration:none;display:inline-block;}
   .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
 
-  .layout{display:grid;grid-template-columns:440px 1fr;min-height:calc(100vh - 64px);}
+  .layout{display:grid;grid-template-columns:460px 1fr;min-height:calc(100vh - 64px);}
   @media(max-width:950px){.layout{grid-template-columns:1fr;}}
 
   .panel-left{background:var(--cream);border-right:1px solid var(--border);padding:2rem 1.8rem;overflow-y:auto;}
@@ -34,25 +34,57 @@
   .section-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-lt);margin-bottom:0.8rem;}
 
   /* WORKSHOPS LIST */
-  .ws-list{display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem;}
-  .ws-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.85rem 1rem;animation:fadeIn 0.2s ease;}
+  .ws-list{display:flex;flex-direction:column;gap:0.8rem;margin-bottom:1rem;}
+  .ws-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;animation:fadeIn 0.2s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
-  .ws-item-header{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.6rem;}
-  .ws-number{background:var(--brown-mid);color:var(--cream);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;}
-  .ws-item-header input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.2rem 0.1rem;font-size:0.92rem;font-weight:700;color:var(--text);}
-  .ws-item-header input:focus{outline:none;border-bottom-color:var(--brown-mid);}
-  .ws-item-footer{display:flex;align-items:center;gap:1rem;}
-  .ws-item-footer label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);}
-  .ws-item-footer input[type=number]{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.5rem;font-size:0.85rem;width:90px;color:var(--text);}
-  .ws-item-footer input[type=number]:focus{outline:none;border-color:var(--brown-mid);}
-  .icon-btn{background:none;border:none;cursor:pointer;padding:0.2rem;color:var(--brown-lt);font-size:1rem;transition:color 0.15s;flex-shrink:0;}
+
+  .ws-item-header{background:var(--brown-mid);color:var(--cream);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.7rem;cursor:pointer;user-select:none;}
+  .ws-number{background:rgba(255,255,255,0.2);color:var(--cream);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0;}
+  .ws-item-header input{flex:1;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.35);border-radius:0;padding:0.2rem 0.1rem;font-size:0.92rem;font-weight:700;color:var(--cream);}
+  .ws-item-header input::placeholder{color:rgba(255,255,255,0.5);}
+  .ws-item-header input:focus{outline:none;border-bottom-color:rgba(255,255,255,0.8);}
+  .ws-collapse-btn{background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:0.85rem;padding:0.1rem 0.3rem;transition:transform 0.2s;}
+  .ws-collapse-btn.open{transform:rotate(180deg);}
+
+  .ws-item-body{padding:0.9rem 1rem;}
+  .ws-max-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;}
+  .ws-max-row label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);white-space:nowrap;}
+  .ws-max-row input{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.5rem;font-size:0.85rem;width:100px;color:var(--text);}
+  .ws-max-row input:focus{outline:none;border-color:var(--brown-mid);}
+
+  /* Field builder inside workshop */
+  .ws-field-section{border-top:1px dashed var(--border);padding-top:0.8rem;margin-top:0.5rem;}
+  .ws-field-section-label{font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);margin-bottom:0.6rem;}
+  .add-field-bar{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+  .add-field-btn{background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.3rem 0.6rem;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;color:var(--brown-mid);cursor:pointer;transition:background 0.2s,border-color 0.2s;}
+  .add-field-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
+
+  /* Fields list inside workshop */
+  .fields-list{display:flex;flex-direction:column;gap:0.5rem;}
+  .field-row{background:var(--cream);border:1px solid var(--border);border-radius:5px;padding:0.6rem 0.8rem;display:flex;align-items:flex-start;gap:0.6rem;}
+  .field-row-drag{cursor:grab;color:var(--brown-lt);font-size:1rem;padding-top:2px;user-select:none;flex-shrink:0;}
+  .field-row-drag:active{cursor:grabbing;}
+  .field-row-body{flex:1;min-width:0;}
+  .field-row-top{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;}
+  .field-type-badge{background:var(--surface2);color:var(--text-lt);font-size:0.68rem;font-weight:700;text-transform:uppercase;padding:0.12rem 0.45rem;border-radius:3px;white-space:nowrap;flex-shrink:0;}
+  .field-type-badge.info-badge{background:#e8f0e8;color:var(--success);}
+  .field-row-top input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.15rem 0.1rem;font-size:0.88rem;font-weight:700;color:var(--text);}
+  .field-row-top input:focus{outline:none;border-bottom-color:var(--brown-mid);}
+  .field-row-opts{display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;}
+  .field-row-opts input[type=text]{background:transparent;border:none;border-bottom:1px dashed var(--border);padding:0.12rem 0.1rem;font-size:0.78rem;color:var(--text-lt);width:130px;}
+  .field-row-opts input[type=text]:focus{outline:none;border-bottom-color:var(--brown-mid);}
+  .field-checkbox-label{font-size:0.75rem;color:var(--text-lt);display:flex;align-items:center;gap:0.3rem;cursor:pointer;white-space:nowrap;}
+  .field-row-actions{flex-shrink:0;}
+  .icon-btn{background:none;border:none;cursor:pointer;padding:0.2rem;color:var(--brown-lt);font-size:0.95rem;transition:color 0.15s;}
   .icon-btn:hover{color:var(--danger);}
+  .options-edit{margin-top:0.45rem;}
+  .options-edit textarea{width:100%;height:50px;font-size:0.75rem;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.3rem;resize:none;font-family:'Lato',sans-serif;color:var(--text-lt);}
+  .options-edit span{font-size:0.7rem;color:var(--text-lt);}
+  /* Info field text area */
+  .info-edit textarea{width:100%;height:60px;font-size:0.82rem;background:#f0f5f0;border:1px solid #c8dcc8;border-radius:4px;padding:0.4rem 0.6rem;resize:vertical;font-family:'Lato',sans-serif;color:var(--text);margin-top:0.4rem;}
+
   .add-ws-btn{background:var(--surface);border:2px dashed var(--border);border-radius:7px;padding:0.7rem;width:100%;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:700;color:var(--brown-mid);text-transform:uppercase;letter-spacing:0.05em;transition:background 0.2s,border-color 0.2s;}
   .add-ws-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
-
-  /* INFO BOX */
-  .info-box{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;margin-bottom:1.2rem;font-size:0.82rem;color:var(--text-lt);line-height:1.5;}
-  .info-box strong{color:var(--brown-mid);}
 
   .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;width:100%;}
@@ -81,7 +113,6 @@
   .preview-event-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--brown);margin-bottom:0.4rem;}
   .preview-event-desc{color:var(--text-lt);font-size:0.92rem;margin-bottom:1.5rem;line-height:1.5;}
 
-  /* Workshop sections in preview */
   .prev-ws-block{border:1px solid var(--border);border-radius:8px;margin-bottom:1.2rem;overflow:hidden;}
   .prev-ws-header{background:var(--brown);color:var(--cream);padding:0.75rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
   .prev-ws-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
@@ -89,15 +120,20 @@
   .prev-ws-body{padding:1rem 1.1rem;}
   .prev-field{margin-bottom:0.9rem;}
   .prev-field label{display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
-  .prev-radio-group{display:flex;flex-direction:column;gap:0.35rem;}
-  .prev-radio-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+  .prev-field input[type=text],.prev-field input[type=email],.prev-field input[type=tel],.prev-field textarea,.prev-field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;}
+  .prev-field textarea{resize:vertical;min-height:70px;}
+  .prev-radio-group,.prev-check-group{display:flex;flex-direction:column;gap:0.35rem;}
+  .prev-radio-group label,.prev-check-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+  /* Info block in preview */
+  .prev-info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:0.9rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
+
+  .prev-personal{background:var(--surface2);border-radius:7px;padding:1rem 1.1rem;margin-bottom:1.3rem;}
+  .prev-personal h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.8rem;}
+  .prev-personal input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;margin-bottom:0.6rem;}
   .prev-partner-field{margin-top:0.7rem;padding:0.75rem;background:var(--surface2);border-radius:6px;}
   .prev-partner-field input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;}
   .preview-submit{background:var(--brown);color:var(--cream);border:none;border-radius:5px;padding:0.75rem 2rem;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:0.5rem;letter-spacing:0.05em;width:100%;}
   .preview-empty{color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:2rem 0;}
-  .prev-personal{background:var(--surface2);border-radius:7px;padding:1rem 1.1rem;margin-bottom:1.3rem;}
-  .prev-personal h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.8rem;}
-  .prev-personal input[type=text],.prev-personal input[type=email],.prev-personal input[type=tel]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;margin-bottom:0.6rem;}
 </style>
 </head>
 <body>
@@ -112,35 +148,30 @@
 </div>
 
 <div class="layout">
-  <!-- LEFT: BUILDER -->
   <div class="panel-left">
     <h2 class="panel-title">Nytt workshopevent</h2>
 
     <div class="field-group">
       <label>Eventnamn *</label>
-      <input type="text" id="wTitel" placeholder="T.ex. Milonga-helg November 2025" oninput="uppdateraFörhandsgranskning()">
+      <input type="text" id="wTitel" placeholder="T.ex. Milonga-helg November 2025" oninput="uppdatera()">
     </div>
     <div class="field-group">
       <label>Beskrivning</label>
-      <textarea id="wDesc" placeholder="Kort beskrivning av eventet..." oninput="uppdateraFörhandsgranskning()"></textarea>
+      <textarea id="wDesc" placeholder="Kort beskrivning av eventet..." oninput="uppdatera()"></textarea>
     </div>
     <div class="field-group row">
       <label>Global max (hela eventet)</label>
-      <input type="number" id="wMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdateraFörhandsgranskning()">
+      <input type="number" id="wMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdatera()">
     </div>
 
     <hr class="section-divider">
-    <div class="info-box">
-      <strong>Fast fältstruktur per workshop:</strong> Roll (Förare / Följare / Dubbeldansare), har du en namngiven partner (Ja / Nej), och om ja: partnerns telefonnummer för automatisk ihopkoppling.
-    </div>
-
     <div class="section-label">Workshops i detta event</div>
     <div class="ws-list" id="wsLista"></div>
     <button class="add-ws-btn" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
 
     <div class="panel-actions">
       <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara & generera länk</button>
-      <button class="btn btn-outline" onclick="uppdateraFörhandsgranskning()">↻ Uppdatera förhandsgranskning</button>
+      <button class="btn btn-outline" onclick="uppdatera()">↻ Uppdatera förhandsgranskning</button>
     </div>
     <div class="status-msg" id="byggStatus"></div>
     <div class="share-card" id="delaCard">
@@ -152,7 +183,6 @@
     </div>
   </div>
 
-  <!-- RIGHT: PREVIEW -->
   <div class="panel-right">
     <div class="preview-header">
       <span class="preview-label">Förhandsgranskning</span>
@@ -167,46 +197,162 @@
 <script>
 let workshops = [];
 
+const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta', info:'Info' };
+
+// ── Workshop CRUD ──────────────────────────────────────────
 function laggTillWorkshop() {
-  workshops.push({ id: Date.now()+'', namn: 'Workshop ' + (workshops.length + 1), max: '' });
+  workshops.push({
+    id: Date.now()+'',
+    namn: 'Workshop ' + (workshops.length + 1),
+    max: '',
+    collapsed: false,
+    falt: [
+      { id: Date.now()+'r', typ:'radio', namn:'Roll', obligatorisk:true, alternativ:'Förare\nFöljare\nDubbeldansare\nHoppa över denna workshop', placeholder:'' },
+      { id: Date.now()+'p', typ:'radio', namn:'Har du en namngiven partner?', obligatorisk:true, alternativ:'Ja, jag har en partner\nNej, koppla ihop mig med någon', placeholder:'' },
+    ]
+  });
   renderaWsLista();
-  uppdateraFörhandsgranskning();
+  uppdatera();
 }
 
 function taBortWs(id) {
   workshops = workshops.filter(w => w.id !== id);
   renderaWsLista();
-  uppdateraFörhandsgranskning();
+  uppdatera();
 }
 
 function uppdWs(id, key, val) {
   const w = workshops.find(x => x.id === id);
   if (w) w[key] = val;
-  uppdateraFörhandsgranskning();
+  uppdatera();
 }
 
+function toggleCollapse(id) {
+  const w = workshops.find(x => x.id === id);
+  if (w) w.collapsed = !w.collapsed;
+  renderaWsLista();
+}
+
+// ── Field CRUD inside a workshop ───────────────────────────
+function laggTillFalt(wsId, typ) {
+  const w = workshops.find(x => x.id === wsId);
+  if (!w) return;
+  const defaults = { radio:'Nytt flerval', select:'Välj', checkbox:'Kryssruta', text:'Textfält', email:'E-post', tel:'Telefon', textarea:'Fritext', info:'Informationstext' };
+  w.falt.push({
+    id: Date.now()+'',
+    typ,
+    namn: defaults[typ] || 'Nytt fält',
+    placeholder: '',
+    obligatorisk: false,
+    alternativ: typ==='radio'||typ==='select' ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '',
+    infoText: typ==='info' ? 'Skriv din informationstext här...' : ''
+  });
+  renderaWsLista();
+  uppdatera();
+}
+
+function taBortFalt(wsId, faltId) {
+  const w = workshops.find(x => x.id === wsId);
+  if (w) w.falt = w.falt.filter(f => f.id !== faltId);
+  renderaWsLista();
+  uppdatera();
+}
+
+function uppdFalt(wsId, faltId, key, val) {
+  const w = workshops.find(x => x.id === wsId);
+  if (!w) return;
+  const f = w.falt.find(x => x.id === faltId);
+  if (f) f[key] = key === 'obligatorisk' ? val : val;
+  uppdatera();
+}
+
+// ── Render ─────────────────────────────────────────────────
 function renderaWsLista() {
   const lista = document.getElementById('wsLista');
   if (!workshops.length) { lista.innerHTML = ''; return; }
   lista.innerHTML = workshops.map((w, i) => `
     <div class="ws-item">
-      <div class="ws-item-header">
+      <div class="ws-item-header" onclick="toggleCollapse('${w.id}')">
         <div class="ws-number">${i+1}</div>
-        <input type="text" value="${escHtml(w.namn)}" onchange="uppdWs('${w.id}','namn',this.value)" oninput="uppdWs('${w.id}','namn',this.value)" placeholder="Workshopnamn">
-        <button class="icon-btn" onclick="taBortWs('${w.id}')" title="Ta bort">✕</button>
+        <input type="text" value="${escHtml(w.namn)}" onclick="event.stopPropagation()"
+          onchange="uppdWs('${w.id}','namn',this.value)" oninput="uppdWs('${w.id}','namn',this.value)"
+          placeholder="Workshopnamn">
+        <button class="icon-btn" onclick="event.stopPropagation();taBortWs('${w.id}')" title="Ta bort" style="color:rgba(255,255,255,0.7)">✕</button>
+        <button class="ws-collapse-btn ${w.collapsed?'':'open'}" onclick="event.stopPropagation();toggleCollapse('${w.id}')">▼</button>
       </div>
-      <div class="ws-item-footer">
-        <label>Max deltagare</label>
-        <input type="number" min="1" max="999" value="${escHtml(w.max||'')}" onchange="uppdWs('${w.id}','max',this.value)" oninput="uppdWs('${w.id}','max',this.value)" placeholder="Ej begränsat">
-      </div>
+      ${w.collapsed ? '' : `
+      <div class="ws-item-body">
+        <div class="ws-max-row">
+          <label>Max deltagare</label>
+          <input type="number" min="1" max="999" value="${escHtml(w.max||'')}"
+            onchange="uppdWs('${w.id}','max',this.value)" oninput="uppdWs('${w.id}','max',this.value)"
+            placeholder="Ej begränsat">
+        </div>
+
+        <div class="ws-field-section">
+          <div class="ws-field-section-label">Extra fält för denna workshop</div>
+          <div class="add-field-bar">
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','text')">+ Text</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','email')">+ E-post</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','tel')">+ Telefon</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','textarea')">+ Fritext</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','radio')">+ Flerval</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','select')">+ Dropdown</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','checkbox')">+ Kryssruta</button>
+            <button class="add-field-btn" onclick="laggTillFalt('${w.id}','info')" style="border-color:#c8dcc8;color:var(--success)">+ Info</button>
+          </div>
+          <div class="fields-list">
+            ${w.falt.map((f, fi) => renderaFaltRad(w.id, f, fi)).join('')}
+          </div>
+        </div>
+      </div>`}
     </div>
   `).join('');
 }
 
-function uppdateraFörhandsgranskning() {
+function renderaFaltRad(wsId, f, fi) {
+  return `
+    <div class="field-row">
+      <div class="field-row-drag" title="Ordning">⠿</div>
+      <div class="field-row-body">
+        <div class="field-row-top">
+          <span class="field-type-badge ${f.typ==='info'?'info-badge':''}">${TYPLABELS[f.typ]}</span>
+          ${f.typ !== 'info' ? `<input type="text" value="${escHtml(f.namn)}"
+            onchange="uppdFalt('${wsId}','${f.id}','namn',this.value)"
+            oninput="uppdFalt('${wsId}','${f.id}','namn',this.value)"
+            placeholder="Fältetikett">` : `<span style="font-size:0.82rem;color:var(--text-lt);font-style:italic;">Informationsblock</span>`}
+        </div>
+        ${f.typ === 'info' ? `
+          <div class="info-edit">
+            <textarea onchange="uppdFalt('${wsId}','${f.id}','infoText',this.value)"
+              oninput="uppdFalt('${wsId}','${f.id}','infoText',this.value)"
+              placeholder="Informationstext som visas för deltagaren...">${escHtml(f.infoText||'')}</textarea>
+          </div>` : `
+        <div class="field-row-opts">
+          ${f.typ !== 'radio' && f.typ !== 'select' && f.typ !== 'checkbox' ? `<input type="text" value="${escHtml(f.placeholder||'')}" onchange="uppdFalt('${wsId}','${f.id}','placeholder',this.value)" placeholder="Platshållartext">` : ''}
+          <label class="field-checkbox-label">
+            <input type="checkbox" ${f.obligatorisk?'checked':''} onchange="uppdFalt('${wsId}','${f.id}','obligatorisk',this.checked)"> Obligatorisk
+          </label>
+        </div>
+        ${f.typ==='radio'||f.typ==='select' ? `
+        <div class="options-edit">
+          <textarea onchange="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
+            oninput="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
+            placeholder="Ett alternativ per rad">${escHtml(f.alternativ||'')}</textarea>
+          <span>Ett alternativ per rad</span>
+        </div>` : ''}`}
+      </div>
+      <div class="field-row-actions">
+        <button class="icon-btn" onclick="taBortFalt('${wsId}','${f.id}')" title="Ta bort">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+// ── Preview ────────────────────────────────────────────────
+function uppdatera() {
   const titel = document.getElementById('wTitel').value.trim();
   const desc  = document.getElementById('wDesc').value.trim();
-  const max   = document.getElementById('wMax').value;
   const card  = document.getElementById('previewCard');
 
   if (!titel && !workshops.length) {
@@ -218,7 +364,6 @@ function uppdateraFörhandsgranskning() {
   if (titel) html += `<div class="preview-event-title">${escHtml(titel)}</div>`;
   if (desc)  html += `<div class="preview-event-desc">${escHtml(desc)}</div>`;
 
-  // Personal info section
   html += `<div class="prev-personal">
     <h4>Dina uppgifter</h4>
     <div class="prev-field"><label>Namn *</label><input type="text" placeholder="För- och efternamn"></div>
@@ -226,7 +371,7 @@ function uppdateraFörhandsgranskning() {
     <div class="prev-field"><label>Telefonnummer *</label><input type="tel" placeholder="070-000 00 00"></div>
   </div>`;
 
-  if (workshops.length === 0) {
+  if (!workshops.length) {
     html += `<div style="color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:1.5rem 0;">Lägg till workshops i byggaren.</div>`;
   } else {
     workshops.forEach((ws, i) => {
@@ -235,28 +380,31 @@ function uppdateraFörhandsgranskning() {
           <h3>${escHtml(ws.namn || 'Workshop ' + (i+1))}</h3>
           ${ws.max ? `<span class="slots">Max ${ws.max} platser</span>` : ''}
         </div>
-        <div class="prev-ws-body">
-          <div class="prev-field">
-            <label>Roll</label>
-            <div class="prev-radio-group">
-              <label><input type="radio" name="prev_roll_${i}"> Förare</label>
-              <label><input type="radio" name="prev_roll_${i}"> Följare</label>
-              <label><input type="radio" name="prev_roll_${i}"> Dubbeldansare</label>
-              <label><input type="radio" name="prev_roll_${i}"> Hoppa över denna workshop</label>
-            </div>
-          </div>
-          <div class="prev-field">
-            <label>Har du en namngiven partner?</label>
-            <div class="prev-radio-group">
-              <label><input type="radio" name="prev_partner_${i}"> Ja, jag har en partner</label>
-              <label><input type="radio" name="prev_partner_${i}"> Nej, jag vill bli ihopkopplad</label>
-            </div>
-          </div>
-          <div class="prev-partner-field">
-            <div class="prev-field"><label>Partnerns telefonnummer</label><input type="tel" placeholder="070-000 00 00"></div>
-          </div>
-        </div>
-      </div>`;
+        <div class="prev-ws-body">`;
+
+      ws.falt.forEach(f => {
+        if (f.typ === 'info') {
+          html += `<div class="prev-info-block">${escHtml(f.infoText || '').replace(/\n/g,'<br>')}</div>`;
+        } else {
+          const req = f.obligatorisk ? '<span style="color:var(--accent)"> *</span>' : '';
+          html += `<div class="prev-field"><label>${escHtml(f.namn)}${req}</label>`;
+          if (f.typ === 'text') html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
+          else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
+          else if (f.typ === 'tel') html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
+          else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
+          else if (f.typ === 'checkbox') html += `<div class="prev-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
+          else if (f.typ === 'radio') {
+            const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+            html += `<div class="prev-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${ws.id}_${f.id}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
+          } else if (f.typ === 'select') {
+            const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+            html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a.trim())}</option>`).join('')}</select>`;
+          }
+          html += `</div>`;
+        }
+      });
+
+      html += `</div></div>`;
     });
   }
 
@@ -264,6 +412,7 @@ function uppdateraFörhandsgranskning() {
   card.innerHTML = html;
 }
 
+// ── Save ───────────────────────────────────────────────────
 async function sparaOchVisaDela() {
   const titel = document.getElementById('wTitel').value.trim();
   if (!titel) { visa('byggStatus','err','Fyll i ett eventnamn.'); return; }
@@ -276,7 +425,17 @@ async function sparaOchVisaDela() {
       titel,
       desc: document.getElementById('wDesc').value.trim(),
       max: document.getElementById('wMax').value || null,
-      workshops_json: JSON.stringify(workshops.map(w => ({ namn: w.namn, max: w.max || null })))
+      workshops_json: JSON.stringify(workshops.map(w => ({
+        namn: w.namn,
+        max: w.max || null,
+        falt: w.falt.map(f => ({
+          id: f.id, typ: f.typ, namn: f.namn,
+          placeholder: f.placeholder||'',
+          obligatorisk: f.obligatorisk||false,
+          alternativ: f.alternativ||'',
+          infoText: f.infoText||''
+        }))
+      })))
     };
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const data = await res.json();
@@ -308,9 +467,7 @@ function visa(id, typ, text) {
 
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-window.addEventListener('DOMContentLoaded', () => {
-  uppdateraFörhandsgranskning();
-});
+window.addEventListener('DOMContentLoaded', uppdatera);
 </script>
 </body>
 </html>
