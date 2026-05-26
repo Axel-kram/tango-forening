@@ -417,8 +417,7 @@ async function sparaOchVisaDela() {
   const titel = document.getElementById('wTitel').value.trim();
   if (!titel) { visa('byggStatus','err','Fyll i ett eventnamn.'); return; }
   if (!workshops.length) { visa('byggStatus','err','Lägg till minst en workshop.'); return; }
-  const url = localStorage.getItem('urlSparaWorkshop');
-  if (!url) { visa('byggStatus','err','Ange webhook-URL för "Spara workshop" i adminpanelen.'); return; }
+  const url = 'https://axelkram.app.n8n.cloud/webhook/spara-workshop';
   visa('byggStatus','info','Sparar...');
   try {
     const payload = {
