@@ -1,3 +1,5 @@
+bash
+cat > /home/claude/formular.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -63,6 +65,7 @@
   .field-row-body{flex:1;min-width:0;}
   .field-row-top{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;}
   .field-type-badge{background:var(--surface2);color:var(--text-lt);font-size:0.7rem;font-weight:700;text-transform:uppercase;padding:0.15rem 0.5rem;border-radius:3px;white-space:nowrap;}
+  .field-type-badge.info-badge{background:#e8f0e8;color:var(--success);}
   .field-row-top input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.2rem 0.1rem;font-size:0.9rem;font-weight:700;color:var(--text);}
   .field-row-top input:focus{outline:none;border-bottom-color:var(--brown-mid);}
   .field-row-opts{display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap;}
@@ -75,6 +78,9 @@
   .options-edit{margin-top:0.5rem;}
   .options-edit textarea{width:100%;height:55px;font-size:0.78rem;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.35rem;resize:none;font-family:'Lato',sans-serif;color:var(--text-lt);}
   .options-edit span{font-size:0.72rem;color:var(--text-lt);}
+  /* Info field */
+  .info-edit{margin-top:0.5rem;}
+  .info-edit textarea{width:100%;height:60px;font-size:0.82rem;background:#f0f5f0;border:1px solid #c8dcc8;border-radius:4px;padding:0.4rem 0.6rem;resize:vertical;font-family:'Lato',sans-serif;color:var(--text);}
 
   /* ACTIONS */
   .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
@@ -115,6 +121,7 @@
   .preview-field textarea{resize:vertical;min-height:80px;}
   .preview-radio-group,.preview-check-group{display:flex;flex-direction:column;gap:0.4rem;}
   .preview-radio-group label,.preview-check-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+  .preview-info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1.1rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .preview-submit{background:var(--brown);color:var(--cream);border:none;border-radius:5px;padding:0.75rem 2rem;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:0.5rem;letter-spacing:0.05em;}
   .preview-empty{color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:2rem 0;}
   .preview-max-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.78rem;color:var(--text-lt);padding:0.2rem 0.8rem;margin-bottom:1.2rem;}
@@ -159,13 +166,13 @@
       <button class="add-field-btn" onclick="laggTillFalt('radio')">+ Flerval</button>
       <button class="add-field-btn" onclick="laggTillFalt('select')">+ Dropdown</button>
       <button class="add-field-btn" onclick="laggTillFalt('checkbox')">+ Kryssruta</button>
+      <button class="add-field-btn" onclick="laggTillFalt('info')" style="border-color:#c8dcc8;color:var(--success)">+ Info</button>
     </div>
 
     <div class="fields-list" id="faltLista"></div>
 
     <div class="panel-actions">
       <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara & generera länk</button>
-      <button class="btn btn-outline" onclick="uppdateraFörhandsgranskning()">↻ Uppdatera förhandsgranskning</button>
     </div>
     <div class="status-msg" id="byggStatus"></div>
     <div class="share-card" id="delaCard">
@@ -197,7 +204,7 @@ let falt = [
   { id: Date.now()+'3', typ: 'tel',   namn: 'Telefonnummer',  placeholder: '070-000 00 00',       obligatorisk: true },
 ];
 
-const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta' };
+const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta', info:'Info' };
 
 function laggTillFalt(typ) {
   const defaults = {
@@ -208,8 +215,17 @@ function laggTillFalt(typ) {
     email:    'E-postadress',
     tel:      'Telefonnummer',
     textarea: 'Fritext',
+    info:     'Informationstext',
   };
-  falt.push({ id: Date.now()+'', typ, namn: defaults[typ] || 'Nytt fält', placeholder: '', obligatorisk: false, alternativ: typ==='radio'||typ==='select' ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '' });
+  falt.push({
+    id: Date.now()+'',
+    typ,
+    namn: defaults[typ] || 'Nytt fält',
+    placeholder: '',
+    obligatorisk: false,
+    alternativ: typ==='radio'||typ==='select' ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '',
+    infoText: typ==='info' ? 'Skriv din informationstext här...' : ''
+  });
   renderaFaltlista();
   uppdateraFörhandsgranskning();
 }
@@ -222,7 +238,7 @@ function taBortFalt(id) {
 
 function uppdFalt(id, key, val) {
   const f = falt.find(x => x.id === id);
-  if (f) f[key] = key === 'obligatorisk' ? val : val;
+  if (f) f[key] = val;
   uppdateraFörhandsgranskning();
 }
 
@@ -234,9 +250,17 @@ function renderaFaltlista() {
       <div class="field-row-drag" title="Dra för att ändra ordning">⠿</div>
       <div class="field-row-body">
         <div class="field-row-top">
-          <span class="field-type-badge">${TYPLABELS[f.typ]}</span>
-          <input type="text" value="${escHtml(f.namn)}" onchange="uppdFalt('${f.id}','namn',this.value)" oninput="uppdFalt('${f.id}','namn',this.value)" placeholder="Fältetikett">
+          <span class="field-type-badge ${f.typ==='info'?'info-badge':''}">${TYPLABELS[f.typ]}</span>
+          ${f.typ !== 'info'
+            ? `<input type="text" value="${escHtml(f.namn)}" onchange="uppdFalt('${f.id}','namn',this.value)" oninput="uppdFalt('${f.id}','namn',this.value)" placeholder="Fältetikett">`
+            : `<span style="font-size:0.82rem;color:var(--text-lt);font-style:italic;">Informationsblock</span>`
+          }
         </div>
+        ${f.typ === 'info' ? `
+          <div class="info-edit">
+            <textarea onchange="uppdFalt('${f.id}','infoText',this.value)" oninput="uppdFalt('${f.id}','infoText',this.value)"
+              placeholder="Informationstext som visas för deltagaren...">${escHtml(f.infoText||'')}</textarea>
+          </div>` : `
         <div class="field-row-opts">
           ${f.typ !== 'radio' && f.typ !== 'select' && f.typ !== 'checkbox' ? `<input type="text" value="${escHtml(f.placeholder||'')}" onchange="uppdFalt('${f.id}','placeholder',this.value)" placeholder="Platshållartext">` : ''}
           <label class="field-checkbox-label">
@@ -247,7 +271,7 @@ function renderaFaltlista() {
         <div class="options-edit">
           <textarea onchange="uppdFalt('${f.id}','alternativ',this.value)" oninput="uppdFalt('${f.id}','alternativ',this.value)" placeholder="Ett alternativ per rad">${escHtml(f.alternativ||'')}</textarea>
           <span>Ett alternativ per rad</span>
-        </div>` : ''}
+        </div>` : ''}`}
       </div>
       <div class="field-row-actions">
         <button class="icon-btn" onclick="taBortFalt('${f.id}')" title="Ta bort">✕</button>
@@ -287,21 +311,25 @@ function uppdateraFörhandsgranskning() {
   if (max)   html += `<div class="preview-max-badge">Max ${max} anmälningar</div>`;
 
   falt.forEach(f => {
-    const req = f.obligatorisk ? '<span class="req">*</span>' : '';
-    html += `<div class="preview-field"><label>${escHtml(f.namn)} ${req}</label>`;
-    if (f.typ === 'text')     html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
-    else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
-    else if (f.typ === 'tel')   html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
-    else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
-    else if (f.typ === 'checkbox') html += `<div class="preview-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
-    else if (f.typ === 'radio') {
-      const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
-      html += `<div class="preview-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${f.id}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
-    } else if (f.typ === 'select') {
-      const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
-      html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a.trim())}</option>`).join('')}</select>`;
+    if (f.typ === 'info') {
+      html += `<div class="preview-info-block">${escHtml(f.infoText||'').replace(/\n/g,'<br>')}</div>`;
+    } else {
+      const req = f.obligatorisk ? '<span class="req">*</span>' : '';
+      html += `<div class="preview-field"><label>${escHtml(f.namn)} ${req}</label>`;
+      if (f.typ === 'text')     html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
+      else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
+      else if (f.typ === 'tel')   html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
+      else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
+      else if (f.typ === 'checkbox') html += `<div class="preview-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
+      else if (f.typ === 'radio') {
+        const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+        html += `<div class="preview-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${f.id}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
+      } else if (f.typ === 'select') {
+        const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
+        html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a.trim())}</option>`).join('')}</select>`;
+      }
+      html += `</div>`;
     }
-    html += `</div>`;
   });
 
   if (falt.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
@@ -320,7 +348,13 @@ async function sparaOchVisaDela() {
       titel,
       desc: document.getElementById('fDesc').value.trim(),
       max: document.getElementById('fMax').value || null,
-      falt: falt.map(f => ({ id: f.id, typ: f.typ, namn: f.namn, placeholder: f.placeholder||'', obligatorisk: f.obligatorisk||false, alternativ: f.alternativ||'' }))
+      falt: falt.map(f => ({
+        id: f.id, typ: f.typ, namn: f.namn,
+        placeholder: f.placeholder||'',
+        obligatorisk: f.obligatorisk||false,
+        alternativ: f.alternativ||'',
+        infoText: f.infoText||''
+      }))
     };
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const data = await res.json();
