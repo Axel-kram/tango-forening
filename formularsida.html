@@ -63,7 +63,7 @@ async function laddaFormular() {
   if (!formId) { visaFel('Inget formulär-ID angivet.'); return; }
 
   // Läs URL från localStorage istället för hårdkodad URL
-  const hamtaUrl = localStorage.getItem('urlHamtaFormular');
+ const hamtaUrl = 'https://axelkram.app.n8n.cloud/webhook/hamta-formular';
   if (!hamtaUrl) {
     visaFel('Systemkonfiguration saknas. Kontakta administratören.');
     return;
