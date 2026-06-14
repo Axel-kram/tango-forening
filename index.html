@@ -120,12 +120,10 @@
 </div>
 
 <script>
-// ── Hårdkodade webhook-URLer ──────────────────────────────
 const WEBHOOKS = {
-  listaFormular:      'https://axelkram.app.n8n.cloud/webhook/lista-formular',
-  rensa:              'https://axelkram.app.n8n.cloud/webhook/rensa-kalkylark',
-  matchningFormular:  'https://axelkram.app.n8n.cloud/webhook/matchning-formular',
-  matchningWorkshop:  'https://axelkram.app.n8n.cloud/webhook/matchning-workshops',
+  listaFormular:     'https://axelkram.app.n8n.cloud/webhook/lista-formular',
+  rensa:             'https://axelkram.app.n8n.cloud/webhook/rensa-kalkylark',
+  matchning:         'https://axelkram.app.n8n.cloud/webhook/matchning-workshops',
 };
 
 let rensaSheetId = null;
@@ -212,7 +210,7 @@ function renderFormItem(f, typ) {
         <input class="copy-url-input" value="${escHtml(pageUrl)}" readonly>
         <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
-      <button class="btn btn-success" onclick="${typ==='formular'?'koraMatchning':'koraMatchningWs'}('${escHtml(f.id)}')">Matchning</button>
+      <button class="btn btn-success" onclick="koraMatchning('${escHtml(f.id)}','${typ}')">Matchning</button>
       <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}','${typ}')">Rensa</button>
     </div>
   </div>`;
@@ -258,26 +256,20 @@ async function bekraftaRensa() {
   }
 }
 
-async function koraMatchning(formId) {
+async function koraMatchning(id, typ) {
   try {
-    await fetch(WEBHOOKS.matchningFormular, {
+    const payload = typ === 'formular'
+      ? { form_id: id }
+      : { event_id: id };
+    await fetch(WEBHOOKS.matchning, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ form_id: formId })
+      body: JSON.stringify(payload)
     });
     alert('Matchning körd!');
-  } catch(e) { alert('Fel: ' + e.message); }
-}
-
-async function koraMatchningWs(eventId) {
-  try {
-    await fetch(WEBHOOKS.matchningWorkshop, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event_id: eventId })
-    });
-    alert('Matchning körd!');
-  } catch(e) { alert('Fel: ' + e.message); }
+  } catch(e) {
+    alert('Fel: ' + e.message);
+  }
 }
 
 function escHtml(s) {
