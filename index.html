@@ -121,9 +121,9 @@
 
 <script>
 const WEBHOOKS = {
-  listaFormular:     'https://axelkram.app.n8n.cloud/webhook/lista-formular',
-  rensa:             'https://axelkram.app.n8n.cloud/webhook/rensa-kalkylark',
-  matchning:         'https://axelkram.app.n8n.cloud/webhook/matchning-workshops',
+  listaFormular: 'https://axelkram.app.n8n.cloud/webhook/lista-formular',
+  rensa:         'https://axelkram.app.n8n.cloud/webhook/rensa-kalkylark',
+  matchning:     'https://axelkram.app.n8n.cloud/webhook/matchning-workshops',
 };
 
 let rensaSheetId = null;
@@ -210,7 +210,7 @@ function renderFormItem(f, typ) {
         <input class="copy-url-input" value="${escHtml(pageUrl)}" readonly>
         <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
-      <button class="btn btn-success" onclick="koraMatchning('${escHtml(f.id)}','${typ}')">Matchning</button>
+      <button class="btn btn-success" onclick="koraMatchning('${escHtml(f.id)}')">Matchning</button>
       <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}','${typ}')">Rensa</button>
     </div>
   </div>`;
@@ -256,19 +256,18 @@ async function bekraftaRensa() {
   }
 }
 
-async function koraMatchning(id, typ) {
+// ── FIXAD: alltid event_id till matchning-workshops ──────────────────────────
+async function koraMatchning(id) {
   try {
-    const payload = typ === 'formular'
-      ? { form_id: id }
-      : { event_id: id };
-    await fetch(WEBHOOKS.matchning, {
+    const res = await fetch(WEBHOOKS.matchning, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ event_id: id })
     });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     alert('Matchning körd!');
   } catch(e) {
-    alert('Fel: ' + e.message);
+    alert('Fel vid matchning: ' + e.message);
   }
 }
 
