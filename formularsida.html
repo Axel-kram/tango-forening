@@ -49,7 +49,7 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar formulär...</p></div>
 </div>
 <script>
-const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/spara-anmalan';
+const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/huvudflow_tangoformular';
 const params = new URLSearchParams(location.search);
 const formId = params.get('form');
 let formularData = null;
@@ -111,7 +111,7 @@ function visaFormular(f) {
 async function skickaAnmalan() {
   const falt = typeof formularData.falt_json === 'string' ? JSON.parse(formularData.falt_json) : (formularData.falt || []);
   let valid = true;
-  const data = {};
+  const data = [];
   falt.forEach(f => {
     if (f.typ === 'info') return;
     const container = document.getElementById('flt_' + f.id);
@@ -128,7 +128,7 @@ async function skickaAnmalan() {
     }
     if (f.obligatorisk && !value) { container?.classList.add('invalid'); valid = false; }
     else { container?.classList.remove('invalid'); }
-    data[f.namn] = value;
+    data.push({ label: f.namn, value });
   });
   if (!valid) return;
 
@@ -136,7 +136,7 @@ async function skickaAnmalan() {
   btn.disabled = true;
   btn.textContent = 'Skickar...';
   try {
-    const payload = { form_id: formId, typ: 'formular', data };
+    const payload = { form_id: formId, data };
     const res = await fetch(WEBHOOK_SPARA, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     document.getElementById('mainCard').innerHTML = `
