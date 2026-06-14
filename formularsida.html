@@ -18,11 +18,7 @@
   .field{margin-bottom:1.2rem;}
   .field label{display:block;font-size:0.82rem;font-weight:700;color:var(--brown-mid);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.04em;}
   .field .req{color:var(--accent);}
-  .field input[type=text],.field input[type=email],.field input[type=tel],.field textarea,.field select{
-    width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;
-    padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);
-    transition:border-color 0.2s;
-  }
+  .field input[type=text],.field input[type=email],.field input[type=tel],.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
   .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--brown-mid);}
   .field textarea{resize:vertical;min-height:90px;}
   .radio-group,.check-group{display:flex;flex-direction:column;gap:0.5rem;}
@@ -30,6 +26,7 @@
   .field-error{color:var(--danger);font-size:0.8rem;margin-top:0.3rem;display:none;}
   .field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--danger);}
   .field.invalid .field-error{display:block;}
+  .info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1.2rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .submit-btn{background:var(--brown);color:var(--cream);border:none;border-radius:6px;padding:0.85rem 2.5rem;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em;transition:filter 0.2s,transform 0.1s;width:100%;margin-top:0.5rem;}
   .submit-btn:hover{filter:brightness(1.1);}
   .submit-btn:active{transform:scale(0.99);}
@@ -47,13 +44,12 @@
 </style>
 </head>
 <body>
-
 <div class="brand">Tango <span>Norteño</span></div>
 <div class="card" id="mainCard">
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar formulär...</p></div>
 </div>
-
 <script>
+const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/spara-anmalan';
 const params = new URLSearchParams(location.search);
 const formId = params.get('form');
 let formularData = null;
@@ -61,16 +57,8 @@ let antalAnmalda = 0;
 
 async function laddaFormular() {
   if (!formId) { visaFel('Inget formulär-ID angivet.'); return; }
-
-  // Läs URL från localStorage istället för hårdkodad URL
-  const hamtaUrl = 'https://axelkram.app.n8n.cloud/webhook/hamta_formular';
-  if (!hamtaUrl) {
-    visaFel('Systemkonfiguration saknas. Kontakta administratören.');
-    return;
-  }
-
   try {
-    const res = await fetch(hamtaUrl + '?id=' + encodeURIComponent(formId));
+    const res = await fetch('https://axelkram.app.n8n.cloud/webhook/hamta_formular?id=' + encodeURIComponent(formId));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
     const data = Array.isArray(raw) ? raw[0] : raw;
@@ -96,6 +84,10 @@ function visaFormular(f) {
     return;
   }
   falt.forEach(f => {
+    if (f.typ === 'info') {
+      html += `<div class="info-block">${escHtml(f.infoText || '').replace(/\n/g,'<br>')}</div>`;
+      return;
+    }
     const req = f.obligatorisk ? '<span class="req"> *</span>' : '';
     html += `<div class="field" id="flt_${f.id}"><label>${escHtml(f.namn)}${req}</label>`;
     if (f.typ === 'text') html += `<input type="text" name="${f.id}" placeholder="${escHtml(f.placeholder||'')}">`;
@@ -118,14 +110,10 @@ function visaFormular(f) {
 
 async function skickaAnmalan() {
   const falt = typeof formularData.falt_json === 'string' ? JSON.parse(formularData.falt_json) : (formularData.falt || []);
-
-  // Hämta webhook-URL från formulärdata eller localStorage
-  const webhookUrl = formularData.webhook_url || localStorage.getItem('urlSparaFormular');
-  if (!webhookUrl) { alert('Systemfel: webhook-URL saknas.'); return; }
-
   let valid = true;
-  const data = [];
+  const data = {};
   falt.forEach(f => {
+    if (f.typ === 'info') return;
     const container = document.getElementById('flt_' + f.id);
     let value = '';
     if (f.typ === 'radio') {
@@ -140,7 +128,7 @@ async function skickaAnmalan() {
     }
     if (f.obligatorisk && !value) { container?.classList.add('invalid'); valid = false; }
     else { container?.classList.remove('invalid'); }
-    data.push({ label: f.namn, value });
+    data[f.namn] = value;
   });
   if (!valid) return;
 
@@ -148,15 +136,11 @@ async function skickaAnmalan() {
   btn.disabled = true;
   btn.textContent = 'Skickar...';
   try {
-    const payload = { form_id: formId, data };
-    const res = await fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
+    const payload = { form_id: formId, typ: 'formular', data };
+    const res = await fetch(WEBHOOK_SPARA, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     document.getElementById('mainCard').innerHTML = `
-      <div class="msg">
-        <div class="icon">✦</div>
-        <h2>Tack för din anmälan!</h2>
-        <p>Vi återkommer med bekräftelse.</p>
-      </div>`;
+      <div class="msg"><div class="icon">✦</div><h2>Tack för din anmälan!</h2><p>Vi återkommer med bekräftelse.</p></div>`;
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Skicka anmälan';
@@ -167,9 +151,7 @@ async function skickaAnmalan() {
 function visaFel(msg) {
   document.getElementById('mainCard').innerHTML = `<div class="msg"><div class="icon">✦</div><h2>Formuläret hittades inte</h2><p>${msg}</p></div>`;
 }
-
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
 laddaFormular();
 </script>
 </body>
