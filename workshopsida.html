@@ -60,7 +60,7 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar event...</p></div>
 </div>
 <script>
-const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/spara-anmalan';
+const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/anmalan-workshop';
 const params = new URLSearchParams(location.search);
 const evId = params.get('event');
 let eventData = null;
@@ -142,6 +142,7 @@ async function skickaAnmalan() {
   const namn = document.getElementById('inp_namn')?.value.trim() || '';
   const email = document.getElementById('inp_email')?.value.trim() || '';
   const tel = document.getElementById('inp_tel')?.value.trim() || '';
+
   [['f_namn',namn],['f_email',email],['f_tel',tel]].forEach(([id,val]) => {
     const el = document.getElementById(id);
     if (!val) { el?.classList.add('invalid'); valid = false; }
@@ -149,35 +150,31 @@ async function skickaAnmalan() {
   });
   if (!valid) return;
 
-  const wsDataArr = eventData.workshops.map((ws, i) => {
-    const rollEl = document.querySelector(`input[name="roll_${i}"]:checked`);
-    const partnerEl = document.querySelector(`input[name="partner_${i}"]:checked`);
-    const roll = rollEl ? rollEl.value : 'Hoppa över';
-    const harPartner = partnerEl ? partnerEl.value : 'nej';
-    const partnerTel = harPartner === 'ja' ? (document.getElementById('ptel_' + i)?.value.trim() || '') : '';
-    return {
-      workshopNamn: ws.namn,
-      roll,
-      harPartner,
-      partnerTel: partnerTel.replace(/\D/g, '')
-    };
-  });
+  const data = [
+    { label: 'Namn', value: namn },
+    { label: 'E-post', value: email },
+    { label: 'Telefonnummer', value: tel.replace(/\D/g, '') },
+    ...eventData.workshops.flatMap((ws, i) => {
+      const rollEl = document.querySelector(`input[name="roll_${i}"]:checked`);
+      const partnerEl = document.querySelector(`input[name="partner_${i}"]:checked`);
+      const roll = rollEl ? rollEl.value : 'Hoppa över';
+      const harPartner = partnerEl ? partnerEl.value : 'nej';
+      const partnerTel = harPartner === 'ja' ? (document.getElementById('ptel_' + i)?.value.trim() || '').replace(/\D/g, '') : '';
+      return [
+        { label: `w${i+1} - roll`, value: roll },
+        { label: `w${i+1} - har partner`, value: harPartner },
+        { label: `w${i+1} - partners telefon`, value: partnerTel },
+        { label: `w${i+1} - namn`, value: ws.namn }
+      ];
+    })
+  ];
 
   const btn = document.querySelector('.submit-btn');
   btn.disabled = true;
   btn.textContent = 'Skickar...';
 
   try {
-    const payload = {
-      event_id: evId,
-      typ: 'workshop',
-      data: {
-        Namn: namn,
-        'E-post': email,
-        Telefonnummer: tel.replace(/\D/g, ''),
-        workshops: wsDataArr
-      }
-    };
+    const payload = { event_id: evId, data };
     await fetch(WEBHOOK_SPARA, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     document.getElementById('mainCard').innerHTML = `
       <div class="msg"><div class="icon">✦</div><h2>Tack för din anmälan!</h2><p>Vi återkommer med bekräftelse och partnermatchning.</p></div>`;
