@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tango Norteño — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;
+    --brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;
+    --text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;
+    --shadow:0 2px 12px rgba(74,44,26,0.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;}
+  .topbar{background:var(--brown);color:var(--cream);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .topbar-logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.04em;}
+  .topbar-logo span{font-style:italic;color:var(--brown-lt);}
+  .topbar-nav{display:flex;gap:0.5rem;}
+  .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s,border-color 0.2s;text-decoration:none;display:inline-block;}
+  .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
+  .container{max-width:1100px;margin:0 auto;padding:2.5rem 2rem;}
+  .page-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:0.4rem;color:var(--brown);}
+  .page-sub{color:var(--text-lt);font-size:0.95rem;margin-bottom:2rem;}
+  .card{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:1.6rem 1.8rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
+  .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;}
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:scale(0.98);}
+  .btn-brown{background:var(--brown);color:var(--cream);}
+  .btn-mid{background:var(--brown-mid);color:var(--cream);}
+  .btn-danger{background:var(--danger);color:#fff;}
+  .btn-success{background:var(--success);color:#fff;}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown-mid);}
+  .tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;}
+  .tab{padding:0.7rem 1.4rem;cursor:pointer;font-size:0.88rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-lt);border-bottom:2px solid transparent;margin-bottom:-2px;transition:color 0.2s,border-color 0.2s;}
+  .tab.active{color:var(--brown);border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .list-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--brown);}
+  .form-list{display:flex;flex-direction:column;gap:0.75rem;}
+  .form-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  .form-item-info{flex:1;min-width:0;}
+  .form-item-title{font-weight:700;font-size:0.95rem;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .form-item-meta{font-size:0.78rem;color:var(--text-lt);margin-top:0.2rem;}
+  .badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;background:var(--surface2);color:var(--brown-mid);}
+  .badge-full{background:#f5e0d0;color:var(--accent);}
+  .form-item-actions{display:flex;gap:0.5rem;flex-shrink:0;flex-wrap:wrap;align-items:center;}
+  .copy-url-input{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;color:var(--text-lt);width:260px;font-family:monospace;}
+  .status-msg{margin-top:0.8rem;font-size:0.85rem;padding:0.5rem 0.8rem;border-radius:5px;display:none;}
+  .status-msg.ok{background:#e6f0ea;color:var(--success);display:block;}
+  .status-msg.err{background:#f5e6e6;color:var(--danger);display:block;}
+  .status-msg.info{background:var(--surface2);color:var(--text-lt);display:block;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(46,26,14,0.55);z-index:100;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--cream);border-radius:10px;padding:2rem;max-width:480px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.25);}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown);margin-bottom:0.8rem;}
+  .modal p{color:var(--text-lt);font-size:0.9rem;margin-bottom:1.2rem;}
+  .modal-actions{display:flex;gap:0.8rem;justify-content:flex-end;}
+  .empty-state{text-align:center;padding:2.5rem;color:var(--text-lt);font-size:0.9rem;}
+  .empty-state .big{font-family:'Playfair Display',serif;font-size:2.5rem;margin-bottom:0.5rem;opacity:0.3;}
+  .url-row{display:flex;gap:0.5rem;align-items:center;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Tango <span>Norteño</span></div>
+  <nav class="topbar-nav">
+    <a class="nav-btn active" href="index.html">Admin</a>
+    <a class="nav-btn" href="formular.html">Formulärbyggare</a>
+    <a class="nav-btn" href="workshopsbyggare.html">Workshopsbyggare</a>
+    <a class="nav-btn" href="meddelanden.html">Meddelanden</a>
+  </nav>
+</div>
+
+<div class="container">
+  <h1 class="page-title">Adminpanel</h1>
+  <p class="page-sub">Hantera formulär och workshops</p>
+
+  <div class="card" style="padding-top:1.2rem">
+    <div class="tab-bar">
+      <div class="tab active" onclick="byttTab('formular',this)">Formulär</div>
+      <div class="tab" onclick="byttTab('workshops',this)">Workshops</div>
+    </div>
+
+    <div class="tab-panel active" id="tab-formular">
+      <div class="list-header">
+        <h3>Aktiva formulär</h3>
+        <button class="btn btn-mid" onclick="laddaFormular()">↻ Ladda om</button>
+      </div>
+      <div class="form-list" id="formularLista">
+        <div class="empty-state"><div class="big">✦</div>Inga formulär ännu.</div>
+      </div>
+      <div class="status-msg" id="formularStatus"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-workshops">
+      <div class="list-header">
+        <h3>Aktiva workshopevents</h3>
+        <button class="btn btn-mid" onclick="laddaWorkshops()">↻ Ladda om</button>
+      </div>
+      <div class="form-list" id="workshopsLista">
+        <div class="empty-state"><div class="big">✦</div>Inga workshops ännu.</div>
+      </div>
+      <div class="status-msg" id="workshopsStatus"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rensaModal">
+  <div class="modal">
+    <h3>Rensa kalkylark?</h3>
+    <p id="rensaModalText">Är du säker på att du vill rensa detta kalkylark? Alla anmälningar tas bort permanent.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="stangModal()">Avbryt</button>
+      <button class="btn btn-danger" onclick="bekraftaRensa()">Ja, rensa</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEBHOOKS = {
+  listaFormular: 'https://axelkram.app.n8n.cloud/webhook/lista-formular',
+  rensa:         'https://axelkram.app.n8n.cloud/webhook/rensa-kalkylark',
+  matchning:     'https://axelkram.app.n8n.cloud/webhook/matchning-workshops',
+};
+
+let rensaSheetId = null;
+let rensaTyp = null;
+
+function visa(id, typ, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status-msg ' + typ;
+  el.textContent = text;
+  if (typ === 'ok') setTimeout(() => { el.className='status-msg'; }, 3500);
+}
+
+function byttTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function normaliseraItems(data, nycklar) {
+  if (Array.isArray(data)) return data;
+  for (const k of nycklar) {
+    if (data[k] && Array.isArray(data[k])) return data[k];
+  }
+  return [];
+}
+
+async function laddaFormular() {
+  const lista = document.getElementById('formularLista');
+  lista.innerHTML = '<div class="empty-state">Laddar...</div>';
+  try {
+    const res = await fetch(WEBHOOKS.listaFormular + '?typ=formular');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const items = normaliseraItems(data, ['formular','items','data']);
+    if (!items.length) {
+      lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva formulär.</div>';
+      return;
+    }
+    lista.innerHTML = items.map(f => renderFormItem(f, 'formular')).join('');
+  } catch(e) {
+    lista.innerHTML = '<div class="empty-state" style="color:var(--danger)">Fel vid hämtning: ' + e.message + '</div>';
+  }
+}
+
+async function laddaWorkshops() {
+  const lista = document.getElementById('workshopsLista');
+  lista.innerHTML = '<div class="empty-state">Laddar...</div>';
+  try {
+    const res = await fetch(WEBHOOKS.listaFormular + '?typ=workshop');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const items = normaliseraItems(data, ['workshops','items','data']);
+    if (!items.length) {
+      lista.innerHTML = '<div class="empty-state"><div class="big">✦</div>Inga aktiva workshops.</div>';
+      return;
+    }
+    lista.innerHTML = items.map(f => renderFormItem(f, 'workshop')).join('');
+  } catch(e) {
+    lista.innerHTML = '<div class="empty-state" style="color:var(--danger)">Fel vid hämtning: ' + e.message + '</div>';
+  }
+}
+
+function renderFormItem(f, typ) {
+  const base = location.origin + location.pathname.replace('index.html','');
+  const pageUrl = typ === 'formular'
+    ? base + 'formularsida.html?form=' + encodeURIComponent(f.id)
+    : base + 'workshopsida.html?event=' + encodeURIComponent(f.id);
+  const antal = f.anmalningar ?? '?';
+  const max = f.max ? ' / ' + f.max : '';
+  const full = f.max && antal >= f.max;
+  return `<div class="form-item">
+    <div class="form-item-info">
+      <div class="form-item-title">${escHtml(f.titel || 'Namnlöst')}</div>
+      <div class="form-item-meta">
+        ${f.skapad ? 'Skapad: ' + escHtml(f.skapad) + ' &nbsp;·&nbsp; ' : ''}
+        Anmälningar: <b>${antal}${max}</b>
+        ${full ? ' <span class="badge badge-full">FULLT</span>' : ''}
+      </div>
+    </div>
+    <div class="form-item-actions">
+      <div class="url-row">
+        <input class="copy-url-input" value="${escHtml(pageUrl)}" readonly>
+        <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
+      </div>
+      <button class="btn btn-success" onclick="koraMatchning('${escHtml(f.id)}')">Matchning</button>
+      <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}','${typ}')">Rensa</button>
+    </div>
+  </div>`;
+}
+
+function kopieraUrl(url, btn) {
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '✓ Kopierat';
+    setTimeout(() => btn.textContent = 'Kopiera', 2000);
+  });
+}
+
+function oppnaRensaModal(sheetId, titel, typ) {
+  rensaSheetId = sheetId;
+  rensaTyp = typ;
+  document.getElementById('rensaModalText').textContent =
+    `Är du säker på att du vill rensa kalkylarket för "${titel}"? Alla anmälningar tas bort permanent.`;
+  document.getElementById('rensaModal').classList.add('open');
+}
+
+function stangModal() {
+  document.getElementById('rensaModal').classList.remove('open');
+}
+
+async function bekraftaRensa() {
+  const sheetId = rensaSheetId;
+  const typ = rensaTyp;
+  stangModal();
+  rensaSheetId = null;
+  rensaTyp = null;
+  if (!sheetId) { alert('Inget kalkylark valt.'); return; }
+  try {
+    await fetch(WEBHOOKS.rensa, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheet_id: sheetId, typ })
+    });
+    alert('Kalkylark rensat.');
+    laddaFormular();
+    laddaWorkshops();
+  } catch(e) {
+    alert('Fel: ' + e.message);
+  }
+}
+
+// ── FIXAD: alltid event_id till matchning-workshops ──────────────────────────
+async function koraMatchning(id) {
+  try {
+    const res = await fetch(WEBHOOKS.matchning, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event_id: id })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    alert('Matchning körd!');
+  } catch(e) {
+    alert('Fel vid matchning: ' + e.message);
+  }
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  laddaFormular();
+});
+</script>
+</body>
+</html>
