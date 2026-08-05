@@ -49,7 +49,7 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar formulär...</p></div>
 </div>
 <script>
-const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/huvudflow_tangoformular';
+const WEBHOOK_SPARA = 'https://tango-norteno.duckdns.org/webhook/huvudflow_tangoformular';
 const params = new URLSearchParams(location.search);
 const formId = params.get('form');
 let formularData = null;
@@ -58,7 +58,7 @@ let antalAnmalda = 0;
 async function laddaFormular() {
   if (!formId) { visaFel('Inget formulär-ID angivet.'); return; }
   try {
-    const res = await fetch('https://axelkram.app.n8n.cloud/webhook/hamta_formular?id=' + encodeURIComponent(formId));
+    const res = await fetch('https://tango-norteno.duckdns.org/webhook/hamta_formular?id=' + encodeURIComponent(formId));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
     const data = Array.isArray(raw) ? raw[0] : raw;
@@ -156,3 +156,4 @@ laddaFormular();
 </script>
 </body>
 </html>
+

@@ -60,7 +60,7 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar event...</p></div>
 </div>
 <script>
-const WEBHOOK_SPARA = 'https://axelkram.app.n8n.cloud/webhook/anmalan-workshop';
+const WEBHOOK_SPARA = 'https://tango-norteno.duckdns.org/webhook/anmalan-workshop';
 const params = new URLSearchParams(location.search);
 const evId = params.get('event');
 let eventData = null;
@@ -68,7 +68,7 @@ let eventData = null;
 async function laddaEvent() {
   if (!evId) { visaFel('Inget event-ID angivet.'); return; }
   try {
-    const res = await fetch('https://axelkram.app.n8n.cloud/webhook/hamta-workshop?id=' + evId);
+    const res = await fetch('https://tango-norteno.duckdns.org/webhook/hamta-workshop?id=' + evId);
     const data = await res.json();
     if (data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
     eventData = data;
@@ -193,3 +193,4 @@ laddaEvent();
 </script>
 </body>
 </html>
+
