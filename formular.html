@@ -197,8 +197,9 @@ let falt = [
   { id: Date.now()+'1', typ: 'text',   namn: 'Namn',                   placeholder: 'För- och efternamn', obligatorisk: true },
   { id: Date.now()+'2', typ: 'email',  namn: 'E-post',                 placeholder: 'din@email.se',       obligatorisk: true },
   { id: Date.now()+'3', typ: 'tel',    namn: 'Telefonnummer',          placeholder: '070-000 00 00',      obligatorisk: true },
-  { id: Date.now()+'4', typ: 'tel',    namn: 'Partners telefonnummer', placeholder: '070-000 00 00',      obligatorisk: false },
-  { id: Date.now()+'5', typ: 'select', namn: 'Roll',                   placeholder: '',                   obligatorisk: true, alternativ: 'Förare\nFöljare\nDubbeldansare' },
+  { id: Date.now()+'4', typ: 'radio',  namn: 'Har du partner?',        placeholder: '',                   obligatorisk: true,  alternativ: 'Ja\nNej' },
+  { id: Date.now()+'5', typ: 'tel',    namn: 'Partners telefonnummer', placeholder: '070-000 00 00',      obligatorisk: false },
+  { id: Date.now()+'6', typ: 'select', namn: 'Roll',                   placeholder: '',                   obligatorisk: true, alternativ: 'Förare\nFöljare\nDubbeldansare' },
 ];
 
 const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta', info:'Info' };
@@ -381,3 +382,4 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
