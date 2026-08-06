@@ -75,6 +75,9 @@ function visaFormular(f) {
   const falt = typeof f.falt_json === 'string' ? JSON.parse(f.falt_json) : (f.falt || []);
   const max = f.max ? parseInt(f.max) : null;
   const full = max && antalAnmalda >= max;
+  const _pTel = falt.find(x => x.typ==='tel' && /partner/i.test(x.namn||''));
+  const _pToggle = falt.some(x => x.typ==='radio' && /har du partner/i.test(x.namn||''));
+  window.__partnerTelId = (_pTel && _pToggle) ? _pTel.id : null;
   let html = `<div class="form-title">${escHtml(f.titel)}</div>`;
   if (f.desc) html += `<div class="form-desc">${escHtml(f.desc)}</div>`;
   if (max) html += `<div class="max-badge">Platser kvar: ${Math.max(0, max - antalAnmalda)} / ${max}</div>`;
@@ -89,7 +92,9 @@ function visaFormular(f) {
       return;
     }
     const req = f.obligatorisk ? '<span class="req"> *</span>' : '';
-    html += `<div class="field" id="flt_${f.id}"><label>${escHtml(f.namn)}${req}</label>`;
+    const _pt = (window.__partnerTelId && f.id === window.__partnerTelId);
+    const _pg = (window.__partnerTelId && f.typ==='radio' && /har du partner/i.test(f.namn||''));
+    html += `<div class="field" id="flt_${f.id}"${_pt?' style="display:none"':''}><label>${escHtml(f.namn)}${req}</label>`;
     if (f.typ === 'text') html += `<input type="text" name="${f.id}" placeholder="${escHtml(f.placeholder||'')}">`;
     else if (f.typ === 'email') html += `<input type="email" name="${f.id}" placeholder="${escHtml(f.placeholder||'')}">`;
     else if (f.typ === 'tel') html += `<input type="tel" name="${f.id}" placeholder="${escHtml(f.placeholder||'')}">`;
@@ -97,7 +102,7 @@ function visaFormular(f) {
     else if (f.typ === 'checkbox') html += `<div class="check-group"><label><input type="checkbox" name="${f.id}"> ${escHtml(f.namn)}</label></div>`;
     else if (f.typ === 'radio') {
       const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
-      html += `<div class="radio-group">${alts.map(a=>`<label><input type="radio" name="${f.id}" value="${escHtml(a.trim())}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
+      html += `<div class="radio-group">${alts.map(a=>`<label><input type="radio" name="${f.id}" value="${escHtml(a.trim())}"${_pg?' onchange="partnerToggle(this.value)"':''}> ${escHtml(a.trim())}</label>`).join('')}</div>`;
     } else if (f.typ === 'select') {
       const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
       html += `<select name="${f.id}"><option value="">Välj...</option>${alts.map(a=>`<option value="${escHtml(a.trim())}">${escHtml(a.trim())}</option>`).join('')}</select>`;
@@ -150,6 +155,13 @@ async function skickaAnmalan() {
 
 function visaFel(msg) {
   document.getElementById('mainCard').innerHTML = `<div class="msg"><div class="icon">✦</div><h2>Formuläret hittades inte</h2><p>${msg}</p></div>`;
+}
+function partnerToggle(val){
+  const id = window.__partnerTelId; if(!id) return;
+  const c = document.getElementById('flt_'+id); if(!c) return;
+  const show = /^\s*ja/i.test(val||'');
+  c.style.display = show ? '' : 'none';
+  if(!show){ const inp = c.querySelector('input'); if(inp) inp.value=''; }
 }
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 laddaFormular();
