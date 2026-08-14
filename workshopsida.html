@@ -14,37 +14,44 @@
   .card{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:2.2rem 2.5rem;width:100%;max-width:640px;box-shadow:0 4px 24px rgba(74,44,26,0.12);}
   .event-title{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);margin-bottom:0.4rem;line-height:1.2;}
   .event-desc{color:var(--text-lt);font-size:0.95rem;margin-bottom:1.5rem;line-height:1.6;}
+  .max-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.8rem;color:var(--text-lt);padding:0.25rem 0.9rem;margin-bottom:1.2rem;}
   .section-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
   .section-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown);margin-bottom:1rem;}
   .field{margin-bottom:1rem;}
-  .field label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
+  .field > label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
   .field .req{color:var(--accent);}
-  .field input[type=text],.field input[type=email],.field input[type=tel]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
-  .field input:focus{outline:none;border-color:var(--brown-mid);}
+  .field input[type=text],.field input[type=email],.field input[type=tel],.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
+  .field textarea{resize:vertical;min-height:80px;}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--brown-mid);}
   .field-error{color:var(--danger);font-size:0.8rem;margin-top:0.3rem;display:none;}
-  .field.invalid input{border-color:var(--danger);}
+  .field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--danger);}
   .field.invalid .field-error{display:block;}
+  .field.invalid > label{color:var(--danger);}
   .ws-block{border:1px solid var(--border);border-radius:9px;margin-bottom:1.3rem;overflow:hidden;}
   .ws-block-header{background:var(--brown);color:var(--cream);padding:0.8rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
   .ws-block-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
   .ws-slots{font-size:0.78rem;opacity:0.75;}
   .ws-full-badge{background:var(--accent);color:#fff;font-size:0.7rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:3px;text-transform:uppercase;}
   .ws-block-body{padding:1.1rem 1.2rem;}
-  .radio-field{margin-bottom:1rem;}
-  .radio-field > label{display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.4rem;}
-  .radio-group{display:flex;flex-direction:column;gap:0.4rem;}
-  .radio-group label{font-size:0.92rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.6rem;cursor:pointer;}
+  .radio-group,.check-group{display:flex;flex-direction:column;gap:0.4rem;}
+  .radio-group label,.check-group label{font-size:0.92rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.6rem;cursor:pointer;}
   .radio-group input[type=radio]{accent-color:var(--brown-mid);}
-  .partner-section{margin-top:0.8rem;background:var(--surface2);border-radius:7px;padding:0.9rem 1rem;}
-  .partner-section .partner-label{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.5rem;}
+  .check-group input[type=checkbox]{accent-color:var(--brown-mid);}
+  .partner-section{margin-top:0.2rem;background:var(--surface2);border-radius:7px;padding:0.9rem 1rem;margin-bottom:1rem;}
+  .partner-section > label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.5rem;}
   .partner-tel-row{margin-top:0.7rem;display:none;}
   .partner-tel-row label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);display:block;margin-bottom:0.3rem;}
   .partner-tel-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;}
   .partner-tel-row input:focus{outline:none;border-color:var(--brown-mid);}
+  .info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .full-notice{background:#f5e0d0;border:1px solid #d4956e;border-radius:6px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--accent);font-weight:700;}
+  .full-notice-big{background:#f5e0d0;border:1px solid #d4956e;border-radius:8px;padding:1.2rem;text-align:center;margin-bottom:1.5rem;}
+  .full-notice-big h3{color:var(--accent);font-family:'Playfair Display',serif;margin-bottom:0.3rem;}
+  .full-notice-big p{color:var(--text-lt);font-size:0.88rem;}
   .submit-btn{background:var(--brown);color:var(--cream);border:none;border-radius:6px;padding:0.9rem 2.5rem;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em;transition:filter 0.2s;width:100%;margin-top:0.5rem;}
   .submit-btn:hover{filter:brightness(1.1);}
   .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .form-error{background:#f5e6e6;color:var(--danger);border-radius:6px;padding:0.6rem 0.9rem;font-size:0.87rem;margin-top:0.8rem;display:none;}
   .msg{text-align:center;padding:2rem 1rem;}
   .msg .icon{font-size:2.5rem;margin-bottom:0.7rem;}
   .msg h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:0.5rem;}
@@ -60,29 +67,61 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar event...</p></div>
 </div>
 <script>
-const WEBHOOK_SPARA = 'https://tango-norteno.duckdns.org/webhook/anmalan-workshop';
+const WEBHOOK_SPARA  = 'https://tango-norteno.duckdns.org/webhook/anmalan-workshop';
+const WEBHOOK_HAMTA  = 'https://tango-norteno.duckdns.org/webhook/hamta-workshop';
+
 const params = new URLSearchParams(location.search);
 const evId = params.get('event');
 let eventData = null;
 
+/* ── Fälttyp-klassning ───────────────────────────────────────────
+   Ett radiofält vars etikett innehåller "roll"    → rollfältet
+   Ett radiofält vars etikett innehåller "partner" → partner-toggle
+   Allt annat                                      → extrafält        */
+function faltSort(f) {
+  const n = String(f.namn || '').toLowerCase();
+  if (f.typ === 'radio' && /\broll\b/.test(n)) return 'roll';
+  if (f.typ === 'radio' && /partner/.test(n))  return 'partner';
+  return 'extra';
+}
+function alternativLista(f) {
+  return String(f.alternativ || '').split('\n').map(a => a.trim()).filter(Boolean);
+}
+
 async function laddaEvent() {
   if (!evId) { visaFel('Inget event-ID angivet.'); return; }
   try {
-    const res = await fetch('https://tango-norteno.duckdns.org/webhook/hamta-workshop?id=' + evId);
-    const data = await res.json();
-    if (data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
+    const res = await fetch(WEBHOOK_HAMTA + '?id=' + encodeURIComponent(evId));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+    const data = Array.isArray(raw) ? raw[0] : raw;
+    if (!data || data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
+    data.workshops = typeof data.workshops_json === 'string'
+      ? JSON.parse(data.workshops_json)
+      : (data.workshops || []);
     eventData = data;
-    eventData.workshops = typeof data.workshops_json === 'string' ? JSON.parse(data.workshops_json) : (data.workshops || []);
-    visaEvent(eventData);
-  } catch(e) {
+    visaEvent(data);
+  } catch (e) {
     visaFel('Kunde inte ladda eventet. Försök igen.');
   }
 }
 
 function visaEvent(ev) {
   const card = document.getElementById('mainCard');
+  const totalMax = ev.max ? parseInt(ev.max) : null;
+  const totalAnm = parseInt(ev.anmalningar) || 0;
+  const eventFullt = totalMax && totalAnm >= totalMax;
+
   let html = `<div class="event-title">${escHtml(ev.titel)}</div>`;
   if (ev.desc) html += `<div class="event-desc">${escHtml(ev.desc)}</div>`;
+  if (totalMax) html += `<div class="max-badge">Platser kvar: ${Math.max(0, totalMax - totalAnm)} / ${totalMax}</div>`;
+
+  if (eventFullt) {
+    html += `<div class="full-notice-big"><h3>Tyvärr — fullt!</h3><p>Det finns inga lediga platser på detta event.</p></div>`;
+    card.innerHTML = html;
+    return;
+  }
+
   html += `<div class="section-title">Dina uppgifter</div>
   <div class="field" id="f_namn"><label>Namn <span class="req">*</span></label><input type="text" id="inp_namn" placeholder="För- och efternamn"><div class="field-error">Namn är obligatoriskt.</div></div>
   <div class="field" id="f_email"><label>E-post <span class="req">*</span></label><input type="email" id="inp_email" placeholder="din@email.se"><div class="field-error">E-post är obligatorisk.</div></div>
@@ -91,106 +130,220 @@ function visaEvent(ev) {
   <div class="section-title">Välj roll per workshop</div>`;
 
   ev.workshops.forEach((ws, i) => {
-    const max = ws.max ? parseInt(ws.max) : null;
+    const max     = ws.max ? parseInt(ws.max) : null;
     const anmalda = parseInt(ws.anmalda) || 0;
-    const full = max && anmalda >= max;
-    html += `<div class="ws-block">
+    const full    = ws.fullbokad === true || (max && anmalda >= max);
+
+    html += `<div class="ws-block" data-ws="${i}">
       <div class="ws-block-header">
-        <h3>${escHtml(ws.namn || 'Workshop ' + (i+1))}</h3>
+        <h3>${escHtml(ws.namn || 'Workshop ' + (i + 1))}</h3>
         <div style="display:flex;align-items:center;gap:0.6rem;">
-          ${max ? `<span class="ws-slots">Platser: ${Math.max(0,max-anmalda)}/${max}</span>` : ''}
+          ${max ? `<span class="ws-slots">Platser: ${Math.max(0, max - anmalda)}/${max}</span>` : ''}
           ${full ? '<span class="ws-full-badge">Fullt</span>' : ''}
         </div>
       </div>
-      <div class="ws-block-body">
-        ${full ? `<div class="full-notice">Denna workshop är fullbokad.</div>` : `
-        <div class="radio-field">
-          <label>Roll</label>
-          <div class="radio-group">
-            <label><input type="radio" name="roll_${i}" value="Förare"> Förare</label>
-            <label><input type="radio" name="roll_${i}" value="Följare"> Följare</label>
-            <label><input type="radio" name="roll_${i}" value="Dubbeldansare"> Dubbeldansare</label>
-            <label><input type="radio" name="roll_${i}" value="Hoppa över"> Hoppa över denna workshop</label>
-          </div>
-        </div>
-        <div class="partner-section">
-          <div class="partner-label">Har du en namngiven partner?</div>
-          <div class="radio-group">
-            <label><input type="radio" name="partner_${i}" value="ja" onchange="togglePartnerTel(${i},true)"> Ja, jag har en partner jag vill dansa med</label>
-            <label><input type="radio" name="partner_${i}" value="nej" onchange="togglePartnerTel(${i},false)" checked> Nej, koppla ihop mig med någon</label>
-          </div>
-          <div class="partner-tel-row" id="ptel_row_${i}">
-            <label>Partnerns telefonnummer</label>
-            <input type="tel" id="ptel_${i}" placeholder="070-000 00 00">
-          </div>
-        </div>`}
-      </div>
-    </div>`;
+      <div class="ws-block-body">`;
+
+    if (full) {
+      html += `<div class="full-notice">Denna workshop är fullbokad.</div>`;
+    } else {
+      (ws.falt || []).forEach(f => {
+        const sort  = faltSort(f);
+        const namef = `w${i}_${f.id}`;
+        const req   = f.obligatorisk ? '<span class="req"> *</span>' : '';
+
+        if (f.typ === 'info') {
+          html += `<div class="info-block">${escHtml(f.infoText || '').replace(/\n/g, '<br>')}</div>`;
+          return;
+        }
+
+        /* ── Partner-toggle: egen ruta med telefonfält ── */
+        if (sort === 'partner') {
+          const alts = alternativLista(f);
+          html += `<div class="partner-section field" id="flt_${namef}">
+            <label>${escHtml(f.namn)}${req}</label>
+            <div class="radio-group">
+              ${alts.map((a, ai) => `<label><input type="radio" name="${namef}" value="${escHtml(a)}"
+                onchange="partnerToggle(${i}, this.value)"${ai === alts.length - 1 ? ' checked' : ''}> ${escHtml(a)}</label>`).join('')}
+            </div>
+            <div class="partner-tel-row" id="ptel_row_${i}">
+              <label>Partnerns telefonnummer</label>
+              <input type="tel" id="ptel_${i}" placeholder="070-000 00 00">
+            </div>
+            <div class="field-error">Detta fält är obligatoriskt.</div>
+          </div>`;
+          return;
+        }
+
+        /* ── Alla övriga fält (inkl. Roll) ── */
+        html += `<div class="field" id="flt_${namef}"><label>${escHtml(f.namn)}${req}</label>`;
+        if (f.typ === 'radio') {
+          const alts = alternativLista(f);
+          html += `<div class="radio-group">${alts.map(a =>
+            `<label><input type="radio" name="${namef}" value="${escHtml(a)}"${sort === 'roll' ? ` onchange="rollToggle(${i}, this.value)"` : ''}> ${escHtml(a)}</label>`
+          ).join('')}</div>`;
+        } else if (f.typ === 'select') {
+          const alts = alternativLista(f);
+          html += `<select name="${namef}"><option value="">Välj...</option>${alts.map(a =>
+            `<option value="${escHtml(a)}">${escHtml(a)}</option>`).join('')}</select>`;
+        } else if (f.typ === 'checkbox') {
+          html += `<div class="check-group"><label><input type="checkbox" name="${namef}"> ${escHtml(f.namn)}</label></div>`;
+        } else if (f.typ === 'textarea') {
+          html += `<textarea name="${namef}" placeholder="${escHtml(f.placeholder || '')}"></textarea>`;
+        } else {
+          const t = f.typ === 'email' ? 'email' : (f.typ === 'tel' ? 'tel' : 'text');
+          html += `<input type="${t}" name="${namef}" placeholder="${escHtml(f.placeholder || '')}">`;
+        }
+        html += `<div class="field-error">Detta fält är obligatoriskt.</div></div>`;
+      });
+    }
+
+    html += `</div></div>`;
   });
 
-  html += `<button class="submit-btn" onclick="skickaAnmalan()">Skicka anmälan</button>`;
+  html += `<button class="submit-btn" onclick="skickaAnmalan()">Skicka anmälan</button>
+           <div class="form-error" id="formError"></div>`;
   card.innerHTML = html;
+
+  // Sätt initialt läge för partner-telefon
+  ev.workshops.forEach((ws, i) => partnerToggle(i, null));
 }
 
-function togglePartnerTel(i, visa) {
+/* Visa telefonfältet bara när svaret börjar på "ja" */
+function partnerToggle(i, val) {
   const row = document.getElementById('ptel_row_' + i);
-  if (row) row.style.display = visa ? 'block' : 'none';
+  if (!row) return;
+  if (val === null) {
+    const checked = document.querySelector(`[id^="flt_w${i}_"] input[type=radio]:checked`);
+    val = checked ? checked.value : '';
+  }
+  const visa = /^\s*ja/i.test(val || '');
+  row.style.display = visa ? 'block' : 'none';
+  if (!visa) { const inp = document.getElementById('ptel_' + i); if (inp) inp.value = ''; }
+}
+
+/* Om man hoppar över workshopen — göm resten av fälten i blocket */
+function rollToggle(i, val) {
+  const hoppa = /hoppa/i.test(val || '');
+  const block = document.querySelector(`.ws-block[data-ws="${i}"] .ws-block-body`);
+  if (!block) return;
+  block.querySelectorAll('.field').forEach(el => {
+    const isRoll = el.querySelector(`input[name^="w${i}_"][type=radio][onchange*="rollToggle"]`);
+    if (isRoll) return;
+    el.style.display = hoppa ? 'none' : '';
+    if (hoppa) el.classList.remove('invalid');
+  });
 }
 
 async function skickaAnmalan() {
+  const felruta = document.getElementById('formError');
+  felruta.style.display = 'none';
   let valid = true;
-  const namn = document.getElementById('inp_namn')?.value.trim() || '';
-  const email = document.getElementById('inp_email')?.value.trim() || '';
-  const tel = document.getElementById('inp_tel')?.value.trim() || '';
 
-  [['f_namn',namn],['f_email',email],['f_tel',tel]].forEach(([id,val]) => {
+  const namn  = document.getElementById('inp_namn')?.value.trim()  || '';
+  const email = document.getElementById('inp_email')?.value.trim() || '';
+  const tel   = document.getElementById('inp_tel')?.value.trim()   || '';
+  [['f_namn', namn], ['f_email', email], ['f_tel', tel]].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (!val) { el?.classList.add('invalid'); valid = false; }
-    else el?.classList.remove('invalid');
+    if (!val) { el?.classList.add('invalid'); valid = false; } else el?.classList.remove('invalid');
   });
-  if (!valid) return;
 
   const data = [
-    { label: 'Namn', value: namn },
-    { label: 'E-post', value: email },
-    { label: 'Telefonnummer', value: tel.replace(/\D/g, '') },
-    ...eventData.workshops.flatMap((ws, i) => {
-      const rollEl = document.querySelector(`input[name="roll_${i}"]:checked`);
-      const partnerEl = document.querySelector(`input[name="partner_${i}"]:checked`);
-      const roll = rollEl ? rollEl.value : 'Hoppa över';
-      const harPartner = partnerEl ? partnerEl.value : 'nej';
-      const partnerTel = harPartner === 'ja' ? (document.getElementById('ptel_' + i)?.value.trim() || '').replace(/\D/g, '') : '';
-      return [
-        { label: `w${i+1} - roll`, value: roll },
-        { label: `w${i+1} - har partner`, value: harPartner },
-        { label: `w${i+1} - partners telefon`, value: partnerTel },
-        { label: `w${i+1} - namn`, value: ws.namn }
-      ];
-    })
+    { label: 'Namn',           value: namn },
+    { label: 'E-post',         value: email },
+    { label: 'Telefonnummer',  value: tel.replace(/\D/g, '') }
   ];
+
+  eventData.workshops.forEach((ws, i) => {
+    const p = 'w' + (i + 1);
+    const max     = ws.max ? parseInt(ws.max) : null;
+    const anmalda = parseInt(ws.anmalda) || 0;
+    const full    = ws.fullbokad === true || (max && anmalda >= max);
+
+    // Systemkolumner — alltid samma ordning, matchningen bygger på dessa
+    let roll = full ? 'Hoppa över' : '';
+    let harPartner = 'nej';
+    let partnerTel = '';
+    const extra = [];
+
+    if (!full) {
+      (ws.falt || []).forEach(f => {
+        if (f.typ === 'info') return;
+        const sort  = faltSort(f);
+        const namef = `w${i}_${f.id}`;
+        const cont  = document.getElementById('flt_' + namef);
+        let value = '';
+
+        if (f.typ === 'radio') {
+          const c = document.querySelector(`input[name="${namef}"]:checked`);
+          value = c ? c.value : '';
+        } else if (f.typ === 'checkbox') {
+          const cb = document.querySelector(`input[name="${namef}"]`);
+          value = cb && cb.checked ? 'Ja' : 'Nej';
+        } else {
+          const el = document.querySelector(`[name="${namef}"]`);
+          value = el ? el.value.trim() : '';
+        }
+
+        if (sort === 'roll')    roll = value;
+        if (sort === 'partner') harPartner = /^\s*ja/i.test(value) ? 'ja' : 'nej';
+        if (sort === 'extra')   extra.push({ label: `${p} - ${f.namn}`, value });
+
+        // Validering — hoppa över om deltagaren hoppar över workshopen
+        const hoppar = /hoppa/i.test(roll || '');
+        const kravs  = f.obligatorisk && !(hoppar && sort !== 'roll');
+        if (kravs && !value) { cont?.classList.add('invalid'); valid = false; }
+        else cont?.classList.remove('invalid');
+      });
+
+      if (harPartner === 'ja') {
+        partnerTel = (document.getElementById('ptel_' + i)?.value.trim() || '').replace(/\D/g, '');
+      }
+      if (/hoppa/i.test(roll)) { harPartner = 'nej'; partnerTel = ''; }
+    }
+
+    data.push(
+      { label: `${p} - namn`,             value: ws.namn || ('Workshop ' + (i + 1)) },
+      { label: `${p} - roll`,             value: roll },
+      { label: `${p} - har partner`,      value: harPartner },
+      { label: `${p} - partners telefon`, value: partnerTel },
+      ...extra
+    );
+  });
+
+  if (!valid) {
+    felruta.textContent = 'Fyll i alla obligatoriska fält (markerade i rött).';
+    felruta.style.display = 'block';
+    return;
+  }
 
   const btn = document.querySelector('.submit-btn');
   btn.disabled = true;
   btn.textContent = 'Skickar...';
-
   try {
-    const payload = { event_id: evId, data };
-    await fetch(WEBHOOK_SPARA, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
-    document.getElementById('mainCard').innerHTML = `
-      <div class="msg"><div class="icon">✦</div><h2>Tack för din anmälan!</h2><p>Vi återkommer med bekräftelse och partnermatchning.</p></div>`;
-  } catch(e) {
+    const res = await fetch(WEBHOOK_SPARA, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({ event_id: evId, data })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    document.getElementById('mainCard').innerHTML =
+      `<div class="msg"><div class="icon">✦</div><h2>Tack för din anmälan!</h2><p>Vi återkommer med bekräftelse och partnermatchning.</p></div>`;
+  } catch (e) {
     btn.disabled = false;
     btn.textContent = 'Skicka anmälan';
-    alert('Fel vid skickning. Försök igen.');
+    felruta.textContent = 'Fel vid skickning: ' + e.message + '. Försök igen.';
+    felruta.style.display = 'block';
   }
 }
 
 function visaFel(msg) {
-  document.getElementById('mainCard').innerHTML = `<div class="msg"><div class="icon">✦</div><h2>Eventet hittades inte</h2><p>${msg}</p></div>`;
+  document.getElementById('mainCard').innerHTML =
+    `<div class="msg"><div class="icon">✦</div><h2>Eventet hittades inte</h2><p>${escHtml(msg)}</p></div>`;
 }
-function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHtml(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 laddaEvent();
 </script>
 </body>
 </html>
-
