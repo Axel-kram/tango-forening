@@ -15,13 +15,10 @@
   .topbar-nav{display:flex;gap:0.5rem;}
   .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s;text-decoration:none;display:inline-block;}
   .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
-
   .layout{display:grid;grid-template-columns:460px 1fr;min-height:calc(100vh - 64px);}
   @media(max-width:950px){.layout{grid-template-columns:1fr;}}
-
   .panel-left{background:var(--cream);border-right:1px solid var(--border);padding:2rem 1.8rem;overflow-y:auto;}
   .panel-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:1.5rem;}
-
   .field-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
   .field-group label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);}
   .field-group input,.field-group textarea{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;color:var(--text);transition:border-color 0.2s;width:100%;}
@@ -29,15 +26,12 @@
   .field-group.row{flex-direction:row;align-items:center;gap:0.8rem;}
   .field-group.row label{white-space:nowrap;margin:0;}
   .field-group textarea{resize:vertical;min-height:70px;}
-
   .section-divider{border:none;border-top:1px solid var(--border);margin:1.3rem 0;}
   .section-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-lt);margin-bottom:0.8rem;}
-
-  /* WORKSHOPS LIST */
+  .hint{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.6rem 0.8rem;font-size:0.8rem;color:var(--text-lt);line-height:1.45;margin-bottom:1rem;}
   .ws-list{display:flex;flex-direction:column;gap:0.8rem;margin-bottom:1rem;}
   .ws-item{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;animation:fadeIn 0.2s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
-
   .ws-item-header{background:var(--brown-mid);color:var(--cream);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.7rem;cursor:pointer;user-select:none;}
   .ws-number{background:rgba(255,255,255,0.2);color:var(--cream);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0;}
   .ws-item-header input{flex:1;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.35);border-radius:0;padding:0.2rem 0.1rem;font-size:0.92rem;font-weight:700;color:var(--cream);}
@@ -45,29 +39,26 @@
   .ws-item-header input:focus{outline:none;border-bottom-color:rgba(255,255,255,0.8);}
   .ws-collapse-btn{background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:0.85rem;padding:0.1rem 0.3rem;transition:transform 0.2s;}
   .ws-collapse-btn.open{transform:rotate(180deg);}
-
   .ws-item-body{padding:0.9rem 1rem;}
   .ws-max-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;}
   .ws-max-row label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);white-space:nowrap;}
   .ws-max-row input{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.5rem;font-size:0.85rem;width:100px;color:var(--text);}
   .ws-max-row input:focus{outline:none;border-color:var(--brown-mid);}
-
-  /* Field builder inside workshop */
   .ws-field-section{border-top:1px dashed var(--border);padding-top:0.8rem;margin-top:0.5rem;}
   .ws-field-section-label{font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-lt);margin-bottom:0.6rem;}
   .add-field-bar{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;}
   .add-field-btn{background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.3rem 0.6rem;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;color:var(--brown-mid);cursor:pointer;transition:background 0.2s,border-color 0.2s;}
   .add-field-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
-
-  /* Fields list inside workshop */
   .fields-list{display:flex;flex-direction:column;gap:0.5rem;}
   .field-row{background:var(--cream);border:1px solid var(--border);border-radius:5px;padding:0.6rem 0.8rem;display:flex;align-items:flex-start;gap:0.6rem;}
+  .field-row.system{border-color:var(--brown-lt);background:#fdf9f2;}
   .field-row-drag{cursor:grab;color:var(--brown-lt);font-size:1rem;padding-top:2px;user-select:none;flex-shrink:0;}
   .field-row-drag:active{cursor:grabbing;}
   .field-row-body{flex:1;min-width:0;}
   .field-row-top{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;}
   .field-type-badge{background:var(--surface2);color:var(--text-lt);font-size:0.68rem;font-weight:700;text-transform:uppercase;padding:0.12rem 0.45rem;border-radius:3px;white-space:nowrap;flex-shrink:0;}
   .field-type-badge.info-badge{background:#e8f0e8;color:var(--success);}
+  .field-type-badge.sys-badge{background:var(--brown-lt);color:#fff;}
   .field-row-top input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:0.15rem 0.1rem;font-size:0.88rem;font-weight:700;color:var(--text);}
   .field-row-top input:focus{outline:none;border-bottom-color:var(--brown-mid);}
   .field-row-opts{display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;}
@@ -80,31 +71,24 @@
   .options-edit{margin-top:0.45rem;}
   .options-edit textarea{width:100%;height:50px;font-size:0.75rem;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:0.3rem;resize:none;font-family:'Lato',sans-serif;color:var(--text-lt);}
   .options-edit span{font-size:0.7rem;color:var(--text-lt);}
-  /* Info field text area */
   .info-edit textarea{width:100%;height:60px;font-size:0.82rem;background:#f0f5f0;border:1px solid #c8dcc8;border-radius:4px;padding:0.4rem 0.6rem;resize:vertical;font-family:'Lato',sans-serif;color:var(--text);margin-top:0.4rem;}
-
   .add-ws-btn{background:var(--surface);border:2px dashed var(--border);border-radius:7px;padding:0.7rem;width:100%;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:700;color:var(--brown-mid);text-transform:uppercase;letter-spacing:0.05em;transition:background 0.2s,border-color 0.2s;}
   .add-ws-btn:hover{background:var(--surface2);border-color:var(--brown-lt);}
-
   .panel-actions{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.8rem;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;width:100%;}
   .btn:hover{filter:brightness(1.08);}
   .btn:active{transform:scale(0.98);}
   .btn-brown{background:var(--brown);color:var(--cream);}
   .btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown-mid);}
-
   .status-msg{margin-top:0.7rem;font-size:0.85rem;padding:0.5rem 0.8rem;border-radius:5px;display:none;}
   .status-msg.ok{background:#e6f0ea;color:var(--success);display:block;}
   .status-msg.err{background:#f5e6e6;color:var(--danger);display:block;}
   .status-msg.info{background:var(--surface2);color:var(--text-lt);display:block;}
-
   .share-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:1.1rem;margin-top:0.8rem;display:none;}
   .share-card h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.6rem;}
   .url-row{display:flex;gap:0.5rem;align-items:center;}
   .url-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.7rem;font-size:0.78rem;font-family:monospace;color:var(--text-lt);}
   .url-row .btn{width:auto;padding:0.45rem 0.9rem;font-size:0.8rem;}
-
-  /* PREVIEW */
   .panel-right{background:var(--bg);padding:2rem 2.5rem;overflow-y:auto;}
   .preview-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
   .preview-label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-lt);}
@@ -112,7 +96,6 @@
   .preview-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:2.2rem;max-width:600px;box-shadow:var(--shadow);}
   .preview-event-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--brown);margin-bottom:0.4rem;}
   .preview-event-desc{color:var(--text-lt);font-size:0.92rem;margin-bottom:1.5rem;line-height:1.5;}
-
   .prev-ws-block{border:1px solid var(--border);border-radius:8px;margin-bottom:1.2rem;overflow:hidden;}
   .prev-ws-header{background:var(--brown);color:var(--cream);padding:0.75rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
   .prev-ws-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
@@ -124,33 +107,31 @@
   .prev-field textarea{resize:vertical;min-height:70px;}
   .prev-radio-group,.prev-check-group{display:flex;flex-direction:column;gap:0.35rem;}
   .prev-radio-group label,.prev-check-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
-  /* Info block in preview */
   .prev-info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:0.9rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
-
   .prev-personal{background:var(--surface2);border-radius:7px;padding:1rem 1.1rem;margin-bottom:1.3rem;}
   .prev-personal h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);margin-bottom:0.8rem;}
-  .prev-personal input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;margin-bottom:0.6rem;}
-  .prev-partner-field{margin-top:0.7rem;padding:0.75rem;background:var(--surface2);border-radius:6px;}
-  .prev-partner-field input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-family:'Lato',sans-serif;font-size:0.88rem;}
+  .prev-partner-box{background:var(--surface2);border-radius:7px;padding:0.9rem 1rem;margin-bottom:0.9rem;}
+  .prev-partner-box > label{display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.4rem;}
+  .prev-partner-tel{margin-top:0.7rem;border-top:1px dashed var(--border);padding-top:0.6rem;}
+  .prev-partner-tel small{display:block;font-size:0.7rem;color:var(--text-lt);font-style:italic;margin-bottom:0.25rem;}
+  .prev-partner-tel input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;font-size:0.88rem;font-family:'Lato',sans-serif;}
   .preview-submit{background:var(--brown);color:var(--cream);border:none;border-radius:5px;padding:0.75rem 2rem;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:0.5rem;letter-spacing:0.05em;width:100%;}
   .preview-empty{color:var(--text-lt);font-size:0.9rem;font-style:italic;text-align:center;padding:2rem 0;}
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <div class="topbar-logo">Tango <span>Norteño</span></div>
   <nav class="topbar-nav">
     <a class="nav-btn" href="index.html">Admin</a>
     <a class="nav-btn" href="formular.html">Formulärbyggare</a>
     <a class="nav-btn active" href="workshopsbyggare.html">Workshopsbyggare</a>
+    <a class="nav-btn" href="meddelanden.html">Meddelanden</a>
   </nav>
 </div>
-
 <div class="layout">
   <div class="panel-left">
     <h2 class="panel-title">Nytt workshopevent</h2>
-
     <div class="field-group">
       <label>Eventnamn *</label>
       <input type="text" id="wTitel" placeholder="T.ex. Milonga-helg November 2025" oninput="uppdatera()">
@@ -163,14 +144,17 @@
       <label>Global max (hela eventet)</label>
       <input type="number" id="wMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdatera()">
     </div>
-
     <hr class="section-divider">
     <div class="section-label">Workshops i detta event</div>
+    <div class="hint">
+      <b>Systemfält:</b> fältet som heter något med <b>”Roll”</b> och fältet som innehåller <b>”partner”</b> används av matchningen.
+      Behåll dem. Partnerns telefonnummer läggs till automatiskt på anmälningssidan när deltagaren svarar ”Ja”.
+      Alla andra fält du lägger till visas som vanliga extrafält.
+    </div>
     <div class="ws-list" id="wsLista"></div>
     <button class="add-ws-btn" onclick="laggTillWorkshop()">+ Lägg till workshop</button>
-
     <div class="panel-actions">
-      <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara & generera länk</button>
+      <button class="btn btn-brown" onclick="sparaOchVisaDela()">✦ Spara &amp; generera länk</button>
       <button class="btn btn-outline" onclick="uppdatera()">↻ Uppdatera förhandsgranskning</button>
     </div>
     <div class="status-msg" id="byggStatus"></div>
@@ -182,7 +166,6 @@
       </div>
     </div>
   </div>
-
   <div class="panel-right">
     <div class="preview-header">
       <span class="preview-label">Förhandsgranskning</span>
@@ -193,80 +176,75 @@
     </div>
   </div>
 </div>
-
 <script>
 let workshops = [];
-
 const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta', info:'Info' };
+
+/* Samma klassning som anmälningssidan använder */
+function faltSort(f) {
+  const n = String(f.namn || '').toLowerCase();
+  if (f.typ === 'radio' && /\broll\b/.test(n)) return 'roll';
+  if (f.typ === 'radio' && /partner/.test(n))  return 'partner';
+  return 'extra';
+}
+function alternativLista(f) {
+  return String(f.alternativ || '').split('\n').map(a => a.trim()).filter(Boolean);
+}
 
 // ── Workshop CRUD ──────────────────────────────────────────
 function laggTillWorkshop() {
+  const bas = Date.now() + '';
   workshops.push({
-    id: Date.now()+'',
+    id: bas,
     namn: 'Workshop ' + (workshops.length + 1),
     max: '',
     collapsed: false,
     falt: [
-      { id: Date.now()+'r', typ:'radio', namn:'Roll', obligatorisk:true, alternativ:'Förare\nFöljare\nDubbeldansare\nHoppa över denna workshop', placeholder:'' },
-      { id: Date.now()+'p', typ:'radio', namn:'Har du en namngiven partner?', obligatorisk:true, alternativ:'Ja, jag har en partner\nNej, koppla ihop mig med någon', placeholder:'' },
+      { id: bas + 'r', typ:'radio', namn:'Roll', obligatorisk:true, placeholder:'',
+        alternativ:'Förare\nFöljare\nDubbeldansare\nHoppa över denna workshop' },
+      { id: bas + 'p', typ:'radio', namn:'Har du en namngiven partner?', obligatorisk:true, placeholder:'',
+        alternativ:'Ja, jag har en partner\nNej, koppla ihop mig med någon' },
     ]
   });
   renderaWsLista();
   uppdatera();
 }
+function taBortWs(id) { workshops = workshops.filter(w => w.id !== id); renderaWsLista(); uppdatera(); }
+function uppdWs(id, key, val) { const w = workshops.find(x => x.id === id); if (w) w[key] = val; uppdatera(); }
+function toggleCollapse(id) { const w = workshops.find(x => x.id === id); if (w) w.collapsed = !w.collapsed; renderaWsLista(); }
 
-function taBortWs(id) {
-  workshops = workshops.filter(w => w.id !== id);
-  renderaWsLista();
-  uppdatera();
-}
-
-function uppdWs(id, key, val) {
-  const w = workshops.find(x => x.id === id);
-  if (w) w[key] = val;
-  uppdatera();
-}
-
-function toggleCollapse(id) {
-  const w = workshops.find(x => x.id === id);
-  if (w) w.collapsed = !w.collapsed;
-  renderaWsLista();
-}
-
-// ── Field CRUD inside a workshop ───────────────────────────
+// ── Fält-CRUD ──────────────────────────────────────────────
 function laggTillFalt(wsId, typ) {
   const w = workshops.find(x => x.id === wsId);
   if (!w) return;
   const defaults = { radio:'Nytt flerval', select:'Välj', checkbox:'Kryssruta', text:'Textfält', email:'E-post', tel:'Telefon', textarea:'Fritext', info:'Informationstext' };
   w.falt.push({
-    id: Date.now()+'',
+    id: Date.now() + '' + Math.floor(Math.random()*1000),
     typ,
     namn: defaults[typ] || 'Nytt fält',
     placeholder: '',
     obligatorisk: false,
-    alternativ: typ==='radio'||typ==='select' ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '',
-    infoText: typ==='info' ? 'Skriv din informationstext här...' : ''
+    alternativ: (typ === 'radio' || typ === 'select') ? 'Alternativ 1\nAlternativ 2\nAlternativ 3' : '',
+    infoText: typ === 'info' ? 'Skriv din informationstext här...' : ''
   });
   renderaWsLista();
   uppdatera();
 }
-
 function taBortFalt(wsId, faltId) {
   const w = workshops.find(x => x.id === wsId);
   if (w) w.falt = w.falt.filter(f => f.id !== faltId);
   renderaWsLista();
   uppdatera();
 }
-
 function uppdFalt(wsId, faltId, key, val) {
   const w = workshops.find(x => x.id === wsId);
   if (!w) return;
   const f = w.falt.find(x => x.id === faltId);
-  if (f) f[key] = key === 'obligatorisk' ? val : val;
+  if (f) f[key] = val;
   uppdatera();
 }
 
-// ── Render ─────────────────────────────────────────────────
+// ── Render byggare ─────────────────────────────────────────
 function renderaWsLista() {
   const lista = document.getElementById('wsLista');
   if (!workshops.length) { lista.innerHTML = ''; return; }
@@ -288,9 +266,8 @@ function renderaWsLista() {
             onchange="uppdWs('${w.id}','max',this.value)" oninput="uppdWs('${w.id}','max',this.value)"
             placeholder="Ej begränsat">
         </div>
-
         <div class="ws-field-section">
-          <div class="ws-field-section-label">Extra fält för denna workshop</div>
+          <div class="ws-field-section-label">Fält för denna workshop</div>
           <div class="add-field-bar">
             <button class="add-field-btn" onclick="laggTillFalt('${w.id}','text')">+ Text</button>
             <button class="add-field-btn" onclick="laggTillFalt('${w.id}','email')">+ E-post</button>
@@ -302,21 +279,24 @@ function renderaWsLista() {
             <button class="add-field-btn" onclick="laggTillFalt('${w.id}','info')" style="border-color:#c8dcc8;color:var(--success)">+ Info</button>
           </div>
           <div class="fields-list">
-            ${w.falt.map((f, fi) => renderaFaltRad(w.id, f, fi)).join('')}
+            ${w.falt.map(f => renderaFaltRad(w.id, f)).join('')}
           </div>
         </div>
       </div>`}
     </div>
   `).join('');
 }
-
-function renderaFaltRad(wsId, f, fi) {
+function renderaFaltRad(wsId, f) {
+  const sort = faltSort(f);
+  const sys  = sort !== 'extra';
+  const sysLabel = sort === 'roll' ? 'System · Roll' : (sort === 'partner' ? 'System · Partner' : '');
   return `
-    <div class="field-row">
+    <div class="field-row ${sys ? 'system' : ''}">
       <div class="field-row-drag" title="Ordning">⠿</div>
       <div class="field-row-body">
         <div class="field-row-top">
           <span class="field-type-badge ${f.typ==='info'?'info-badge':''}">${TYPLABELS[f.typ]}</span>
+          ${sys ? `<span class="field-type-badge sys-badge">${sysLabel}</span>` : ''}
           ${f.typ !== 'info' ? `<input type="text" value="${escHtml(f.namn)}"
             onchange="uppdFalt('${wsId}','${f.id}','namn',this.value)"
             oninput="uppdFalt('${wsId}','${f.id}','namn',this.value)"
@@ -339,7 +319,7 @@ function renderaFaltRad(wsId, f, fi) {
           <textarea onchange="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
             oninput="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
             placeholder="Ett alternativ per rad">${escHtml(f.alternativ||'')}</textarea>
-          <span>Ett alternativ per rad</span>
+          <span>Ett alternativ per rad${sort==='roll' ? ' · behåll ”Hoppa över denna workshop”' : ''}${sort==='partner' ? ' · alternativet som börjar med ”Ja” öppnar telefonfältet' : ''}</span>
         </div>` : ''}`}
       </div>
       <div class="field-row-actions">
@@ -349,21 +329,18 @@ function renderaFaltRad(wsId, f, fi) {
   `;
 }
 
-// ── Preview ────────────────────────────────────────────────
+// ── Förhandsgranskning (speglar workshopsida.html exakt) ───
 function uppdatera() {
   const titel = document.getElementById('wTitel').value.trim();
   const desc  = document.getElementById('wDesc').value.trim();
   const card  = document.getElementById('previewCard');
-
   if (!titel && !workshops.length) {
     card.innerHTML = '<div class="preview-empty">Fyll i eventnamn och lägg till workshops för att se förhandsgranskning.</div>';
     return;
   }
-
   let html = '';
   if (titel) html += `<div class="preview-event-title">${escHtml(titel)}</div>`;
   if (desc)  html += `<div class="preview-event-desc">${escHtml(desc)}</div>`;
-
   html += `<div class="prev-personal">
     <h4>Dina uppgifter</h4>
     <div class="prev-field"><label>Namn *</label><input type="text" placeholder="För- och efternamn"></div>
@@ -381,38 +358,49 @@ function uppdatera() {
           ${ws.max ? `<span class="slots">Max ${ws.max} platser</span>` : ''}
         </div>
         <div class="prev-ws-body">`;
-
       ws.falt.forEach(f => {
+        const sort = faltSort(f);
+        const req  = f.obligatorisk ? '<span style="color:var(--accent)"> *</span>' : '';
+
         if (f.typ === 'info') {
           html += `<div class="prev-info-block">${escHtml(f.infoText || '').replace(/\n/g,'<br>')}</div>`;
-        } else {
-          const req = f.obligatorisk ? '<span style="color:var(--accent)"> *</span>' : '';
-          html += `<div class="prev-field"><label>${escHtml(f.namn)}${req}</label>`;
-          if (f.typ === 'text') html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
-          else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
-          else if (f.typ === 'tel') html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
-          else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
-          else if (f.typ === 'checkbox') html += `<div class="prev-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
-          else if (f.typ === 'radio') {
-            const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
-            html += `<div class="prev-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${ws.id}_${f.id}"> ${escHtml(a.trim())}</label>`).join('')}</div>`;
-          } else if (f.typ === 'select') {
-            const alts = (f.alternativ||'').split('\n').filter(a=>a.trim());
-            html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a.trim())}</option>`).join('')}</select>`;
-          }
-          html += `</div>`;
+          return;
         }
+        if (sort === 'partner') {
+          const alts = alternativLista(f);
+          html += `<div class="prev-partner-box">
+            <label>${escHtml(f.namn)}${req}</label>
+            <div class="prev-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${ws.id}_${f.id}"> ${escHtml(a)}</label>`).join('')}</div>
+            <div class="prev-partner-tel">
+              <small>Visas automatiskt när deltagaren väljer alternativet som börjar med ”Ja”</small>
+              <input type="tel" placeholder="Partnerns telefonnummer">
+            </div>
+          </div>`;
+          return;
+        }
+        html += `<div class="prev-field"><label>${escHtml(f.namn)}${req}</label>`;
+        if (f.typ === 'text') html += `<input type="text" placeholder="${escHtml(f.placeholder||'')}">`;
+        else if (f.typ === 'email') html += `<input type="email" placeholder="${escHtml(f.placeholder||'')}">`;
+        else if (f.typ === 'tel') html += `<input type="tel" placeholder="${escHtml(f.placeholder||'')}">`;
+        else if (f.typ === 'textarea') html += `<textarea placeholder="${escHtml(f.placeholder||'')}"></textarea>`;
+        else if (f.typ === 'checkbox') html += `<div class="prev-check-group"><label><input type="checkbox"> ${escHtml(f.namn)}</label></div>`;
+        else if (f.typ === 'radio') {
+          const alts = alternativLista(f);
+          html += `<div class="prev-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${ws.id}_${f.id}"> ${escHtml(a)}</label>`).join('')}</div>`;
+        } else if (f.typ === 'select') {
+          const alts = alternativLista(f);
+          html += `<select><option value="">Välj...</option>${alts.map(a=>`<option>${escHtml(a)}</option>`).join('')}</select>`;
+        }
+        html += `</div>`;
       });
-
       html += `</div></div>`;
     });
   }
-
   if (workshops.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
   card.innerHTML = html;
 }
 
-// ── Save ───────────────────────────────────────────────────
+// ── Spara ──────────────────────────────────────────────────
 async function sparaOchVisaDela() {
   const titel = document.getElementById('wTitel').value.trim();
   if (!titel) { visa('byggStatus','err','Fyll i ett eventnamn.'); return; }
@@ -429,16 +417,21 @@ async function sparaOchVisaDela() {
         max: w.max || null,
         falt: w.falt.map(f => ({
           id: f.id, typ: f.typ, namn: f.namn,
-          placeholder: f.placeholder||'',
-          obligatorisk: f.obligatorisk||false,
-          alternativ: f.alternativ||'',
-          infoText: f.infoText||''
+          placeholder: f.placeholder || '',
+          obligatorisk: f.obligatorisk || false,
+          alternativ: f.alternativ || '',
+          infoText: f.infoText || ''
         }))
       })))
     };
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
-    const data = await res.json();
-    if (!data.id) throw new Error('Ogiltigt svar från servern');
+    const text = await res.text();
+    if (!res.ok) throw new Error('Servern svarade ' + res.status + (text ? ': ' + text.slice(0,120) : ''));
+    if (!text) throw new Error('Tomt svar från servern — kontrollera n8n-flödet spara-workshop.');
+    let data;
+    try { data = JSON.parse(text); } catch(_) { throw new Error('Ogiltigt svar från servern: ' + text.slice(0,120)); }
+    if (Array.isArray(data)) data = data[0] || {};
+    if (!data.id) throw new Error('Servern returnerade inget id.');
     const base = location.origin + location.pathname.replace('workshopsbyggare.html','');
     const shareUrl = base + 'workshopsida.html?event=' + data.id;
     document.getElementById('shareUrl').value = shareUrl;
@@ -448,7 +441,6 @@ async function sparaOchVisaDela() {
     visa('byggStatus','err','Fel: ' + e.message);
   }
 }
-
 function kopieraUrl() {
   const input = document.getElementById('shareUrl');
   navigator.clipboard.writeText(input.value).then(() => {
@@ -457,17 +449,13 @@ function kopieraUrl() {
     setTimeout(() => btn.textContent = 'Kopiera', 2000);
   });
 }
-
 function visa(id, typ, text) {
   const el = document.getElementById(id);
   el.className = 'status-msg ' + typ;
   el.textContent = text;
 }
-
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
 window.addEventListener('DOMContentLoaded', uppdatera);
 </script>
 </body>
 </html>
-
