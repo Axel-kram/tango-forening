@@ -170,8 +170,8 @@ function visaEvent(ev) {
                 onchange="partnerToggle(${i}, this.value)"${ai === alts.length - 1 ? ' checked' : ''}> ${escHtml(a)}</label>`).join('')}
             </div>
             <div class="partner-tel-row" id="ptel_row_${i}">
-              <label>Partnerns telefonnummer</label>
-              <input type="tel" id="ptel_${i}" placeholder="070-000 00 00">
+              <label>Partnerns namn</label>
+              <input type="text" id="ptel_${i}" placeholder="För- och efternamn">
             </div>
             <div class="field-error">Detta fält är obligatoriskt.</div>
           </div>`;
@@ -324,7 +324,7 @@ async function skickaAnmalan() {
     // Systemkolumner — alltid samma ordning, matchningen bygger på dessa
     let roll = full ? 'Hoppa över' : '';
     let harPartner = 'nej';
-    let partnerTel = '';
+    let partnerNamn = '';
     const extra = [];
 
     if (!full) {
@@ -358,9 +358,9 @@ async function skickaAnmalan() {
       });
 
       if (harPartner === 'ja') {
-        partnerTel = (document.getElementById('ptel_' + i)?.value.trim() || '').replace(/\D/g, '');
+        partnerNamn = (document.getElementById('ptel_' + i)?.value.trim() || '');
       }
-      if (/hoppa/i.test(roll)) { harPartner = 'nej'; partnerTel = ''; }
+      if (/hoppa/i.test(roll)) { harPartner = 'nej'; partnerNamn = ''; }
     }
 
     const wpris   = parseInt(ws.pris) || 0;
@@ -372,7 +372,7 @@ async function skickaAnmalan() {
       { label: `${p} - namn`,             value: ws.namn || ('Workshop ' + (i + 1)) },
       { label: `${p} - roll`,             value: roll },
       { label: `${p} - har partner`,      value: harPartner },
-      { label: `${p} - partners telefon`, value: partnerTel },
+      { label: `${p} - partners namn`,    value: partnerNamn },
       { label: `${p} - pris`,             value: radPris },
       ...extra
     );
