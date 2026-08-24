@@ -347,7 +347,7 @@ function uppdatera() {
   }
   let html = '';
   if (titel) html += `<div class="preview-event-title">${escHtml(titel)}</div>`;
-  if (desc)  html += `<div class="preview-event-desc">${escHtml(desc)}</div>`;
+  if (desc)  html += `<div class="preview-event-desc">${escHtml(desc).replace(/\n/g,'<br>')}</div>`;
   html += `<div class="prev-personal">
     <h4>Dina uppgifter</h4>
     <div class="prev-field"><label>Namn *</label><input type="text" placeholder="För- och efternamn"></div>
