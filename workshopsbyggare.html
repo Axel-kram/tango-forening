@@ -353,6 +353,7 @@ function uppdatera() {
     <div class="prev-field"><label>Namn *</label><input type="text" placeholder="För- och efternamn"></div>
     <div class="prev-field"><label>E-post *</label><input type="email" placeholder="din@email.se"></div>
     <div class="prev-field"><label>Telefonnummer *</label><input type="tel" placeholder="070-000 00 00"></div>
+    <div class="prev-field"><label>Adress</label><input type="text" placeholder="Gatuadress, postnummer, ort"></div>
   </div>`;
 
   if (!workshops.length) {
@@ -402,6 +403,18 @@ function uppdatera() {
       });
       html += `</div></div>`;
     });
+    html += `<div class="prev-field" style="margin-top:1.3rem;">
+      <label style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);text-transform:none;letter-spacing:0;">Samtycke</label>
+    </div>
+    <div class="prev-field">
+      <label>Godkännande av hantering av personuppgifter: *</label>
+      <div class="prev-check-group"><label><input type="checkbox"> Jag godkänner</label></div>
+    </div>
+    <div class="prev-info-block">Vi behöver ditt samtycke för att hantera och lagra dina personuppgifter enligt GDPR. Utan ditt samtycke kan vi inte behandla dina uppgifter eller tillhandahålla våra tjänster.</div>
+    <div class="prev-field">
+      <label>Jag godkänner att Tango Norteño fotar och filmar under danshelgen. Detta material kan komma att publiceras på föreningens hemsida eller i sociala medier i marknadsföringssyfte. *</label>
+      <div class="prev-radio-group"><label><input type="radio" name="prev_samtycke_foto"> ja</label><label><input type="radio" name="prev_samtycke_foto"> nej</label></div>
+    </div>`;
     const prisTotal = workshops.reduce((s, w) => s + (parseInt(w.pris) || 0), 0);
     if (prisTotal) {
       html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.1rem;display:flex;justify-content:space-between;align-items:center;">
