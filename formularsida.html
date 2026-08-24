@@ -87,6 +87,7 @@ function visaFormular(f) {
     document.getElementById('mainCard').innerHTML = html;
     return;
   }
+  html += `<div class="field" id="f_adress"><label>Adress</label><input type="text" id="inp_adress" placeholder="Gatuadress, postnummer, ort"></div>`;
   falt.forEach(f => {
     if (f.typ === 'info') {
       html += `<div class="info-block">${escHtml(f.infoText || '').replace(/\n/g,'<br>')}</div>`;
@@ -115,6 +116,22 @@ function visaFormular(f) {
     }
     html += `<div class="field-error">Detta fält är obligatoriskt.</div></div>`;
   });
+  html += `<div class="section-divider"></div>
+           <div class="section-title" style="font-size:1rem;">Samtycke</div>
+           <div class="field" id="f_samtycke_gdpr">
+             <label>Godkännande av hantering av personuppgifter: <span class="req">*</span></label>
+             <div class="check-group"><label><input type="checkbox" id="inp_samtycke_gdpr"> Jag godkänner</label></div>
+             <div class="field-error">Du måste godkänna hanteringen av personuppgifter.</div>
+           </div>
+           <div class="info-block">Vi behöver ditt samtycke för att hantera och lagra dina personuppgifter enligt GDPR. Utan ditt samtycke kan vi inte behandla dina uppgifter eller tillhandahålla våra tjänster.</div>
+           <div class="field" id="f_samtycke_foto">
+             <label>Jag godkänner att Tango Norteño fotar och filmar under danshelgen. Detta material kan komma att publiceras på föreningens hemsida eller i sociala medier i marknadsföringssyfte. <span class="req">*</span></label>
+             <div class="radio-group">
+               <label><input type="radio" name="samtycke_foto" value="ja"> ja</label>
+               <label><input type="radio" name="samtycke_foto" value="nej"> nej</label>
+             </div>
+             <div class="field-error">Detta fält är obligatoriskt.</div>
+           </div>`;
   html += `<button class="submit-btn" onclick="skickaAnmalan()">Skicka anmälan</button>`;
   document.getElementById('mainCard').innerHTML = html;
 }
@@ -142,6 +159,23 @@ async function skickaAnmalan() {
     data.push({ label: f.namn, value });
   });
   if (!valid) return;
+
+  const adress = document.getElementById('inp_adress')?.value.trim() || '';
+  data.push({ label: 'Adress', value: adress });
+
+  const samtyckeGdpr = document.getElementById('inp_samtycke_gdpr')?.checked || false;
+  const gdprEl = document.getElementById('f_samtycke_gdpr');
+  if (!samtyckeGdpr) { gdprEl?.classList.add('invalid'); valid = false; } else gdprEl?.classList.remove('invalid');
+
+  const fotoChecked = document.querySelector('input[name="samtycke_foto"]:checked');
+  const samtyckeFoto = fotoChecked ? fotoChecked.value : '';
+  const fotoEl = document.getElementById('f_samtycke_foto');
+  if (!samtyckeFoto) { fotoEl?.classList.add('invalid'); valid = false; } else fotoEl?.classList.remove('invalid');
+
+  if (!valid) return;
+
+  data.push({ label: 'Godkännande av hantering av personuppgifter', value: samtyckeGdpr ? 'Ja' : 'Nej' });
+  data.push({ label: 'Foto- och filmsamtycke', value: samtyckeFoto });
 
   if (window.__formPris) data.push({ label: 'Att betala', value: window.__formPris + ' kr' });
 
