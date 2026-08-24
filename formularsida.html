@@ -80,7 +80,7 @@ function visaFormular(f) {
   window.__partnerTelId = (_pTel && _pToggle) ? _pTel.id : null;
   window.__formPris = null;
   let html = `<div class="form-title">${escHtml(f.titel)}</div>`;
-  if (f.desc) html += `<div class="form-desc">${escHtml(f.desc)}</div>`;
+  if (f.desc) html += `<div class="form-desc">${escHtml(f.desc).replace(/\n/g,'<br>')}</div>`;
   if (max) html += `<div class="max-badge">Platser kvar: ${Math.max(0, max - antalAnmalda)} / ${max}</div>`;
   if (full) {
     html += `<div class="full-notice"><h3>Tyvärr — fullt!</h3><p>Det finns inga lediga platser på detta tillfälle.</p></div>`;
