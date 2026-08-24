@@ -305,6 +305,7 @@ function uppdateraFörhandsgranskning() {
   if (titel) html += `<div class="preview-form-title">${escHtml(titel)}</div>`;
   if (desc)  html += `<div class="preview-form-desc">${escHtml(desc).replace(/\n/g,'<br>')}</div>`;
   if (max)   html += `<div class="preview-max-badge">Max ${max} anmälningar</div>`;
+  html += `<div class="preview-field"><label>Adress</label><input type="text" placeholder="Gatuadress, postnummer, ort"></div>`;
 
   falt.forEach(f => {
     if (f.typ === 'info') {
@@ -327,6 +328,19 @@ function uppdateraFörhandsgranskning() {
       html += `</div>`;
     }
   });
+
+  html += `<div class="preview-field" style="margin-top:1rem;">
+    <label style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);text-transform:none;letter-spacing:0;">Samtycke</label>
+  </div>
+  <div class="preview-field">
+    <label>Godkännande av hantering av personuppgifter: *</label>
+    <div class="preview-check-group"><label><input type="checkbox"> Jag godkänner</label></div>
+  </div>
+  <div class="preview-info-block">Vi behöver ditt samtycke för att hantera och lagra dina personuppgifter enligt GDPR. Utan ditt samtycke kan vi inte behandla dina uppgifter eller tillhandahålla våra tjänster.</div>
+  <div class="preview-field">
+    <label>Jag godkänner att Tango Norteño fotar och filmar under danshelgen. Detta material kan komma att publiceras på föreningens hemsida eller i sociala medier i marknadsföringssyfte. *</label>
+    <div class="preview-radio-group"><label><input type="radio" name="prev_samtycke_foto"> ja</label><label><input type="radio" name="prev_samtycke_foto"> nej</label></div>
+  </div>`;
 
   if (pris) html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.1rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--brown);">Att betala</span><span style="font-weight:700;color:var(--brown);font-size:1.05rem;">${pris} kr</span></div>`;
   if (falt.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
