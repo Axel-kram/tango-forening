@@ -114,7 +114,7 @@ function visaEvent(ev) {
   const eventFullt = totalMax && totalAnm >= totalMax;
 
   let html = `<div class="event-title">${escHtml(ev.titel)}</div>`;
-  if (ev.desc) html += `<div class="event-desc">${escHtml(ev.desc)}</div>`;
+  if (ev.desc) html += `<div class="event-desc">${escHtml(ev.desc).replace(/\n/g,'<br>')}</div>`;
   if (totalMax) html += `<div class="max-badge">Platser kvar: ${Math.max(0, totalMax - totalAnm)} / ${totalMax}</div>`;
 
   if (eventFullt) {
