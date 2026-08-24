@@ -303,7 +303,7 @@ function uppdateraFörhandsgranskning() {
 
   let html = '';
   if (titel) html += `<div class="preview-form-title">${escHtml(titel)}</div>`;
-  if (desc)  html += `<div class="preview-form-desc">${escHtml(desc)}</div>`;
+  if (desc)  html += `<div class="preview-form-desc">${escHtml(desc).replace(/\n/g,'<br>')}</div>`;
   if (max)   html += `<div class="preview-max-badge">Max ${max} anmälningar</div>`;
 
   falt.forEach(f => {
