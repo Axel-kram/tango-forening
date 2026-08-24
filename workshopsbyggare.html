@@ -198,6 +198,7 @@ function laggTillWorkshop() {
     id: bas,
     namn: 'Workshop ' + (workshops.length + 1),
     max: '',
+    pris: '',
     collapsed: false,
     falt: [
       { id: bas + 'r', typ:'radio', namn:'Roll', obligatorisk:true, placeholder:'',
@@ -265,6 +266,12 @@ function renderaWsLista() {
           <input type="number" min="1" max="999" value="${escHtml(w.max||'')}"
             onchange="uppdWs('${w.id}','max',this.value)" oninput="uppdWs('${w.id}','max',this.value)"
             placeholder="Ej begränsat">
+        </div>
+        <div class="ws-max-row">
+          <label>Pris (kr)</label>
+          <input type="number" min="0" max="99999" value="${escHtml(w.pris||'')}"
+            onchange="uppdWs('${w.id}','pris',this.value)" oninput="uppdWs('${w.id}','pris',this.value)"
+            placeholder="0">
         </div>
         <div class="ws-field-section">
           <div class="ws-field-section-label">Fält för denna workshop</div>
@@ -355,7 +362,7 @@ function uppdatera() {
       html += `<div class="prev-ws-block">
         <div class="prev-ws-header">
           <h3>${escHtml(ws.namn || 'Workshop ' + (i+1))}</h3>
-          ${ws.max ? `<span class="slots">Max ${ws.max} platser</span>` : ''}
+          <span class="slots">${ws.pris ? ws.pris + ' kr' : ''}${ws.pris && ws.max ? ' · ' : ''}${ws.max ? 'Max ' + ws.max + ' platser' : ''}</span>
         </div>
         <div class="prev-ws-body">`;
       ws.falt.forEach(f => {
@@ -395,6 +402,13 @@ function uppdatera() {
       });
       html += `</div></div>`;
     });
+    const prisTotal = workshops.reduce((s, w) => s + (parseInt(w.pris) || 0), 0);
+    if (prisTotal) {
+      html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.1rem;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:700;color:var(--brown);">Att betala (alla workshops)</span>
+        <span style="font-weight:700;color:var(--brown);font-size:1.05rem;">${prisTotal} kr</span>
+      </div>`;
+    }
   }
   if (workshops.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
   card.innerHTML = html;
@@ -415,6 +429,7 @@ async function sparaOchVisaDela() {
       workshops_json: JSON.stringify(workshops.map(w => ({
         namn: w.namn,
         max: w.max || null,
+        pris: w.pris || null,
         falt: w.falt.map(f => ({
           id: f.id, typ: f.typ, namn: f.namn,
           placeholder: f.placeholder || '',
