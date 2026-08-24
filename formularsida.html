@@ -78,6 +78,7 @@ function visaFormular(f) {
   const _pTel = falt.find(x => x.typ==='tel' && /partner/i.test(x.namn||''));
   const _pToggle = falt.some(x => x.typ==='radio' && /har du partner/i.test(x.namn||''));
   window.__partnerTelId = (_pTel && _pToggle) ? _pTel.id : null;
+  window.__formPris = null;
   let html = `<div class="form-title">${escHtml(f.titel)}</div>`;
   if (f.desc) html += `<div class="form-desc">${escHtml(f.desc)}</div>`;
   if (max) html += `<div class="max-badge">Platser kvar: ${Math.max(0, max - antalAnmalda)} / ${max}</div>`;
@@ -89,6 +90,11 @@ function visaFormular(f) {
   falt.forEach(f => {
     if (f.typ === 'info') {
       html += `<div class="info-block">${escHtml(f.infoText || '').replace(/\n/g,'<br>')}</div>`;
+      return;
+    }
+    if (f.typ === 'pris') {
+      window.__formPris = f.pris || '';
+      html += `<div class="info-block" style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;">Att betala</span><span style="font-weight:700;">${escHtml(f.pris||'')} kr</span></div>`;
       return;
     }
     const req = f.obligatorisk ? '<span class="req"> *</span>' : '';
@@ -118,7 +124,7 @@ async function skickaAnmalan() {
   let valid = true;
   const data = [];
   falt.forEach(f => {
-    if (f.typ === 'info') return;
+    if (f.typ === 'info' || f.typ === 'pris') return;
     const container = document.getElementById('flt_' + f.id);
     let value = '';
     if (f.typ === 'radio') {
@@ -136,6 +142,8 @@ async function skickaAnmalan() {
     data.push({ label: f.namn, value });
   });
   if (!valid) return;
+
+  if (window.__formPris) data.push({ label: 'Att betala', value: window.__formPris + ' kr' });
 
   const btn = document.querySelector('.submit-btn');
   btn.disabled = true;
@@ -168,4 +176,3 @@ laddaFormular();
 </script>
 </body>
 </html>
-
