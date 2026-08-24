@@ -127,6 +127,7 @@ function visaEvent(ev) {
   <div class="field" id="f_namn"><label>Namn <span class="req">*</span></label><input type="text" id="inp_namn" placeholder="För- och efternamn"><div class="field-error">Namn är obligatoriskt.</div></div>
   <div class="field" id="f_email"><label>E-post <span class="req">*</span></label><input type="email" id="inp_email" placeholder="din@email.se"><div class="field-error">E-post är obligatorisk.</div></div>
   <div class="field" id="f_tel"><label>Telefonnummer <span class="req">*</span></label><input type="tel" id="inp_tel" placeholder="070-000 00 00"><div class="field-error">Telefonnummer är obligatoriskt.</div></div>
+  <div class="field" id="f_adress"><label>Adress</label><input type="text" id="inp_adress" placeholder="Gatuadress, postnummer, ort"></div>
   <div class="section-divider"></div>
   <div class="section-title">Välj roll per workshop</div>`;
 
@@ -203,6 +204,23 @@ function visaEvent(ev) {
     html += `</div></div>`;
   });
 
+  html += `<div class="section-divider"></div>
+           <div class="section-title">Samtycke</div>
+           <div class="field" id="f_samtycke_gdpr">
+             <label>Godkännande av hantering av personuppgifter: <span class="req">*</span></label>
+             <div class="check-group"><label><input type="checkbox" id="inp_samtycke_gdpr"> Jag godkänner</label></div>
+             <div class="field-error">Du måste godkänna hanteringen av personuppgifter.</div>
+           </div>
+           <div class="info-block">Vi behöver ditt samtycke för att hantera och lagra dina personuppgifter enligt GDPR. Utan ditt samtycke kan vi inte behandla dina uppgifter eller tillhandahålla våra tjänster.</div>
+           <div class="field" id="f_samtycke_foto">
+             <label>Jag godkänner att Tango Norteño fotar och filmar under danshelgen. Detta material kan komma att publiceras på föreningens hemsida eller i sociala medier i marknadsföringssyfte. <span class="req">*</span></label>
+             <div class="radio-group">
+               <label><input type="radio" name="samtycke_foto" value="ja"> ja</label>
+               <label><input type="radio" name="samtycke_foto" value="nej"> nej</label>
+             </div>
+             <div class="field-error">Detta fält är obligatoriskt.</div>
+           </div>`;
+
   html += `<div class="total-box" id="totalBox"></div>
            <button class="submit-btn" onclick="skickaAnmalan()">Skicka anmälan</button>
            <div class="form-error" id="formError"></div>`;
@@ -272,15 +290,28 @@ async function skickaAnmalan() {
   const namn  = document.getElementById('inp_namn')?.value.trim()  || '';
   const email = document.getElementById('inp_email')?.value.trim() || '';
   const tel   = document.getElementById('inp_tel')?.value.trim()   || '';
+  const adress = document.getElementById('inp_adress')?.value.trim() || '';
   [['f_namn', namn], ['f_email', email], ['f_tel', tel]].forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (!val) { el?.classList.add('invalid'); valid = false; } else el?.classList.remove('invalid');
   });
 
+  const samtyckeGdpr = document.getElementById('inp_samtycke_gdpr')?.checked || false;
+  const gdprEl = document.getElementById('f_samtycke_gdpr');
+  if (!samtyckeGdpr) { gdprEl?.classList.add('invalid'); valid = false; } else gdprEl?.classList.remove('invalid');
+
+  const fotoChecked = document.querySelector('input[name="samtycke_foto"]:checked');
+  const samtyckeFoto = fotoChecked ? fotoChecked.value : '';
+  const fotoEl = document.getElementById('f_samtycke_foto');
+  if (!samtyckeFoto) { fotoEl?.classList.add('invalid'); valid = false; } else fotoEl?.classList.remove('invalid');
+
   const data = [
     { label: 'Namn',           value: namn },
     { label: 'E-post',         value: email },
-    { label: 'Telefonnummer',  value: tel.replace(/\D/g, '') }
+    { label: 'Telefonnummer',  value: tel.replace(/\D/g, '') },
+    { label: 'Adress',         value: adress },
+    { label: 'Godkännande av hantering av personuppgifter', value: samtyckeGdpr ? 'Ja' : 'Nej' },
+    { label: 'Foto- och filmsamtycke', value: samtyckeFoto }
   ];
 
   let prisTotal = 0;
