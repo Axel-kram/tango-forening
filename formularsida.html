@@ -75,7 +75,7 @@ function visaFormular(f) {
   const falt = typeof f.falt_json === 'string' ? JSON.parse(f.falt_json) : (f.falt || []);
   const max = f.max ? parseInt(f.max) : null;
   const full = max && antalAnmalda >= max;
-  const _pTel = falt.find(x => x.typ==='tel' && /partner/i.test(x.namn||''));
+  const _pTel = falt.find(x => x.typ==='text' && /partner/i.test(x.namn||'') && !/telefon|tel\b/i.test(x.namn||''));
   const _pToggle = falt.some(x => x.typ==='radio' && /har du partner/i.test(x.namn||''));
   window.__partnerTelId = (_pTel && _pToggle) ? _pTel.id : null;
   window.__formPris = null;
