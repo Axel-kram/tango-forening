@@ -148,7 +148,7 @@
     <div class="section-label">Workshops i detta event</div>
     <div class="hint">
       <b>Systemfält:</b> fältet som heter något med <b>”Roll”</b> och fältet som innehåller <b>”partner”</b> används av matchningen.
-      Behåll dem. Partnerns telefonnummer läggs till automatiskt på anmälningssidan när deltagaren svarar ”Ja”.
+      Behåll dem. Partnerns namn läggs till automatiskt på anmälningssidan när deltagaren svarar ”Ja”.
       Alla andra fält du lägger till visas som vanliga extrafält.
     </div>
     <div class="ws-list" id="wsLista"></div>
@@ -326,7 +326,7 @@ function renderaFaltRad(wsId, f) {
           <textarea onchange="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
             oninput="uppdFalt('${wsId}','${f.id}','alternativ',this.value)"
             placeholder="Ett alternativ per rad">${escHtml(f.alternativ||'')}</textarea>
-          <span>Ett alternativ per rad${sort==='roll' ? ' · behåll ”Hoppa över denna workshop”' : ''}${sort==='partner' ? ' · alternativet som börjar med ”Ja” öppnar telefonfältet' : ''}</span>
+          <span>Ett alternativ per rad${sort==='roll' ? ' · behåll ”Hoppa över denna workshop”' : ''}${sort==='partner' ? ' · alternativet som börjar med ”Ja” öppnar namnfältet' : ''}</span>
         </div>` : ''}`}
       </div>
       <div class="field-row-actions">
@@ -381,7 +381,7 @@ function uppdatera() {
             <div class="prev-radio-group">${alts.map(a=>`<label><input type="radio" name="prev_${ws.id}_${f.id}"> ${escHtml(a)}</label>`).join('')}</div>
             <div class="prev-partner-tel">
               <small>Visas automatiskt när deltagaren väljer alternativet som börjar med ”Ja”</small>
-              <input type="tel" placeholder="Partnerns telefonnummer">
+              <input type="text" placeholder="Partnerns namn">
             </div>
           </div>`;
           return;
