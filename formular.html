@@ -147,6 +147,10 @@
       <label>Max anmälningar</label>
       <input type="number" id="fMax" min="1" max="9999" placeholder="Obegränsat" style="width:110px;" oninput="uppdateraFörhandsgranskning()">
     </div>
+    <div class="field-group row">
+      <label>Pris hela formuläret (kr)</label>
+      <input type="number" id="fPris" min="0" max="99999" placeholder="0" style="width:110px;" oninput="uppdateraFörhandsgranskning()">
+    </div>
 
     <hr class="section-divider">
     <div class="field-group"><label>Lägg till fält</label></div>
@@ -289,6 +293,7 @@ function uppdateraFörhandsgranskning() {
   const titel = document.getElementById('fTitel').value.trim();
   const desc  = document.getElementById('fDesc').value.trim();
   const max   = document.getElementById('fMax').value;
+  const pris  = document.getElementById('fPris').value;
   const card  = document.getElementById('previewCard');
 
   if (!titel && !falt.length) {
@@ -323,6 +328,7 @@ function uppdateraFörhandsgranskning() {
     }
   });
 
+  if (pris) html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.1rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--brown);">Att betala</span><span style="font-weight:700;color:var(--brown);font-size:1.05rem;">${pris} kr</span></div>`;
   if (falt.length) html += `<button class="preview-submit">Skicka anmälan</button>`;
   card.innerHTML = html;
 }
@@ -333,17 +339,20 @@ async function sparaOchVisaDela() {
   if (!falt.length) { visa('byggStatus','err','Lägg till minst ett fält.'); return; }
   visa('byggStatus','info','Sparar...');
   try {
+    const prisVal = document.getElementById('fPris').value.trim();
+    const faltPayload = falt.map(f => ({
+      id: f.id, typ: f.typ, namn: f.namn,
+      placeholder: f.placeholder||'',
+      obligatorisk: f.obligatorisk||false,
+      alternativ: f.alternativ||'',
+      infoText: f.infoText||''
+    }));
+    if (prisVal) faltPayload.push({ id:'formpris', typ:'pris', namn:'Pris', placeholder:'', obligatorisk:false, alternativ:'', infoText:'', pris: prisVal });
     const payload = {
       titel,
       desc: document.getElementById('fDesc').value.trim(),
       max: document.getElementById('fMax').value || null,
-      falt: falt.map(f => ({
-        id: f.id, typ: f.typ, namn: f.namn,
-        placeholder: f.placeholder||'',
-        obligatorisk: f.obligatorisk||false,
-        alternativ: f.alternativ||'',
-        infoText: f.infoText||''
-      }))
+      falt: faltPayload
     };
     const res = await fetch(WEBHOOKS.sparaFormular, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const data = await res.json();
@@ -382,4 +391,3 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
