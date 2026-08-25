@@ -197,6 +197,8 @@ const WEBHOOKS = {
   sparaFormular: 'https://tango-norteno.duckdns.org/webhook/spara-formular',
 };
 
+let editFormId = null;
+
 let falt = [
   { id: Date.now()+'1', typ: 'text',   namn: 'Namn',                   placeholder: 'För- och efternamn', obligatorisk: true },
   { id: Date.now()+'2', typ: 'email',  namn: 'E-post',                 placeholder: 'din@email.se',       obligatorisk: true },
@@ -368,6 +370,7 @@ async function sparaOchVisaDela() {
       max: document.getElementById('fMax').value || null,
       falt: faltPayload
     };
+    if (editFormId) payload.id = editFormId;
     const res = await fetch(WEBHOOKS.sparaFormular, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const data = await res.json();
     if (!data.id) throw new Error('Ogiltigt svar från servern');
@@ -375,7 +378,7 @@ async function sparaOchVisaDela() {
     const shareUrl = base + 'formularsida.html?form=' + data.id;
     document.getElementById('shareUrl').value = shareUrl;
     document.getElementById('delaCard').style.display = 'block';
-    visa('byggStatus','ok','Formuläret är sparat!');
+    visa('byggStatus','ok', editFormId ? 'Ändringarna är sparade!' : 'Formuläret är sparat!');
   } catch(e) {
     visa('byggStatus','err','Fel: ' + e.message);
   }
@@ -398,9 +401,48 @@ function visa(id, typ, text) {
 
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+async function laddaForRedigering(id) {
+  editFormId = id;
+  visa('byggStatus','info','Laddar formulär...');
+  try {
+    const res = await fetch('https://tango-norteno.duckdns.org/webhook/hamta_formular?id=' + encodeURIComponent(id));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+    const data = Array.isArray(raw) ? raw[0] : raw;
+    if (!data || data.error || !data.titel) throw new Error('Formuläret hittades inte.');
+
+    document.getElementById('fTitel').value = data.titel || '';
+    document.getElementById('fDesc').value = data.desc || '';
+    document.getElementById('fMax').value = data.max || '';
+
+    const laddade = typeof data.falt_json === 'string' ? JSON.parse(data.falt_json) : (data.falt || []);
+    const prisFalt = laddade.find(f => f.typ === 'pris');
+    if (prisFalt) document.getElementById('fPris').value = prisFalt.pris || '';
+
+    falt = laddade.filter(f => f.typ !== 'pris').map(f => ({
+      id: f.id || (Date.now() + ''),
+      typ: f.typ, namn: f.namn,
+      placeholder: f.placeholder || '',
+      obligatorisk: f.obligatorisk || false,
+      alternativ: f.alternativ || '',
+      infoText: f.infoText || ''
+    }));
+
+    document.querySelector('.panel-title').textContent = 'Redigera formulär';
+    document.querySelector('.panel-actions .btn-brown').innerHTML = '✦ Spara ändringar';
+
+    renderaFaltlista();
+    uppdateraFörhandsgranskning();
+    visa('byggStatus','ok','Formuläret är inladdat — gör dina ändringar och spara.');
+  } catch(e) {
+    visa('byggStatus','err','Kunde inte ladda formuläret: ' + e.message);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  renderaFaltlista();
-  uppdateraFörhandsgranskning();
+  const editId = new URLSearchParams(location.search).get('edit');
+  if (editId) { laddaForRedigering(editId); }
+  else { renderaFaltlista(); uppdateraFörhandsgranskning(); }
 });
 </script>
 </body>
