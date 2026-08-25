@@ -536,9 +536,8 @@ async function sparaOchVisaDela() {
       titel,
       desc: document.getElementById('wDesc').value.trim(),
       max: document.getElementById('wMax').value || null,
-      workshops_json: JSON.stringify({
-        theme: lasTema(),
-        list: workshops.map(w => ({
+      workshops_json: JSON.stringify(workshops.map((w, i) => {
+        const obj = {
           namn: w.namn,
           max: w.max || null,
           pris: w.pris || null,
@@ -549,8 +548,12 @@ async function sparaOchVisaDela() {
             alternativ: f.alternativ || '',
             infoText: f.infoText || ''
           }))
-        }))
-      })
+        };
+        // Temat lagras på första workshoppen — workshops_json måste förbli en
+        // ren lista, annars kan n8n-flödet hamta-workshop inte räkna platser.
+        if (i === 0) obj.tema = lasTema();
+        return obj;
+      }))
     };
     if (editEventId) payload.id = editEventId;
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
@@ -598,9 +601,14 @@ async function laddaForRedigering(id) {
     document.getElementById('wDesc').value = data.desc || '';
     document.getElementById('wMax').value = data.max || '';
 
-    const parsed = typeof data.workshops_json === 'string' ? JSON.parse(data.workshops_json) : (data.workshops_json || {});
-    const laddade = Array.isArray(parsed) ? parsed : (parsed.list || []);
-    const laddatTema = Array.isArray(parsed) ? null : parsed.theme;
+    let parsed = null;
+    if (typeof data.workshops_json === 'string' && data.workshops_json.trim()) {
+      try { parsed = JSON.parse(data.workshops_json); } catch (e) { parsed = null; }
+    } else if (data.workshops_json && typeof data.workshops_json === 'object') {
+      parsed = data.workshops_json;
+    }
+    const laddade = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.list) ? parsed.list : (data.workshops || []));
+    const laddatTema = (laddade[0] && laddade[0].tema) || (parsed && !Array.isArray(parsed) ? parsed.theme : null);
     workshops = laddade.map((w, i) => ({
       id: Date.now() + '' + i,
       namn: w.namn || ('Workshop ' + (i + 1)),
