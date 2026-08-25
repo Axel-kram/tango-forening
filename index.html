@@ -211,6 +211,7 @@ function renderFormItem(f, typ) {
         <input class="copy-url-input" value="${escHtml(pageUrl)}" readonly>
         <button class="btn btn-outline" onclick="kopieraUrl('${escHtml(pageUrl)}',this)">Kopiera</button>
       </div>
+      <a class="btn btn-mid" href="${typ === 'formular' ? 'formular.html' : 'workshopsbyggare.html'}?edit=${encodeURIComponent(f.id)}">Redigera</a>
       <button class="btn btn-success" onclick="koraMatchning('${escHtml(f.id)}')">Matchning</button>
       <button class="btn btn-danger" onclick="oppnaRensaModal('${escHtml(f.sheet_id||'')}','${escHtml(f.titel||'')}','${typ}')">Rensa</button>
     </div>
@@ -282,4 +283,3 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
