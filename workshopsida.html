@@ -6,21 +6,21 @@
 <title>Tango Norteño — Workshop-anmälan</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;}
+  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Lato',sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem;}
-  .brand{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown-lt);letter-spacing:0.06em;margin-bottom:2rem;text-align:center;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem;}
+  .brand{font-family:var(--font-heading);font-size:1.1rem;color:var(--brown-lt);letter-spacing:0.06em;margin-bottom:2rem;text-align:center;}
   .brand span{font-style:italic;}
   .card{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:2.2rem 2.5rem;width:100%;max-width:640px;box-shadow:0 4px 24px rgba(74,44,26,0.12);}
-  .event-title{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);margin-bottom:0.4rem;line-height:1.2;}
+  .event-title{font-family:var(--font-heading);font-size:2rem;color:var(--brown);margin-bottom:0.4rem;line-height:1.2;}
   .event-desc{color:var(--text-lt);font-size:0.95rem;margin-bottom:1.5rem;line-height:1.6;}
   .max-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:0.8rem;color:var(--text-lt);padding:0.25rem 0.9rem;margin-bottom:1.2rem;}
   .section-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
-  .section-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown);margin-bottom:1rem;}
+  .section-title{font-family:var(--font-heading);font-size:1.1rem;color:var(--brown);margin-bottom:1rem;}
   .field{margin-bottom:1rem;}
   .field > label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.35rem;}
   .field .req{color:var(--accent);}
-  .field input[type=text],.field input[type=email],.field input[type=tel],.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:'Lato',sans-serif;font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
+  .field input[type=text],.field input[type=email],.field input[type=tel],.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;font-family:var(--font-body);font-size:0.95rem;color:var(--text);transition:border-color 0.2s;}
   .field textarea{resize:vertical;min-height:80px;}
   .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--brown-mid);}
   .field-error{color:var(--danger);font-size:0.8rem;margin-top:0.3rem;display:none;}
@@ -29,7 +29,7 @@
   .field.invalid > label{color:var(--danger);}
   .ws-block{border:1px solid var(--border);border-radius:9px;margin-bottom:1.3rem;overflow:hidden;}
   .ws-block-header{background:var(--brown);color:var(--cream);padding:0.8rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
-  .ws-block-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;}
+  .ws-block-header h3{font-family:var(--font-heading);font-size:1.05rem;}
   .ws-slots{font-size:0.78rem;opacity:0.75;}
   .ws-full-badge{background:var(--accent);color:#fff;font-size:0.7rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:3px;text-transform:uppercase;}
   .ws-block-body{padding:1.1rem 1.2rem;}
@@ -41,21 +41,21 @@
   .partner-section > label{display:block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--brown-mid);margin-bottom:0.5rem;}
   .partner-tel-row{margin-top:0.7rem;display:none;}
   .partner-tel-row label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);display:block;margin-bottom:0.3rem;}
-  .partner-tel-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:'Lato',sans-serif;font-size:0.9rem;}
+  .partner-tel-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:var(--font-body);font-size:0.9rem;}
   .partner-tel-row input:focus{outline:none;border-color:var(--brown-mid);}
   .info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .full-notice{background:#f5e0d0;border:1px solid #d4956e;border-radius:6px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--accent);font-weight:700;}
   .full-notice-big{background:#f5e0d0;border:1px solid #d4956e;border-radius:8px;padding:1.2rem;text-align:center;margin-bottom:1.5rem;}
-  .full-notice-big h3{color:var(--accent);font-family:'Playfair Display',serif;margin-bottom:0.3rem;}
+  .full-notice-big h3{color:var(--accent);font-family:var(--font-heading);margin-bottom:0.3rem;}
   .full-notice-big p{color:var(--text-lt);font-size:0.88rem;}
-  .submit-btn{background:var(--brown);color:var(--cream);border:none;border-radius:6px;padding:0.9rem 2.5rem;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em;transition:filter 0.2s;width:100%;margin-top:0.5rem;}
+  .submit-btn{background:var(--brown);color:var(--cream);border:none;border-radius:6px;padding:0.9rem 2.5rem;font-family:var(--font-body);font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em;transition:filter 0.2s;width:100%;margin-top:0.5rem;}
   .submit-btn:hover{filter:brightness(1.1);}
   .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
   .form-error{background:#f5e6e6;color:var(--danger);border-radius:6px;padding:0.6rem 0.9rem;font-size:0.87rem;margin-top:0.8rem;display:none;}
   .total-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-top:0.3rem;margin-bottom:0.5rem;display:none;}
   .msg{text-align:center;padding:2rem 1rem;}
   .msg .icon{font-size:2.5rem;margin-bottom:0.7rem;}
-  .msg h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown);margin-bottom:0.5rem;}
+  .msg h2{font-family:var(--font-heading);font-size:1.5rem;color:var(--brown);margin-bottom:0.5rem;}
   .msg p{color:var(--text-lt);font-size:0.95rem;}
   .spinner{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:3rem 0;}
   .spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brown-mid);border-radius:50%;animation:spin 0.7s linear infinite;}
@@ -68,6 +68,56 @@
   <div class="spinner"><div class="spin"></div><p style="color:var(--text-lt);">Laddar event...</p></div>
 </div>
 <script>
+// ── Design/tema ──────────────────────────────────────────
+const HEADING_FONTS = ['Playfair Display','Cormorant Garamond','Merriweather','Lora','Libre Baskerville','Abril Fatface'];
+const BODY_FONTS = ['Lato','Inter','Open Sans','Nunito','Roboto','Source Sans Pro'];
+const FONT_STACK = {
+  'Playfair Display': "'Playfair Display',Georgia,serif", 'Cormorant Garamond': "'Cormorant Garamond',Georgia,serif",
+  'Merriweather': "'Merriweather',Georgia,serif", 'Lora': "'Lora',Georgia,serif",
+  'Libre Baskerville': "'Libre Baskerville',Georgia,serif", 'Abril Fatface': "'Abril Fatface',Georgia,serif",
+  'Lato': "'Lato',sans-serif", 'Inter': "'Inter',sans-serif", 'Open Sans': "'Open Sans',sans-serif",
+  'Nunito': "'Nunito',sans-serif", 'Roboto': "'Roboto',sans-serif", 'Source Sans Pro': "'Source Sans Pro',sans-serif"
+};
+const DEFAULT_THEME = { bg:'#f5f0e8', brown:'#4a2c1a', accent:'#8b3a1f', text:'#2e1a0e', headingFont:'Playfair Display', bodyFont:'Lato' };
+
+function mixHex(hex, mot, andel) {
+  const h = String(hex||'#000000').replace('#','');
+  const r = parseInt(h.substring(0,2),16)||0, g = parseInt(h.substring(2,4),16)||0, b = parseInt(h.substring(4,6),16)||0;
+  const m = mot === 'white' ? 255 : 0;
+  const nr = Math.round(r + (m-r)*andel), ng = Math.round(g + (m-g)*andel), nb = Math.round(b + (m-b)*andel);
+  return '#' + [nr,ng,nb].map(v => Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');
+}
+
+function laddaGoogleFont(namn) {
+  const id = 'gf-' + namn.replace(/\s+/g,'-');
+  if (document.getElementById(id)) return;
+  const link = document.createElement('link');
+  link.id = id;
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=' + namn.replace(/\s+/g,'+') + ':wght@300;400;700&display=swap';
+  document.head.appendChild(link);
+}
+
+function applyTema(theme, el) {
+  const t = Object.assign({}, DEFAULT_THEME, theme || {});
+  const root = (el || document.documentElement).style;
+  root.setProperty('--bg', t.bg);
+  root.setProperty('--brown', t.brown);
+  root.setProperty('--accent', t.accent);
+  root.setProperty('--text', t.text);
+  root.setProperty('--surface', mixHex(t.bg, 'black', 0.05));
+  root.setProperty('--surface2', mixHex(t.bg, 'black', 0.12));
+  root.setProperty('--border', mixHex(t.bg, 'black', 0.22));
+  root.setProperty('--brown-mid', mixHex(t.brown, 'white', 0.25));
+  root.setProperty('--brown-lt', mixHex(t.brown, 'white', 0.45));
+  root.setProperty('--cream', mixHex(t.bg, 'white', 0.35));
+  root.setProperty('--text-lt', mixHex(t.text, 'white', 0.35));
+  root.setProperty('--font-heading', FONT_STACK[t.headingFont] || FONT_STACK['Playfair Display']);
+  root.setProperty('--font-body', FONT_STACK[t.bodyFont] || FONT_STACK['Lato']);
+  laddaGoogleFont(t.headingFont);
+  laddaGoogleFont(t.bodyFont);
+}
+
 const WEBHOOK_SPARA  = 'https://tango-norteno.duckdns.org/webhook/anmalan-workshop';
 const WEBHOOK_HAMTA  = 'https://tango-norteno.duckdns.org/webhook/hamta-workshop';
 
@@ -97,9 +147,11 @@ async function laddaEvent() {
     const raw = await res.json();
     const data = Array.isArray(raw) ? raw[0] : raw;
     if (!data || data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
-    data.workshops = typeof data.workshops_json === 'string'
+    const parsed = typeof data.workshops_json === 'string'
       ? JSON.parse(data.workshops_json)
-      : (data.workshops || []);
+      : (data.workshops_json || {});
+    data.workshops = Array.isArray(parsed) ? parsed : (parsed.list || []);
+    applyTema(Array.isArray(parsed) ? null : parsed.theme);
     eventData = data;
     visaEvent(data);
   } catch (e) {
