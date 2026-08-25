@@ -178,6 +178,7 @@
 </div>
 <script>
 let workshops = [];
+let editEventId = null;
 const TYPLABELS = { text:'Text', email:'E-post', tel:'Telefon', textarea:'Fritext', radio:'Flerval', select:'Dropdown', checkbox:'Kryssruta', info:'Info' };
 
 /* Samma klassning som anmälningssidan använder */
@@ -452,6 +453,7 @@ async function sparaOchVisaDela() {
         }))
       })))
     };
+    if (editEventId) payload.id = editEventId;
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'}, body: JSON.stringify(payload) });
     const text = await res.text();
     if (!res.ok) throw new Error('Servern svarade ' + res.status + (text ? ': ' + text.slice(0,120) : ''));
@@ -464,7 +466,7 @@ async function sparaOchVisaDela() {
     const shareUrl = base + 'workshopsida.html?event=' + data.id;
     document.getElementById('shareUrl').value = shareUrl;
     document.getElementById('delaCard').style.display = 'block';
-    visa('byggStatus','ok','Eventet är sparat!');
+    visa('byggStatus','ok', editEventId ? 'Ändringarna är sparade!' : 'Eventet är sparat!');
   } catch(e) {
     visa('byggStatus','err','Fel: ' + e.message);
   }
@@ -483,7 +485,53 @@ function visa(id, typ, text) {
   el.textContent = text;
 }
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-window.addEventListener('DOMContentLoaded', uppdatera);
+async function laddaForRedigering(id) {
+  editEventId = id;
+  visa('byggStatus','info','Laddar event...');
+  try {
+    const res = await fetch('https://tango-norteno.duckdns.org/webhook/hamta-workshop?id=' + encodeURIComponent(id));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+    const data = Array.isArray(raw) ? raw[0] : raw;
+    if (!data || data.error || !data.titel) throw new Error('Eventet hittades inte.');
+
+    document.getElementById('wTitel').value = data.titel || '';
+    document.getElementById('wDesc').value = data.desc || '';
+    document.getElementById('wMax').value = data.max || '';
+
+    const laddade = typeof data.workshops_json === 'string' ? JSON.parse(data.workshops_json) : (data.workshops || []);
+    workshops = laddade.map((w, i) => ({
+      id: Date.now() + '' + i,
+      namn: w.namn || ('Workshop ' + (i + 1)),
+      max: w.max || '',
+      pris: w.pris || '',
+      collapsed: false,
+      falt: (w.falt || []).map(f => ({
+        id: f.id || (Date.now() + '' + Math.floor(Math.random() * 1000)),
+        typ: f.typ, namn: f.namn,
+        placeholder: f.placeholder || '',
+        obligatorisk: f.obligatorisk || false,
+        alternativ: f.alternativ || '',
+        infoText: f.infoText || ''
+      }))
+    }));
+
+    document.querySelector('.panel-title').textContent = 'Redigera event';
+    document.querySelector('.panel-actions .btn-brown').innerHTML = '✦ Spara ändringar';
+
+    renderaWsLista();
+    uppdatera();
+    visa('byggStatus','ok','Eventet är inladdat — gör dina ändringar och spara.');
+  } catch(e) {
+    visa('byggStatus','err','Kunde inte ladda eventet: ' + e.message);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const editId = new URLSearchParams(location.search).get('edit');
+  if (editId) { laddaForRedigering(editId); }
+  else { uppdatera(); }
+});
 </script>
 </body>
 </html>
