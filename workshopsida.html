@@ -147,11 +147,18 @@ async function laddaEvent() {
     const raw = await res.json();
     const data = Array.isArray(raw) ? raw[0] : raw;
     if (!data || data.error || !data.titel) { visaFel('Eventet hittades inte.'); return; }
-    const parsed = typeof data.workshops_json === 'string'
-      ? JSON.parse(data.workshops_json)
-      : (data.workshops_json || {});
-    data.workshops = Array.isArray(parsed) ? parsed : (parsed.list || []);
-    applyTema(Array.isArray(parsed) ? null : parsed.theme);
+    let parsed = null;
+    if (typeof data.workshops_json === 'string' && data.workshops_json.trim()) {
+      try { parsed = JSON.parse(data.workshops_json); } catch (e) { parsed = null; }
+    } else if (data.workshops_json && typeof data.workshops_json === 'object') {
+      parsed = data.workshops_json;
+    }
+    if (Array.isArray(parsed)) { data.workshops = parsed; }
+    else if (parsed && Array.isArray(parsed.list)) { data.workshops = parsed.list; }
+    else { data.workshops = data.workshops || []; }
+    const tema = (data.workshops[0] && data.workshops[0].tema)
+      || (parsed && !Array.isArray(parsed) ? parsed.theme : null);
+    applyTema(tema);
     eventData = data;
     visaEvent(data);
   } catch (e) {
