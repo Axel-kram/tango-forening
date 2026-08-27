@@ -201,14 +201,15 @@ function visaEvent(ev) {
         <div style="display:flex;align-items:center;gap:0.6rem;">
           ${ws.pris ? `<span class="ws-slots">${ws.pris} kr</span>` : ''}
           ${max ? `<span class="ws-slots">Platser: ${Math.max(0, max - anmalda)}/${max}</span>` : ''}
-          ${full ? '<span class="ws-full-badge">Fullt</span>' : ''}
+          ${full ? '<span class="ws-full-badge">Väntelista</span>' : ''}
         </div>
       </div>
       <div class="ws-block-body">`;
 
     if (full) {
-      html += `<div class="full-notice">Denna workshop är fullbokad.</div>`;
-    } else {
+      html += `<div class="full-notice">Denna workshop är fullbokad. Du kan fortfarande anmäla dig — du hamnar då på väntelistan och vi hör av oss om en plats blir ledig.</div>`;
+    }
+    {
       (ws.falt || []).forEach(f => {
         const sort  = faltSort(f);
         const namef = `w${i}_${f.id}`;
@@ -329,12 +330,12 @@ function uppdateraTotal() {
     const anmalda = parseInt(ws.anmalda) || 0;
     const full    = ws.fullbokad === true || (max && anmalda >= max);
     const pris    = parseInt(ws.pris) || 0;
-    if (full || !pris) return;
+    if (!pris) return;
     const checked = document.querySelector(`.ws-block[data-ws="${i}"] input[type=radio][onchange*="rollToggle"]:checked`);
     const roll = checked ? checked.value : '';
-    if (/hoppa/i.test(roll)) return;
+    if (!roll || /hoppa/i.test(roll)) return;
     total += pris;
-    rader.push(`<div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-lt);margin-bottom:0.25rem;"><span>${escHtml(ws.namn || ('Workshop ' + (i+1)))}</span><span>${pris} kr</span></div>`);
+    rader.push(`<div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-lt);margin-bottom:0.25rem;"><span>${escHtml(ws.namn || ('Workshop ' + (i+1)))}${full ? ' (väntelista)' : ''}</span><span>${pris} kr</span></div>`);
   });
   if (!total) { box.innerHTML = ''; box.style.display = 'none'; return; }
   box.style.display = 'block';
@@ -381,12 +382,12 @@ async function skickaAnmalan() {
     const full    = ws.fullbokad === true || (max && anmalda >= max);
 
     // Systemkolumner — alltid samma ordning, matchningen bygger på dessa
-    let roll = full ? 'Hoppa över' : '';
+    let roll = '';
     let harPartner = 'nej';
     let partnerNamn = '';
     const extra = [];
 
-    if (!full) {
+    {
       (ws.falt || []).forEach(f => {
         if (f.typ === 'info') return;
         const sort  = faltSort(f);
@@ -423,7 +424,7 @@ async function skickaAnmalan() {
     }
 
     const wpris   = parseInt(ws.pris) || 0;
-    const deltar  = !full && !/hoppa/i.test(roll);
+    const deltar  = !/hoppa/i.test(roll) && !!roll;
     const radPris = deltar ? wpris : 0;
     prisTotal += radPris;
 
