@@ -6,7 +6,7 @@
 <title>Tango Norteño — Workshop-anmälan</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Lato',sans-serif;}
+  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Lato',sans-serif;--info:#4a7c59;--info-bg:#f0f5f0;--info-border:#c8dcc8;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem;}
   .brand{font-family:var(--font-heading);font-size:1.1rem;color:var(--brown-lt);letter-spacing:0.06em;margin-bottom:2rem;text-align:center;}
@@ -43,7 +43,7 @@
   .partner-tel-row label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-lt);display:block;margin-bottom:0.3rem;}
   .partner-tel-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.55rem 0.8rem;font-family:var(--font-body);font-size:0.9rem;}
   .partner-tel-row input:focus{outline:none;border-color:var(--brown-mid);}
-  .info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
+  .info-block{background:var(--info-bg);border:1px solid var(--info-border);border-left:4px solid var(--info);border-radius:5px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .full-notice{background:#f5e0d0;border:1px solid #d4956e;border-radius:6px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--accent);font-weight:700;}
   .full-notice-big{background:#f5e0d0;border:1px solid #d4956e;border-radius:8px;padding:1.2rem;text-align:center;margin-bottom:1.5rem;}
   .full-notice-big h3{color:var(--accent);font-family:var(--font-heading);margin-bottom:0.3rem;}
@@ -78,7 +78,7 @@ const FONT_STACK = {
   'Lato': "'Lato',sans-serif", 'Inter': "'Inter',sans-serif", 'Open Sans': "'Open Sans',sans-serif",
   'Nunito': "'Nunito',sans-serif", 'Roboto': "'Roboto',sans-serif", 'Source Sans Pro': "'Source Sans Pro',sans-serif"
 };
-const DEFAULT_THEME = { bg:'#f5f0e8', brown:'#4a2c1a', accent:'#8b3a1f', text:'#2e1a0e', headingFont:'Playfair Display', bodyFont:'Lato' };
+const DEFAULT_THEME = { bg:'#f5f0e8', brown:'#4a2c1a', accent:'#8b3a1f', text:'#2e1a0e', info:'#4a7c59', headingFont:'Playfair Display', bodyFont:'Lato' };
 
 function mixHex(hex, mot, andel) {
   const h = String(hex||'#000000').replace('#','');
@@ -112,6 +112,9 @@ function applyTema(theme, el) {
   root.setProperty('--brown-lt', mixHex(t.brown, 'white', 0.45));
   root.setProperty('--cream', mixHex(t.bg, 'white', 0.35));
   root.setProperty('--text-lt', mixHex(t.text, 'white', 0.35));
+  root.setProperty('--info', t.info);
+  root.setProperty('--info-bg', mixHex(t.info, 'white', 0.88));
+  root.setProperty('--info-border', mixHex(t.info, 'white', 0.65));
   root.setProperty('--font-heading', FONT_STACK[t.headingFont] || FONT_STACK['Playfair Display']);
   root.setProperty('--font-body', FONT_STACK[t.bodyFont] || FONT_STACK['Lato']);
   laddaGoogleFont(t.headingFont);
