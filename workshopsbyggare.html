@@ -6,7 +6,7 @@
 <title>Tango Norteño — Workshopsbyggare</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--shadow:0 2px 12px rgba(74,44,26,0.13);--font-heading:'Playfair Display',Georgia,serif;--font-body:'Lato',sans-serif;}
+  :root{--bg:#f5f0e8;--surface:#ede6d6;--surface2:#e0d5c0;--border:#c4b49a;--brown:#4a2c1a;--brown-mid:#7a4a2e;--brown-lt:#a67c5b;--cream:#faf6ee;--text:#2e1a0e;--text-lt:#6b4c35;--accent:#8b3a1f;--success:#4a7c59;--danger:#8b1f1f;--shadow:0 2px 12px rgba(74,44,26,0.13);--font-heading:'Playfair Display',Georgia,serif;--font-body:'Lato',sans-serif;--info:#4a7c59;--info-bg:#f0f5f0;--info-border:#c8dcc8;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
   .topbar{background:var(--brown);color:var(--cream);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
@@ -107,7 +107,7 @@
   .prev-field textarea{resize:vertical;min-height:70px;}
   .prev-radio-group,.prev-check-group{display:flex;flex-direction:column;gap:0.35rem;}
   .prev-radio-group label,.prev-check-group label{font-size:0.88rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
-  .prev-info-block{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:5px;padding:0.75rem 1rem;margin-bottom:0.9rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
+  .prev-info-block{background:var(--info-bg);border:1px solid var(--info-border);border-left:4px solid var(--info);border-radius:5px;padding:0.75rem 1rem;margin-bottom:0.9rem;font-size:0.9rem;color:var(--text);line-height:1.5;}
   .prev-personal{background:var(--surface2);border-radius:7px;padding:1rem 1.1rem;margin-bottom:1.3rem;}
   .prev-personal h4{font-family:var(--font-heading);font-size:1rem;color:var(--brown);margin-bottom:0.8rem;}
   .prev-partner-box{background:var(--surface2);border-radius:7px;padding:0.9rem 1rem;margin-bottom:0.9rem;}
@@ -151,6 +151,7 @@
       <div><label style="display:block;margin-bottom:0.3rem;">Huvudfärg</label><input type="color" id="temaBrown" value="#4a2c1a" onchange="uppdateraTema()" style="width:52px;height:34px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px;"></div>
       <div><label style="display:block;margin-bottom:0.3rem;">Accentfärg</label><input type="color" id="temaAccent" value="#8b3a1f" onchange="uppdateraTema()" style="width:52px;height:34px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px;"></div>
       <div><label style="display:block;margin-bottom:0.3rem;">Text</label><input type="color" id="temaText" value="#2e1a0e" onchange="uppdateraTema()" style="width:52px;height:34px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px;"></div>
+      <div><label style="display:block;margin-bottom:0.3rem;">Inforutor</label><input type="color" id="temaInfo" value="#4a7c59" onchange="uppdateraTema()" style="width:52px;height:34px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px;"></div>
     </div>
     <div class="field-group">
       <label>Rubrikfont</label>
@@ -203,7 +204,7 @@ const FONT_STACK = {
   'Lato': "'Lato',sans-serif", 'Inter': "'Inter',sans-serif", 'Open Sans': "'Open Sans',sans-serif",
   'Nunito': "'Nunito',sans-serif", 'Roboto': "'Roboto',sans-serif", 'Source Sans Pro': "'Source Sans Pro',sans-serif"
 };
-const DEFAULT_THEME = { bg:'#f5f0e8', brown:'#4a2c1a', accent:'#8b3a1f', text:'#2e1a0e', headingFont:'Playfair Display', bodyFont:'Lato' };
+const DEFAULT_THEME = { bg:'#f5f0e8', brown:'#4a2c1a', accent:'#8b3a1f', text:'#2e1a0e', info:'#4a7c59', headingFont:'Playfair Display', bodyFont:'Lato' };
 
 function mixHex(hex, mot, andel) {
   const h = String(hex||'#000000').replace('#','');
@@ -237,6 +238,9 @@ function applyTema(theme, el) {
   root.setProperty('--brown-lt', mixHex(t.brown, 'white', 0.45));
   root.setProperty('--cream', mixHex(t.bg, 'white', 0.35));
   root.setProperty('--text-lt', mixHex(t.text, 'white', 0.35));
+  root.setProperty('--info', t.info);
+  root.setProperty('--info-bg', mixHex(t.info, 'white', 0.88));
+  root.setProperty('--info-border', mixHex(t.info, 'white', 0.65));
   root.setProperty('--font-heading', FONT_STACK[t.headingFont] || FONT_STACK['Playfair Display']);
   root.setProperty('--font-body', FONT_STACK[t.bodyFont] || FONT_STACK['Lato']);
   laddaGoogleFont(t.headingFont);
@@ -416,6 +420,7 @@ function lasTema() {
     brown: document.getElementById('temaBrown').value,
     accent: document.getElementById('temaAccent').value,
     text: document.getElementById('temaText').value,
+    info: document.getElementById('temaInfo').value,
     headingFont: document.getElementById('temaHeadingFont').value,
     bodyFont: document.getElementById('temaBodyFont').value
   };
@@ -426,6 +431,7 @@ function satTema(theme) {
   document.getElementById('temaBrown').value = t.brown;
   document.getElementById('temaAccent').value = t.accent;
   document.getElementById('temaText').value = t.text;
+  document.getElementById('temaInfo').value = t.info;
   document.getElementById('temaHeadingFont').value = t.headingFont;
   document.getElementById('temaBodyFont').value = t.bodyFont;
   uppdateraTema();
