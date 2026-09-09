@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<script src="auth.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tango Norteño — Skicka meddelande</title>
@@ -21,7 +20,7 @@
   .topbar-nav{display:flex;gap:0.5rem;}
   .nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--cream);padding:0.45rem 1.1rem;border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:background 0.2s;text-decoration:none;display:inline-block;}
   .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);}
-  .container{max-width:780px;margin:0 auto;padding:2.5rem 2rem;}
+  .container{max-width:820px;margin:0 auto;padding:2.5rem 2rem;}
   .page-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:0.4rem;color:var(--brown);}
   .page-sub{color:var(--text-lt);font-size:0.95rem;margin-bottom:2rem;}
   .card{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:1.8rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
@@ -35,24 +34,28 @@
   }
   .field-group input:focus,.field-group textarea:focus,.field-group select:focus{outline:none;border-color:var(--brown-mid);}
   .field-group textarea{resize:vertical;min-height:150px;}
+  .field-row{display:flex;flex-wrap:wrap;gap:0.9rem;margin-bottom:1.2rem;}
+  .farg-val label{display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.3rem;}
+  .farg-val input[type=color]{width:52px;height:34px;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px;background:var(--surface);}
   .steps{display:flex;gap:0;margin-bottom:2rem;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
-  .step{flex:1;padding:0.75rem 1rem;text-align:center;background:var(--surface);font-size:0.82rem;font-weight:700;color:var(--text-lt);text-transform:uppercase;letter-spacing:0.04em;border-right:1px solid var(--border);}
+  .step{flex:1;padding:0.75rem 0.6rem;text-align:center;background:var(--surface);font-size:0.78rem;font-weight:700;color:var(--text-lt);text-transform:uppercase;letter-spacing:0.03em;border-right:1px solid var(--border);}
   .step:last-child{border-right:none;}
   .step.active{background:var(--brown);color:var(--cream);}
   .step.done{background:var(--success);color:#fff;}
-  .step-num{display:inline-block;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.25);font-size:0.75rem;line-height:20px;text-align:center;margin-right:0.4rem;}
-  .grupp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:1rem;}
+  .step-num{display:inline-block;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.25);font-size:0.75rem;line-height:20px;text-align:center;margin-right:0.3rem;}
+  .grupp-lista{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;}
   .grupp-kort{
     background:var(--surface);border:2px solid var(--border);border-radius:8px;
-    padding:1rem;cursor:pointer;transition:border-color 0.2s,background 0.2s;
-    display:flex;flex-direction:column;gap:0.3rem;position:relative;
+    padding:0.9rem 1.1rem;cursor:pointer;transition:border-color 0.2s,background 0.2s;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
   }
   .grupp-kort:hover{border-color:var(--brown-lt);background:var(--surface2);}
   .grupp-kort.vald{border-color:var(--brown);background:#f0e8dc;}
-  .grupp-kort-namn{font-weight:700;font-size:0.92rem;color:var(--brown);}
-  .grupp-kort-antal{font-size:0.78rem;color:var(--text-lt);}
-  .grupp-kort-check{position:absolute;top:0.6rem;right:0.8rem;font-size:1.1rem;color:var(--brown);display:none;}
-  .grupp-kort.vald .grupp-kort-check{display:block;}
+  .grupp-kort-namn{font-weight:700;font-size:0.95rem;color:var(--brown);}
+  .grupp-kort-antal{font-size:0.82rem;color:var(--text-lt);white-space:nowrap;}
+  .grupp-kort-check{font-size:1.1rem;color:var(--brown);visibility:hidden;}
+  .grupp-kort.vald .grupp-kort-check{visibility:visible;}
+  .grupp-rubrik{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-lt);margin:0.8rem 0 0.2rem;}
   .ingen-grupp{text-align:center;padding:1.5rem;color:var(--text-lt);font-size:0.9rem;font-style:italic;}
   .integritet{background:#f0f5f0;border:1px solid #c8dcc8;border-left:4px solid var(--success);border-radius:6px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--text-lt);line-height:1.55;margin-top:1rem;}
   .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.6rem;border-radius:5px;border:none;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:0.04em;transition:filter 0.2s,transform 0.1s;}
@@ -75,14 +78,13 @@
   .bekraftelse-ikon{font-size:3rem;margin-bottom:1rem;}
   .bekraftelse-titel{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--brown);margin-bottom:0.5rem;}
   .bekraftelse-text{color:var(--text-lt);font-size:0.95rem;line-height:1.6;}
-  .tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.75rem;color:var(--brown-mid);font-weight:700;margin-right:0.3rem;}
+  .tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.75rem;color:var(--brown-mid);font-weight:700;margin:0 0.3rem 0.3rem 0;}
   .divider{border:none;border-top:1px solid var(--border);margin:1.3rem 0;}
-  .forhandsgranskning-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.3rem;margin-top:0.5rem;}
-  .forhandsgranskning-box .amne{font-weight:700;font-size:1rem;color:var(--brown);margin-bottom:0.5rem;}
-  .forhandsgranskning-box .brodtext{font-size:0.9rem;color:var(--text);line-height:1.6;white-space:pre-wrap;}
   .sammanf-rad{display:flex;gap:1rem;align-items:flex-start;}
   .sammanf-etikett{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);min-width:110px;padding-top:2px;}
   .sammanf-varde{font-size:0.92rem;color:var(--text);}
+  .forhands-ram{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;}
+  .forhands-ram iframe{width:100%;height:460px;border:none;display:block;}
 </style>
 </head>
 <body>
@@ -100,9 +102,9 @@
   <p class="page-sub">Skicka e-post till deltagare i ett formulär eller workshop.</p>
 
   <div class="steps">
-    <div class="step active" id="steg1ind"><span class="step-num">1</span> Välj event</div>
-    <div class="step" id="steg2ind"><span class="step-num">2</span> Välj mottagare</div>
-    <div class="step" id="steg3ind"><span class="step-num">3</span> Skriv meddelande</div>
+    <div class="step active" id="steg1ind"><span class="step-num">1</span> Event</div>
+    <div class="step" id="steg2ind"><span class="step-num">2</span> Mottagare</div>
+    <div class="step" id="steg3ind"><span class="step-num">3</span> Meddelande</div>
     <div class="step" id="steg4ind"><span class="step-num">4</span> Skicka</div>
   </div>
 
@@ -114,16 +116,14 @@
         <label>Typ av event</label>
         <select id="eventTyp" onchange="byttEventTyp()">
           <option value="">Välj typ...</option>
-          <option value="formular">Formulär</option>
           <option value="workshop">Workshop</option>
+          <option value="formular">Formulär</option>
         </select>
       </div>
       <div id="eventListaWrap" style="display:none;">
         <div class="field-group">
           <label>Välj event</label>
-          <select id="eventVal" onchange="valdEvent()">
-            <option value="">Laddar...</option>
-          </select>
+          <select id="eventVal" onchange="valdEvent()"><option value="">Laddar...</option></select>
         </div>
       </div>
       <div class="status-msg" id="steg1Status"></div>
@@ -137,8 +137,8 @@
   <div class="panel" id="panel2">
     <div class="card">
       <div class="card-title">Vilka ska få meddelandet?</div>
-      <p style="font-size:0.88rem;color:var(--text-lt);margin-bottom:1rem;">Välj en eller flera grupper. Alla i gruppen får e-post.</p>
-      <div class="grupp-grid" id="gruppGrid">
+      <p style="font-size:0.88rem;color:var(--text-lt);margin-bottom:0.5rem;">Välj en eller flera grupper. Personer som finns i flera grupper får bara ett mejl.</p>
+      <div class="grupp-lista" id="gruppLista">
         <div class="ingen-grupp">Laddar grupper...</div>
       </div>
       <div class="integritet">
@@ -167,11 +167,27 @@
         <div style="font-size:0.75rem;color:var(--text-lt);margin-top:0.3rem;">Tips: skriv <strong>{namn}</strong> i texten så ersätts det automatiskt med varje deltagares namn.</div>
       </div>
       <hr class="divider">
-      <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.5rem;">Förhandsgranskning</div>
-      <div class="forhandsgranskning-box">
-        <div class="amne" id="forhandsAmne">—</div>
-        <div class="brodtext" id="forhandsBrod">Börja skriva ditt meddelande ovan...</div>
+      <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.7rem;">Design på mejlet</div>
+      <div class="field-row">
+        <div class="farg-val"><label>Bakgrund</label><input type="color" id="temaBg" value="#f5f0e8" onchange="uppdateraForhands()"></div>
+        <div class="farg-val"><label>Huvudfärg</label><input type="color" id="temaBrown" value="#4a2c1a" onchange="uppdateraForhands()"></div>
+        <div class="farg-val"><label>Accentfärg</label><input type="color" id="temaAccent" value="#8b3a1f" onchange="uppdateraForhands()"></div>
+        <div class="farg-val"><label>Text</label><input type="color" id="temaText" value="#2e1a0e" onchange="uppdateraForhands()"></div>
+        <div class="farg-val"><label>Inforutor</label><input type="color" id="temaInfo" value="#4a7c59" onchange="uppdateraForhands()"></div>
       </div>
+      <div class="field-row">
+        <div style="flex:1;min-width:200px;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.3rem;">Rubrikfont</label>
+          <select id="temaHeadingFont" onchange="uppdateraForhands()" style="background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;width:100%;font-family:'Lato',sans-serif;"></select>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label style="display:block;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.3rem;">Brödtextfont</label>
+          <select id="temaBodyFont" onchange="uppdateraForhands()" style="background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.7rem;width:100%;font-family:'Lato',sans-serif;"></select>
+        </div>
+      </div>
+      <hr class="divider">
+      <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.5rem;">Så här kommer mejlet att se ut</div>
+      <div class="forhands-ram"><iframe id="forhandsRam" title="Förhandsgranskning"></iframe></div>
       <div class="status-msg" id="steg3Status"></div>
       <div class="btn-row">
         <button class="btn btn-outline" onclick="gaSteg(2)">← Tillbaka</button>
@@ -191,10 +207,7 @@
         <div class="sammanf-rad"><div class="sammanf-etikett">Ämne</div><div class="sammanf-varde" id="sammanfAmne">—</div></div>
       </div>
       <hr class="divider">
-      <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.5rem;">Meddelandetext</div>
-      <div class="forhandsgranskning-box">
-        <div class="brodtext" id="sammanfMeddelande">—</div>
-      </div>
+      <div class="forhands-ram"><iframe id="sammanfRam" title="Förhandsgranskning"></iframe></div>
       <div class="status-msg" id="steg4Status"></div>
       <div class="btn-row">
         <button class="btn btn-outline" onclick="gaSteg(3)">← Tillbaka</button>
@@ -226,53 +239,128 @@ const WEBHOOKS = {
   skickaMeddelande: 'https://tango-norteno.duckdns.org/webhook/skicka-meddelande',
 };
 
-let valtEventId = null;
-let valtEventTitel = '';
-let valtEventTyp = '';
-let valdaGrupper = [];   // innehåller bara grupp-ID:n, aldrig personuppgifter
-let allaGrupper = [];    // { id, namn, antal } — inga namn eller adresser
+const HEADING_FONTS = ['Playfair Display','Cormorant Garamond','Merriweather','Lora','Libre Baskerville','Abril Fatface'];
+const BODY_FONTS = ['Lato','Inter','Open Sans','Nunito','Roboto','Source Sans Pro'];
+const FONT_STACK = {
+  'Playfair Display':"'Playfair Display',Georgia,serif",'Cormorant Garamond':"'Cormorant Garamond',Georgia,serif",
+  'Merriweather':"'Merriweather',Georgia,serif",'Lora':"'Lora',Georgia,serif",
+  'Libre Baskerville':"'Libre Baskerville',Georgia,serif",'Abril Fatface':"'Abril Fatface',Georgia,serif",
+  'Lato':"'Lato',Helvetica,Arial,sans-serif",'Inter':"'Inter',Helvetica,Arial,sans-serif",
+  'Open Sans':"'Open Sans',Helvetica,Arial,sans-serif",'Nunito':"'Nunito',Helvetica,Arial,sans-serif",
+  'Roboto':"'Roboto',Helvetica,Arial,sans-serif",'Source Sans Pro':"'Source Sans Pro',Helvetica,Arial,sans-serif"
+};
+
+let valtEventId = null, valtEventTitel = '', valtEventTyp = '';
+let valdaGrupper = [], allaGrupper = [];
 
 function gaSteg(nr) {
   document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('active', i === nr - 1));
   document.querySelectorAll('.step').forEach((s, i) => {
-    s.classList.remove('active', 'done');
-    if (i < nr - 1) s.classList.add('done');
-    else if (i === nr - 1) s.classList.add('active');
+    s.classList.remove('active','done');
+    if (i < nr - 1) s.classList.add('done'); else if (i === nr - 1) s.classList.add('active');
   });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function visa(id, typ, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status-msg ' + typ;
+  el.textContent = text;
+}
+function doljStatus(id) { const el = document.getElementById(id); if (el) el.className = 'status-msg'; }
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function mix(hex, mot, andel) {
+  const h = String(hex||'#000000').replace('#','');
+  const r=parseInt(h.substring(0,2),16)||0,g=parseInt(h.substring(2,4),16)||0,b=parseInt(h.substring(4,6),16)||0;
+  const m = mot==='white'?255:0;
+  return '#' + [r,g,b].map(v => Math.max(0,Math.min(255,Math.round(v+(m-v)*andel))).toString(16).padStart(2,'0')).join('');
+}
+function arLjus(hex){
+  const h=String(hex||'#ffffff').replace('#','');
+  const r=parseInt(h.substring(0,2),16)||0,g=parseInt(h.substring(2,4),16)||0,b=parseInt(h.substring(4,6),16)||0;
+  return (0.299*r+0.587*g+0.114*b) > 150;
+}
+function lasTema() {
+  return {
+    bg: document.getElementById('temaBg').value,
+    brown: document.getElementById('temaBrown').value,
+    accent: document.getElementById('temaAccent').value,
+    text: document.getElementById('temaText').value,
+    info: document.getElementById('temaInfo').value,
+    headingFont: FONT_STACK[document.getElementById('temaHeadingFont').value] || FONT_STACK['Playfair Display'],
+    bodyFont: FONT_STACK[document.getElementById('temaBodyFont').value] || FONT_STACK['Lato']
+  };
+}
+
+// Måste bygga EXAKT samma HTML som n8n-noden "Bygg meddelanden"
+function byggHtml(namn, amne, meddelandeText, tema, titel) {
+  const infoLjus = arLjus(tema.info);
+  const cream = mix(tema.bg,'white',0.35);
+  const border = mix(tema.bg,'black',0.22);
+  const textLt = mix(tema.text,'white',0.35);
+  const brownLt = mix(tema.brown,'white',0.45);
+  const brod = escHtml(meddelandeText).replace(/\{namn\}/g, escHtml(namn)).replace(/\n/g,'<br>');
+  return `<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:${tema.bg};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${tema.bg};padding:32px 12px;">
+<tr><td align="center">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:${cream};border:1px solid ${border};border-radius:12px;overflow:hidden;">
+    <tr><td style="background:${tema.brown};padding:28px 24px;text-align:center;">
+      <div style="font-family:${tema.headingFont};font-size:26px;color:${cream};letter-spacing:1px;">
+        Tango <span style="font-style:italic;color:${brownLt};">Norte&ntilde;o</span>
+      </div>
+    </td></tr>
+    <tr><td style="padding:32px 32px 10px;font-family:${tema.bodyFont};">
+      <div style="font-family:${tema.headingFont};font-size:22px;color:${tema.brown};margin-bottom:14px;">${escHtml(amne)}</div>
+      <div style="font-size:15px;line-height:1.65;color:${tema.text};">${brod}</div>
+    </td></tr>
+    <tr><td style="padding:10px 32px 30px;font-family:${tema.bodyFont};">
+      <div style="background:${tema.info};border:1px solid ${infoLjus ? mix(tema.info,'black',0.18) : mix(tema.info,'white',0.25)};border-left:4px solid ${infoLjus ? mix(tema.info,'black',0.35) : mix(tema.info,'white',0.45)};border-radius:5px;padding:12px 16px;font-size:13px;line-height:1.55;color:${infoLjus ? '#2e1a0e' : '#ffffff'};">
+        Detta meddelande gäller <b>${escHtml(titel)}</b>.
+      </div>
+      <div style="border-top:1px solid ${border};margin-top:22px;padding-top:18px;font-size:12px;line-height:1.6;color:${textLt};text-align:center;">
+        <div style="font-family:${tema.headingFont};font-size:14px;color:${brownLt};letter-spacing:1px;">Tango <span style="font-style:italic;">Norte&ntilde;o</span></div>
+      </div>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body></html>`;
 }
 
 // ── STEG 1 ───────────────────────────────────────────────
 async function byttEventTyp() {
   const typ = document.getElementById('eventTyp').value;
   const wrap = document.getElementById('eventListaWrap');
-  const nasta = document.getElementById('steg1Nasta');
   valtEventId = null; valtEventTitel = ''; valtEventTyp = typ;
-  nasta.disabled = true;
+  document.getElementById('steg1Nasta').disabled = true;
+  doljStatus('steg1Status');
   if (!typ) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-
   const sel = document.getElementById('eventVal');
   sel.innerHTML = '<option value="">Laddar...</option>';
   try {
-    const res = await fetch(WEBHOOKS.listaEvents + '?typ=' + typ);
+    const res = await fetch(WEBHOOKS.listaEvents + '?typ=' + encodeURIComponent(typ));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     const data = text ? JSON.parse(text) : [];
-    const items = Array.isArray(data) ? data : (data.items || data.formular || data.workshops || []);
+    const d = Array.isArray(data) ? (data[0] || {}) : data;
+    const items = Array.isArray(d) ? d : (d.items || []);
     if (!items.length) { sel.innerHTML = '<option value="">Inga event hittades</option>'; return; }
     sel.innerHTML = '<option value="">Välj...</option>' + items.map(f =>
-      `<option value="${escHtml(f.id)}" data-titel="${escHtml(f.titel || '')}">${escHtml(f.titel || 'Namnlöst')}${f.anmalningar !== undefined && f.anmalningar !== null ? ' (' + f.anmalningar + ' anmälda)' : ''}</option>`
+      `<option value="${escHtml(f.id)}" data-titel="${escHtml(f.titel||'')}">${escHtml(f.titel||'Namnlöst')}${f.anmalningar != null ? ' (' + f.anmalningar + ' anmälda)' : ''}</option>`
     ).join('');
   } catch (e) {
     sel.innerHTML = '<option value="">Fel vid hämtning</option>';
-    visa('steg1Status', 'err', 'Kunde inte hämta events: ' + e.message);
+    visa('steg1Status','err','Kunde inte hämta events: ' + e.message);
   }
 }
 function valdEvent() {
   const sel = document.getElementById('eventVal');
   const opt = sel.options[sel.selectedIndex];
   valtEventId = sel.value;
-  valtEventTitel = (opt && opt.dataset.titel) || (opt ? opt.text : '');
+  valtEventTitel = (opt && opt.dataset.titel) || '';
   document.getElementById('steg1Nasta').disabled = !valtEventId;
 }
 
@@ -280,69 +368,82 @@ function valdEvent() {
 async function gaSteg2() {
   if (!valtEventId) return;
   gaSteg(2);
-  const grid = document.getElementById('gruppGrid');
-  grid.innerHTML = '<div class="ingen-grupp">Laddar grupper...</div>';
+  const lista = document.getElementById('gruppLista');
+  lista.innerHTML = '<div class="ingen-grupp">Laddar grupper...</div>';
   valdaGrupper = []; allaGrupper = [];
   document.getElementById('steg2Nasta').disabled = true;
+  doljStatus('steg2Status');
   try {
     const res = await fetch(WEBHOOKS.hamtaGrupper + '?event_id=' + encodeURIComponent(valtEventId));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     const data = text ? JSON.parse(text) : [];
-    allaGrupper = Array.isArray(data) ? data : (data.grupper || []);
+    const d = Array.isArray(data) ? (data[0] || {}) : data;
+    allaGrupper = Array.isArray(d) ? d : (d.grupper || []);
     if (!allaGrupper.length) {
-      grid.innerHTML = '<div class="ingen-grupp">Inga grupper med e-postadresser hittades för detta event.</div>';
+      lista.innerHTML = '<div class="ingen-grupp">Inga mottagare med e-postadress hittades för detta event.</div>';
       return;
     }
     renderaGrupper();
   } catch (e) {
-    grid.innerHTML = '<div class="ingen-grupp" style="color:var(--danger)">Kunde inte hämta grupper.</div>';
-    visa('steg2Status', 'err', 'Fel: ' + e.message);
+    lista.innerHTML = '<div class="ingen-grupp" style="color:var(--danger)">Kunde inte hämta grupper.</div>';
+    visa('steg2Status','err','Fel: ' + e.message);
   }
 }
 function renderaGrupper() {
-  document.getElementById('gruppGrid').innerHTML = allaGrupper.map((g, i) => `
-    <div class="grupp-kort ${valdaGrupper.includes(g.id) ? 'vald' : ''}" onclick="toggleGrupp(${i})">
+  const wsGrupper = allaGrupper.filter(g => String(g.id).startsWith('ws::'));
+  const ovriga = allaGrupper.filter(g => !String(g.id).startsWith('ws::'));
+  const kort = g => `
+    <div class="grupp-kort ${valdaGrupper.includes(g.id)?'vald':''}" onclick="toggleGrupp('${escHtml(g.id)}')">
+      <div>
+        <div class="grupp-kort-namn">${escHtml(g.namn)}</div>
+        <div class="grupp-kort-antal">${g.antal} ${g.antal === 1 ? 'person' : 'personer'}</div>
+      </div>
       <div class="grupp-kort-check">✓</div>
-      <div class="grupp-kort-namn">${escHtml(g.namn)}</div>
-      <div class="grupp-kort-antal">${g.antal} ${g.antal === 1 ? 'person' : 'personer'}</div>
-    </div>`).join('');
+    </div>`;
+  let html = ovriga.filter(g => g.id !== 'vantelista').map(kort).join('');
+  if (wsGrupper.length) {
+    html += `<div class="grupp-rubrik">En enskild workshop</div>` + wsGrupper.map(kort).join('');
+  }
+  const vl = ovriga.find(g => g.id === 'vantelista');
+  if (vl) html += `<div class="grupp-rubrik">Väntelista</div>` + kort(vl);
+  document.getElementById('gruppLista').innerHTML = html;
 }
-function toggleGrupp(index) {
-  const g = allaGrupper[index];
-  if (!g) return;
-  const i = valdaGrupper.indexOf(g.id);
-  if (i >= 0) valdaGrupper.splice(i, 1); else valdaGrupper.push(g.id);
+function toggleGrupp(id) {
+  const i = valdaGrupper.indexOf(id);
+  if (i >= 0) valdaGrupper.splice(i,1); else valdaGrupper.push(id);
   renderaGrupper();
   document.getElementById('steg2Nasta').disabled = valdaGrupper.length === 0;
 }
-function gaSteg3() { if (valdaGrupper.length) gaSteg(3); }
+function gaSteg3() {
+  if (!valdaGrupper.length) return;
+  gaSteg(3);
+  uppdateraForhands();
+}
 
 // ── STEG 3 ───────────────────────────────────────────────
 function uppdateraForhands() {
   const amne = document.getElementById('amne').value.trim();
-  const text = document.getElementById('meddelande').value.trim();
-  document.getElementById('forhandsAmne').textContent = amne || '—';
-  document.getElementById('forhandsBrod').textContent =
-    text.replace(/\{namn\}/g, 'Anna Andersson') || 'Börja skriva ditt meddelande ovan...';
-  document.getElementById('steg3Nasta').disabled = !amne || !text;
+  const text = document.getElementById('meddelande').value;
+  const html = byggHtml('Anna Andersson', amne || '(inget ämne)', text || 'Börja skriva ditt meddelande ovan...', lasTema(), valtEventTitel);
+  const ram = document.getElementById('forhandsRam');
+  if (ram) ram.srcdoc = html;
+  document.getElementById('steg3Nasta').disabled = !amne || !text.trim();
 }
 function gaSteg4() {
   const amne = document.getElementById('amne').value.trim();
-  const text = document.getElementById('meddelande').value.trim();
-  if (!amne || !text) return;
-
+  const text = document.getElementById('meddelande').value;
+  if (!amne || !text.trim()) return;
   const valda = allaGrupper.filter(g => valdaGrupper.includes(g.id));
-  // Grov uppskattning — servern räknar bort dubbletter mellan grupperna
-  const uppskattat = valda.reduce((s, g) => s + (parseInt(g.antal) || 0), 0);
-
+  const max = valda.reduce((s,g) => Math.max(s, parseInt(g.antal)||0), 0);
+  const summa = valda.reduce((s,g) => s + (parseInt(g.antal)||0), 0);
   document.getElementById('sammanfEvent').textContent = valtEventTitel;
   document.getElementById('sammanfGrupper').innerHTML = valda.map(g => `<span class="tag">${escHtml(g.namn)}</span>`).join('');
-  document.getElementById('sammanfAntal').textContent =
-    (valda.length > 1 ? 'Upp till ' : '') + uppskattat + ' ' + (uppskattat === 1 ? 'person' : 'personer') +
-    (valda.length > 1 ? ' (dubbletter räknas bort vid utskick)' : '');
+  document.getElementById('sammanfAntal').textContent = valda.length > 1
+    ? `Mellan ${max} och ${summa} personer (dubbletter får bara ett mejl)`
+    : `${summa} ${summa === 1 ? 'person' : 'personer'}`;
   document.getElementById('sammanfAmne').textContent = amne;
-  document.getElementById('sammanfMeddelande').textContent = text;
+  document.getElementById('sammanfRam').srcdoc = byggHtml('Anna Andersson', amne, text, lasTema(), valtEventTitel);
   gaSteg(4);
 }
 
@@ -351,41 +452,37 @@ async function skickaMeddelande() {
   const btn = document.getElementById('skickaBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-inline"></span> Skickar...';
-  visa('steg4Status', 'info', 'Skickar e-post...');
-
-  const amne = document.getElementById('amne').value.trim();
-  const text = document.getElementById('meddelande').value.trim();
+  visa('steg4Status','info','Skickar e-post...');
   try {
-    // Skickar bara vilka GRUPPER som valts — servern slår upp mottagarna själv
     const res = await fetch(WEBHOOKS.skickaMeddelande, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'text/plain;charset=UTF-8'},
       body: JSON.stringify({
         event_id: valtEventId,
         event_titel: valtEventTitel,
         event_typ: valtEventTyp,
         grupper: valdaGrupper,
-        amne,
-        meddelande: text
+        amne: document.getElementById('amne').value.trim(),
+        meddelande: document.getElementById('meddelande').value,
+        tema: lasTema()
       })
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.text();
+    if (!res.ok) throw new Error(raw ? raw.slice(0,160) : 'HTTP ' + res.status);
     let svar = {};
-    try { svar = raw ? JSON.parse(raw) : {}; } catch (_) {}
-    const antal = svar.skickade !== undefined ? svar.skickade : null;
+    try { svar = raw ? JSON.parse(raw) : {}; } catch(_) {}
+    if (Array.isArray(svar)) svar = svar[0] || {};
+    const antal = svar.skickade != null ? svar.skickade : null;
     document.getElementById('bekraftelseText').textContent = antal === null
       ? 'E-post har skickats till alla valda mottagare.'
       : `E-post har skickats till ${antal} ${antal === 1 ? 'person' : 'personer'}.`;
     gaSteg(5);
   } catch (e) {
-    visa('steg4Status', 'err', 'Fel vid sändning: ' + e.message);
+    visa('steg4Status','err','Fel vid sändning: ' + e.message);
     btn.disabled = false;
     btn.innerHTML = '✉ Skicka e-post nu';
   }
 }
 
-// ── Hjälpfunktioner ──────────────────────────────────────
 function borjaOm() {
   valtEventId = null; valtEventTitel = ''; valtEventTyp = '';
   valdaGrupper = []; allaGrupper = [];
@@ -395,19 +492,20 @@ function borjaOm() {
   document.getElementById('amne').value = '';
   document.getElementById('meddelande').value = '';
   document.getElementById('steg3Nasta').disabled = true;
+  document.getElementById('steg2Nasta').disabled = true;
   const btn = document.getElementById('skickaBtn');
   btn.disabled = false; btn.innerHTML = '✉ Skicka e-post nu';
+  ['steg1Status','steg2Status','steg3Status','steg4Status'].forEach(doljStatus);
   gaSteg(1);
 }
-function visa(id, typ, text) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.className = 'status-msg ' + typ;
-  el.textContent = text;
-}
-function escHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const h = document.getElementById('temaHeadingFont');
+  const b = document.getElementById('temaBodyFont');
+  h.innerHTML = HEADING_FONTS.map(f => `<option value="${f}">${f}</option>`).join('');
+  b.innerHTML = BODY_FONTS.map(f => `<option value="${f}">${f}</option>`).join('');
+  h.value = 'Playfair Display'; b.value = 'Lato';
+});
 </script>
 </body>
 </html>
