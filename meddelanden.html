@@ -164,7 +164,9 @@
       <div class="field-group">
         <label>Meddelande</label>
         <textarea id="meddelande" placeholder="Skriv ditt meddelande här..." oninput="uppdateraForhands()"></textarea>
-        <div style="font-size:0.75rem;color:var(--text-lt);margin-top:0.3rem;">Tips: skriv <strong>{namn}</strong> i texten så ersätts det automatiskt med varje deltagares namn.</div>
+        <div style="font-size:0.75rem;color:var(--text-lt);margin-top:0.5rem;line-height:1.5;">Klicka för att infoga — varje deltagare får sina egna uppgifter. Fungerar även i ämnesraden.</div>
+        <div id="platshallarKnappar" style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.45rem;"></div>
+        <div id="platshallarHjalp" style="font-size:0.75rem;color:var(--text-lt);margin-top:0.45rem;min-height:1.2em;font-style:italic;"></div>
       </div>
       <hr class="divider">
       <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-lt);margin-bottom:0.7rem;">Design på mejlet</div>
@@ -293,6 +295,48 @@ function lasTema() {
   };
 }
 
+// Platshållare — måste stämma överens med n8n-noden "Bygg meddelanden"
+const PLATSHALLARE = [
+  { kod:'{namn}',         etikett:'Namn',            hjalp:'Deltagarens fullständiga namn' },
+  { kod:'{fornamn}',      etikett:'Förnamn',         hjalp:'Bara förnamnet' },
+  { kod:'{workshops}',    etikett:'Dina workshops',  hjalp:'Alla workshops med roll och partner' },
+  { kod:'{partners}',     etikett:'Dina partners',   hjalp:'Vem personen parats med, per workshop' },
+  { kod:'{roller}',       etikett:'Dina roller',     hjalp:'Förare eller följare, per workshop' },
+  { kod:'{workshopnamn}', etikett:'Workshopnamn',    hjalp:'Bara namnen på de workshops personen kommit in i' },
+  { kod:'{status}',       etikett:'Status',          hjalp:'Antagen, delvis antagen eller väntelista' },
+  { kod:'{antal}',        etikett:'Antal workshops', hjalp:'Hur många workshops personen fått plats i' },
+  { kod:'{event}',        etikett:'Eventnamn',       hjalp:'Namnet på eventet' },
+  { kod:'{epost}',        etikett:'E-post',          hjalp:'Deltagarens e-postadress' },
+  { kod:'{telefon}',      etikett:'Telefon',         hjalp:'Deltagarens telefonnummer' },
+];
+
+function ersattExempel(text, namn, titel) {
+  const ws1 = '<b>Workshop 1. Alla nivåer: Teknik/Musikalitet</b>';
+  const ws2 = '<b>Workshop 2. Intermediate: Volcada</b>';
+  return text
+    .replace(/\{namn\}/g, escHtml(namn))
+    .replace(/\{fornamn\}/g, escHtml(String(namn||'').split(' ')[0]))
+    .replace(/\{epost\}/g, 'anna@exempel.se')
+    .replace(/\{telefon\}/g, '0701234567')
+    .replace(/\{event\}/g, escHtml(titel || 'Eventet'))
+    .replace(/\{workshops\}/g, ws1 + ' — Förare, partner: Hanna Svensson\n' + ws2 + ' — Följare, partner: Stina Berg')
+    .replace(/\{partners\}/g, ws1 + ': Hanna Svensson\n' + ws2 + ': Stina Berg')
+    .replace(/\{roller\}/g, ws1 + ': Förare\n' + ws2 + ': Följare')
+    .replace(/\{workshopnamn\}/g, 'Workshop 1. Alla nivåer: Teknik/Musikalitet\nWorkshop 2. Intermediate: Volcada')
+    .replace(/\{status\}/g, 'Antagen')
+    .replace(/\{antal\}/g, '2');
+}
+
+function infogaPlatshallare(kod) {
+  const ta = document.getElementById('meddelande');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0, s) + kod + ta.value.slice(e);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = s + kod.length;
+  uppdateraForhands();
+}
+function visaHjalp(txt) { document.getElementById('platshallarHjalp').textContent = txt || ''; }
+
 // Måste bygga EXAKT samma HTML som n8n-noden "Bygg meddelanden"
 function byggHtml(namn, amne, meddelandeText, tema, titel) {
   const infoLjus = arLjus(tema.info);
@@ -300,7 +344,7 @@ function byggHtml(namn, amne, meddelandeText, tema, titel) {
   const border = mix(tema.bg,'black',0.22);
   const textLt = mix(tema.text,'white',0.35);
   const brownLt = mix(tema.brown,'white',0.45);
-  const brod = escHtml(meddelandeText).replace(/\{namn\}/g, escHtml(namn)).replace(/\n/g,'<br>');
+  const brod = ersattExempel(escHtml(meddelandeText), namn, titel).replace(/\n/g,'<br>');
   return `<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:${tema.bg};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${tema.bg};padding:32px 12px;">
@@ -312,7 +356,7 @@ function byggHtml(namn, amne, meddelandeText, tema, titel) {
       </div>
     </td></tr>
     <tr><td style="padding:32px 32px 10px;font-family:${tema.bodyFont};">
-      <div style="font-family:${tema.headingFont};font-size:22px;color:${tema.brown};margin-bottom:14px;">${escHtml(amne)}</div>
+      <div style="font-family:${tema.headingFont};font-size:22px;color:${tema.brown};margin-bottom:14px;">${ersattExempel(escHtml(amne), namn, titel)}</div>
       <div style="font-size:15px;line-height:1.65;color:${tema.text};">${brod}</div>
     </td></tr>
     <tr><td style="padding:10px 32px 30px;font-family:${tema.bodyFont};">
@@ -505,6 +549,12 @@ window.addEventListener('DOMContentLoaded', () => {
   h.innerHTML = HEADING_FONTS.map(f => `<option value="${f}">${f}</option>`).join('');
   b.innerHTML = BODY_FONTS.map(f => `<option value="${f}">${f}</option>`).join('');
   h.value = 'Playfair Display'; b.value = 'Lato';
+
+  document.getElementById('platshallarKnappar').innerHTML = PLATSHALLARE.map(p =>
+    `<button type="button" class="btn btn-outline" style="padding:0.3rem 0.65rem;font-size:0.76rem;font-weight:700;"
+      onclick="infogaPlatshallare('${p.kod}')"
+      onmouseover="visaHjalp('${p.kod} — ${p.hjalp}')" onmouseout="visaHjalp('')">${p.etikett}</button>`
+  ).join('');
 });
 </script>
 </body>
